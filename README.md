@@ -44,14 +44,14 @@ func main() {
 	client := prelude.NewClient(
 		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("PRELUDE_API_KEY")
 	)
-	authenticationNewResponse, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
+	authentication, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
 		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		PhoneNumber:  prelude.F("+1234567890"),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", authenticationNewResponse.AuthenticationUuid)
+	fmt.Printf("%+v\n", authentication.AuthenticationUuid)
 }
 
 ```
@@ -342,3 +342,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
 We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/prelude-go/issues) with questions, bugs, or suggestions.
+
+## Contributing
+
+See [the contributing documentation](./CONTRIBUTING.md).

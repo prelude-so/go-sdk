@@ -24,12 +24,12 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
 	)
-	authenticationNewResponse, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
+	authentication, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
 		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		PhoneNumber:  prelude.F("+1234567890"),
 	})
 	if err != nil {
 		t.Error(err)
 	}
-	t.Logf("%+v\n", authenticationNewResponse.AuthenticationUuid)
+	t.Logf("%+v\n", authentication.AuthenticationUuid)
 }
