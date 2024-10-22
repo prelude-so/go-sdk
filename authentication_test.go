@@ -28,16 +28,16 @@ func TestAuthenticationNewWithOptionalParams(t *testing.T) {
 	_, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
 		CustomerUuid:    prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		PhoneNumber:     prelude.F("+1234567890"),
-		AppRealm:        prelude.F("string"),
-		AppVersion:      prelude.F("string"),
-		CallbackURL:     prelude.F("string"),
-		DeviceID:        prelude.F("string"),
-		DeviceModel:     prelude.F("string"),
+		AppRealm:        prelude.F("app_realm"),
+		AppVersion:      prelude.F("app_version"),
+		CallbackURL:     prelude.F("callback_url"),
+		DeviceID:        prelude.F("device_id"),
+		DeviceModel:     prelude.F("device_model"),
 		DeviceType:      prelude.F(prelude.AuthenticationNewParamsDeviceTypeIos),
-		IP:              prelude.F("string"),
+		IP:              prelude.F("ip"),
 		IsReturningUser: prelude.F(true),
-		OsVersion:       prelude.F("string"),
-		TemplateID:      prelude.F("string"),
+		OsVersion:       prelude.F("os_version"),
+		TemplateID:      prelude.F("template_id"),
 	})
 	if err != nil {
 		var apierr *prelude.Error

@@ -27,7 +27,7 @@ func TestLookupGet(t *testing.T) {
 	)
 	_, err := client.Lookup.Get(
 		context.TODO(),
-		"string",
+		"phone_number",
 		prelude.LookupGetParams{
 			CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
 		},
