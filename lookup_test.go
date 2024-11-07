@@ -24,6 +24,7 @@ func TestLookupGet(t *testing.T) {
 	client := prelude.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithCustomerUuid("My Customer Uuid"),
 	)
 	_, err := client.Lookup.Get(
 		context.TODO(),

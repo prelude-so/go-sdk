@@ -23,6 +23,7 @@ func TestUsage(t *testing.T) {
 	client := prelude.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithCustomerUuid("My Customer Uuid"),
 	)
 	authentication, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
 		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
