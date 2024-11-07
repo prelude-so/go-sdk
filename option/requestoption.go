@@ -11,15 +11,15 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/stainless-sdks/prelude-go/internal/requestconfig"
+	"github.com/prelude-so/go-sdk/internal/requestconfig"
 	"github.com/tidwall/sjson"
 )
 
-// RequestOption is an option for the requests made by the prelude API Client
+// RequestOption is an option for the requests made by the Prelude API Client
 // which can be supplied to clients, services, and methods. You can read more about this functional
 // options pattern in our [README].
 //
-// [README]: https://pkg.go.dev/github.com/stainless-sdks/prelude-go#readme-requestoptions
+// [README]: https://pkg.go.dev/github.com/prelude-so/go-sdk#readme-requestoptions
 type RequestOption = func(*requestconfig.RequestConfig) error
 
 // WithBaseURL returns a RequestOption that sets the BaseURL for the client.
@@ -225,21 +225,13 @@ func WithRequestTimeout(dur time.Duration) RequestOption {
 // environment to be the "production" environment. An environment specifies which base URL
 // to use by default.
 func WithEnvironmentProduction() RequestOption {
-	return WithBaseURL("https://api.ding.live/v1/")
+	return WithBaseURL("https://api.prelude.dev/")
 }
 
-// WithAPIKey returns a RequestOption that sets the client setting "api_key".
-func WithAPIKey(value string) RequestOption {
+// WithAPIToken returns a RequestOption that sets the client setting "api_token".
+func WithAPIToken(value string) RequestOption {
 	return func(r *requestconfig.RequestConfig) error {
-		r.APIKey = value
-		return r.Apply(WithHeader("x-api-key", r.APIKey))
-	}
-}
-
-// WithCustomerUuid returns a RequestOption that sets the client setting "customer_uuid".
-func WithCustomerUuid(value string) RequestOption {
-	return func(r *requestconfig.RequestConfig) error {
-		r.CustomerUuid = value
-		return r.Apply(WithHeader("CUSTOMER_UUID", value))
+		r.APIToken = value
+		return r.Apply(WithHeader("authorization", fmt.Sprintf("Bearer %s", r.APIToken)))
 	}
 }

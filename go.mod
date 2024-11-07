@@ -1,4 +1,4 @@
-module github.com/stainless-sdks/prelude-go
+module github.com/prelude-so/go-sdk
 
 go 1.21
 

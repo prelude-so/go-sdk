@@ -17,10 +17,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stainless-sdks/prelude-go/internal"
-	"github.com/stainless-sdks/prelude-go/internal/apierror"
-	"github.com/stainless-sdks/prelude-go/internal/apiform"
-	"github.com/stainless-sdks/prelude-go/internal/apiquery"
+	"github.com/prelude-so/go-sdk/internal"
+	"github.com/prelude-so/go-sdk/internal/apierror"
+	"github.com/prelude-so/go-sdk/internal/apiform"
+	"github.com/prelude-so/go-sdk/internal/apiquery"
 )
 
 func getDefaultHeaders() map[string]string {
@@ -172,8 +172,7 @@ type RequestConfig struct {
 	BaseURL        *url.URL
 	HTTPClient     *http.Client
 	Middlewares    []middleware
-	APIKey         string
-	CustomerUuid   string
+	APIToken       string
 	// If ResponseBodyInto not nil, then we will attempt to deserialize into
 	// ResponseBodyInto. If Destination is a []byte, then it will return the body as
 	// is.
@@ -482,8 +481,7 @@ func (cfg *RequestConfig) Clone(ctx context.Context) *RequestConfig {
 		BaseURL:        cfg.BaseURL,
 		HTTPClient:     cfg.HTTPClient,
 		Middlewares:    cfg.Middlewares,
-		APIKey:         cfg.APIKey,
-		CustomerUuid:   cfg.CustomerUuid,
+		APIToken:       cfg.APIToken,
 	}
 
 	return new

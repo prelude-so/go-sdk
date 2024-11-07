@@ -3,7 +3,7 @@
 package prelude
 
 import (
-	"github.com/stainless-sdks/prelude-go/internal/apierror"
+	"github.com/prelude-so/go-sdk/internal/apierror"
 )
 
 type Error = apierror.Error
