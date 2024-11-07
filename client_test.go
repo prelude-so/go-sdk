@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stainless-sdks/prelude-go"
-	"github.com/stainless-sdks/prelude-go/internal"
-	"github.com/stainless-sdks/prelude-go/option"
+	"github.com/prelude-so/go-sdk"
+	"github.com/prelude-so/go-sdk/internal"
+	"github.com/prelude-so/go-sdk/option"
 )
 
 type closureTransport struct {
@@ -37,9 +37,11 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Authentication.New(context.Background(), prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	client.Verification.New(context.Background(), prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	})
 	if userAgent != fmt.Sprintf("Prelude/Go %s", internal.PackageVersion) {
 		t.Errorf("Expected User-Agent to be correct, but got: %#v", userAgent)
@@ -63,9 +65,11 @@ func TestRetryAfter(t *testing.T) {
 			},
 		}),
 	)
-	res, err := client.Authentication.New(context.Background(), prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	res, err := client.Verification.New(context.Background(), prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
@@ -100,9 +104,11 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
-	res, err := client.Authentication.New(context.Background(), prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	res, err := client.Verification.New(context.Background(), prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
@@ -132,9 +138,11 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		}),
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
-	res, err := client.Authentication.New(context.Background(), prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	res, err := client.Verification.New(context.Background(), prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
@@ -163,9 +171,11 @@ func TestRetryAfterMs(t *testing.T) {
 			},
 		}),
 	)
-	res, err := client.Authentication.New(context.Background(), prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	res, err := client.Verification.New(context.Background(), prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
@@ -188,9 +198,11 @@ func TestContextCancel(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
-	res, err := client.Authentication.New(cancelCtx, prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	res, err := client.Verification.New(cancelCtx, prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	})
 	if err == nil || res != nil {
 		t.Error("Expected there to be a cancel error and for the response to be nil")
@@ -210,9 +222,11 @@ func TestContextCancelDelay(t *testing.T) {
 	)
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
-	res, err := client.Authentication.New(cancelCtx, prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	res, err := client.Verification.New(cancelCtx, prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	})
 	if err == nil || res != nil {
 		t.Error("expected there to be a cancel error and for the response to be nil")
@@ -238,9 +252,11 @@ func TestContextDeadline(t *testing.T) {
 				},
 			}),
 		)
-		res, err := client.Authentication.New(deadlineCtx, prelude.AuthenticationNewParams{
-			CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-			PhoneNumber:  prelude.F("+1234567890"),
+		res, err := client.Verification.New(deadlineCtx, prelude.VerificationNewParams{
+			Target: prelude.F(prelude.VerificationNewParamsTarget{
+				Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+				Value: prelude.F("+30123456789"),
+			}),
 		})
 		if err == nil || res != nil {
 			t.Error("expected there to be a deadline error and for the response to be nil")

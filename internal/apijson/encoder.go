@@ -12,7 +12,7 @@ import (
 
 	"github.com/tidwall/sjson"
 
-	"github.com/stainless-sdks/prelude-go/internal/param"
+	"github.com/prelude-so/go-sdk/internal/param"
 )
 
 var encoders sync.Map // map[encoderEntry]encoderFunc

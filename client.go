@@ -7,41 +7,34 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/stainless-sdks/prelude-go/internal/requestconfig"
-	"github.com/stainless-sdks/prelude-go/option"
+	"github.com/prelude-so/go-sdk/internal/requestconfig"
+	"github.com/prelude-so/go-sdk/option"
 )
 
 // Client creates a struct with services and top level methods that help with
-// interacting with the prelude API. You should not instantiate this client
+// interacting with the Prelude API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options        []option.RequestOption
-	Authentication *AuthenticationService
-	Check          *CheckService
-	Retry          *RetryService
-	Lookup         *LookupService
+	Options       []option.RequestOption
+	Verification  *VerificationService
+	Transactional *TransactionalService
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (PRELUDE_API_KEY, PRELUDE_CUSTOMER_UUID). The option passed in as
-// arguments are applied after these default arguments, and all option will be
-// passed down to the services and requests that this client makes.
+// environment (API_TOKEN). The option passed in as arguments are applied after
+// these default arguments, and all option will be passed down to the services and
+// requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r *Client) {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
-	if o, ok := os.LookupEnv("PRELUDE_API_KEY"); ok {
-		defaults = append(defaults, option.WithAPIKey(o))
-	}
-	if o, ok := os.LookupEnv("PRELUDE_CUSTOMER_UUID"); ok {
-		defaults = append(defaults, option.WithCustomerUuid(o))
+	if o, ok := os.LookupEnv("API_TOKEN"); ok {
+		defaults = append(defaults, option.WithAPIToken(o))
 	}
 	opts = append(defaults, opts...)
 
 	r = &Client{Options: opts}
 
-	r.Authentication = NewAuthenticationService(opts...)
-	r.Check = NewCheckService(opts...)
-	r.Retry = NewRetryService(opts...)
-	r.Lookup = NewLookupService(opts...)
+	r.Verification = NewVerificationService(opts...)
+	r.Transactional = NewTransactionalService(opts...)
 
 	return
 }

@@ -1,6 +1,6 @@
 # Prelude Go API Library
 
-<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/prelude-go.svg" alt="Go Reference"></a>
+<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk"><img src="https://pkg.go.dev/badge/github.com/prelude-so/go-sdk.svg" alt="Go Reference"></a>
 
 The Prelude Go library provides convenient access to [the Prelude REST
 API](https://docs.prelude.so) from applications written in Go. The full API of this library can be found in [api.md](api.md).
@@ -9,17 +9,25 @@ It is generated with [Stainless](https://www.stainlessapi.com/).
 
 ## Installation
 
+<!-- x-release-please-start-version -->
+
 ```go
 import (
-	"github.com/stainless-sdks/prelude-go" // imported as prelude
+	"github.com/prelude-so/go-sdk" // imported as prelude
 )
 ```
 
+<!-- x-release-please-end -->
+
 Or to pin the version:
 
+<!-- x-release-please-start-version -->
+
 ```sh
-go get -u 'github.com/stainless-sdks/prelude-go@v0.0.1-alpha.0'
+go get -u 'github.com/prelude-so/go-sdk@v0.0.1-alpha.0'
 ```
+
+<!-- x-release-please-end -->
 
 ## Requirements
 
@@ -36,23 +44,24 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/stainless-sdks/prelude-go"
-	"github.com/stainless-sdks/prelude-go/option"
+	"github.com/prelude-so/go-sdk"
+	"github.com/prelude-so/go-sdk/option"
 )
 
 func main() {
 	client := prelude.NewClient(
-		option.WithAPIKey("My API Key"),             // defaults to os.LookupEnv("PRELUDE_API_KEY")
-		option.WithCustomerUuid("My Customer Uuid"), // defaults to os.LookupEnv("PRELUDE_CUSTOMER_UUID")
+		option.WithAPIToken("My API Token"), // defaults to os.LookupEnv("API_TOKEN")
 	)
-	authentication, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	verification, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	})
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("%+v\n", authentication.AuthenticationUuid)
+	fmt.Printf("%+v\n", verification.ID)
 }
 
 ```
@@ -141,7 +150,7 @@ client := prelude.NewClient(
 	option.WithHeader("X-Some-Header", "custom_header_info"),
 )
 
-client.Authentication.New(context.TODO(), ...,
+client.Verification.New(context.TODO(), ...,
 	// Override the header
 	option.WithHeader("X-Some-Header", "some_other_custom_header_info"),
 	// Add an undocumented field to the request body, using sjson syntax
@@ -149,7 +158,7 @@ client.Authentication.New(context.TODO(), ...,
 )
 ```
 
-See the [full list of request options](https://pkg.go.dev/github.com/stainless-sdks/prelude-go/option).
+See the [full list of request options](https://pkg.go.dev/github.com/prelude-so/go-sdk/option).
 
 ### Pagination
 
@@ -170,9 +179,11 @@ When the API returns a non-success status code, we return an error with type
 To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
-_, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
-	CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-	PhoneNumber:  prelude.F("+1234567890"),
+_, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
+	Target: prelude.F(prelude.VerificationNewParamsTarget{
+		Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Value: prelude.F("+30123456789"),
+	}),
 })
 if err != nil {
 	var apierr *prelude.Error
@@ -180,7 +191,7 @@ if err != nil {
 		println(string(apierr.DumpRequest(true)))  // Prints the serialized HTTP request
 		println(string(apierr.DumpResponse(true))) // Prints the serialized HTTP response
 	}
-	panic(err.Error()) // GET "/authentication": 400 Bad Request { ... }
+	panic(err.Error()) // GET "/v2/verification": 400 Bad Request { ... }
 }
 ```
 
@@ -198,11 +209,13 @@ To set a per-retry timeout, use `option.WithRequestTimeout()`.
 // This sets the timeout for the request, including all the retries.
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Minute)
 defer cancel()
-client.Authentication.New(
+client.Verification.New(
 	ctx,
-	prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	},
 	// This sets the per-retry timeout
 	option.WithRequestTimeout(20*time.Second),
@@ -237,11 +250,13 @@ client := prelude.NewClient(
 )
 
 // Override per-request:
-client.Authentication.New(
+client.Verification.New(
 	context.TODO(),
-	prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	},
 	option.WithMaxRetries(5),
 )
@@ -342,7 +357,7 @@ This package generally follows [SemVer](https://semver.org/spec/v2.0.0.html) con
 
 We take backwards-compatibility seriously and work hard to ensure you can rely on a smooth upgrade experience.
 
-We are keen for your feedback; please open an [issue](https://www.github.com/stainless-sdks/prelude-go/issues) with questions, bugs, or suggestions.
+We are keen for your feedback; please open an [issue](https://www.github.com/prelude-so/go-sdk/issues) with questions, bugs, or suggestions.
 
 ## Contributing
 

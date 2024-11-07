@@ -7,9 +7,9 @@ import (
 	"os"
 	"testing"
 
-	"github.com/stainless-sdks/prelude-go"
-	"github.com/stainless-sdks/prelude-go/internal/testutil"
-	"github.com/stainless-sdks/prelude-go/option"
+	"github.com/prelude-so/go-sdk"
+	"github.com/prelude-so/go-sdk/internal/testutil"
+	"github.com/prelude-so/go-sdk/option"
 )
 
 func TestUsage(t *testing.T) {
@@ -22,15 +22,16 @@ func TestUsage(t *testing.T) {
 	}
 	client := prelude.NewClient(
 		option.WithBaseURL(baseURL),
-		option.WithAPIKey("My API Key"),
-		option.WithCustomerUuid("My Customer Uuid"),
+		option.WithAPIToken("My API Token"),
 	)
-	authentication, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
-		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
-		PhoneNumber:  prelude.F("+1234567890"),
+	verification, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
 	})
 	if err != nil {
 		t.Error(err)
 	}
-	t.Logf("%+v\n", authentication.AuthenticationUuid)
+	t.Logf("%+v\n", verification.ID)
 }

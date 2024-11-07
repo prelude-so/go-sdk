@@ -20,7 +20,7 @@ or products provided by Prelude please follow the respective company's security 
 
 ### Prelude Terms and Policies
 
-Please contact dev-feedback@prelude.so for any questions or concerns regarding security of our services.
+Please contact hello@prelude.so for any questions or concerns regarding security of our services.
 
 ---
 
