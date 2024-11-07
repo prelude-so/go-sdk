@@ -24,6 +24,7 @@ func TestAuthenticationNewWithOptionalParams(t *testing.T) {
 	client := prelude.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithCustomerUuid("My Customer Uuid"),
 	)
 	_, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
 		CustomerUuid:    prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
@@ -62,6 +63,7 @@ func TestAuthenticationGet(t *testing.T) {
 	client := prelude.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithCustomerUuid("My Customer Uuid"),
 	)
 	_, err := client.Authentication.Get(context.TODO(), "182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e")
 	if err != nil {

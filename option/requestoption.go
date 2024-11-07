@@ -235,3 +235,11 @@ func WithAPIKey(value string) RequestOption {
 		return r.Apply(WithHeader("x-api-key", r.APIKey))
 	}
 }
+
+// WithCustomerUuid returns a RequestOption that sets the client setting "customer_uuid".
+func WithCustomerUuid(value string) RequestOption {
+	return func(r *requestconfig.RequestConfig) error {
+		r.CustomerUuid = value
+		return r.Apply(WithHeader("CUSTOMER_UUID", value))
+	}
+}

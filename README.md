@@ -42,7 +42,8 @@ import (
 
 func main() {
 	client := prelude.NewClient(
-		option.WithAPIKey("My API Key"), // defaults to os.LookupEnv("PRELUDE_API_KEY")
+		option.WithAPIKey("My API Key"),             // defaults to os.LookupEnv("PRELUDE_API_KEY")
+		option.WithCustomerUuid("My Customer Uuid"), // defaults to os.LookupEnv("PRELUDE_CUSTOMER_UUID")
 	)
 	authentication, err := client.Authentication.New(context.TODO(), prelude.AuthenticationNewParams{
 		CustomerUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),

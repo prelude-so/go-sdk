@@ -24,6 +24,7 @@ func TestRetryNew(t *testing.T) {
 	client := prelude.NewClient(
 		option.WithBaseURL(baseURL),
 		option.WithAPIKey("My API Key"),
+		option.WithCustomerUuid("My Customer Uuid"),
 	)
 	_, err := client.Retry.New(context.TODO(), prelude.RetryNewParams{
 		AuthenticationUuid: prelude.F("182bd5e5-6e1a-4fe4-a799-aa6d9a6ab26e"),
