@@ -44,6 +44,7 @@ type CheckNewResponse struct {
 	AuthenticationUuid string `json:"authentication_uuid" format:"uuid"`
 	// The status of the check. Possible values are:
 	//
+	// - `unknown` - The status is unknown.
 	// - `valid` - The code is valid.
 	// - `invalid` - The code is invalid.
 	// - `without_attempt` - No attempt was sent yet, so a check cannot be completed.
@@ -73,6 +74,7 @@ func (r checkNewResponseJSON) RawJSON() string {
 
 // The status of the check. Possible values are:
 //
+// - `unknown` - The status is unknown.
 // - `valid` - The code is valid.
 // - `invalid` - The code is invalid.
 // - `without_attempt` - No attempt was sent yet, so a check cannot be completed.
@@ -82,6 +84,7 @@ func (r checkNewResponseJSON) RawJSON() string {
 type CheckNewResponseStatus string
 
 const (
+	CheckNewResponseStatusUnknown          CheckNewResponseStatus = "unknown"
 	CheckNewResponseStatusValid            CheckNewResponseStatus = "valid"
 	CheckNewResponseStatusInvalid          CheckNewResponseStatus = "invalid"
 	CheckNewResponseStatusWithoutAttempt   CheckNewResponseStatus = "without_attempt"
@@ -92,7 +95,7 @@ const (
 
 func (r CheckNewResponseStatus) IsKnown() bool {
 	switch r {
-	case CheckNewResponseStatusValid, CheckNewResponseStatusInvalid, CheckNewResponseStatusWithoutAttempt, CheckNewResponseStatusRateLimited, CheckNewResponseStatusAlreadyValidated, CheckNewResponseStatusExpiredAuth:
+	case CheckNewResponseStatusUnknown, CheckNewResponseStatusValid, CheckNewResponseStatusInvalid, CheckNewResponseStatusWithoutAttempt, CheckNewResponseStatusRateLimited, CheckNewResponseStatusAlreadyValidated, CheckNewResponseStatusExpiredAuth:
 		return true
 	}
 	return false
