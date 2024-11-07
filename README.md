@@ -3,7 +3,7 @@
 <a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go"><img src="https://pkg.go.dev/badge/github.com/stainless-sdks/prelude-go.svg" alt="Go Reference"></a>
 
 The Prelude Go library provides convenient access to [the Prelude REST
-API](https://docs.prelude.com) from applications written in Go. The full API of this library can be found in [api.md](api.md).
+API](https://docs.prelude.so) from applications written in Go. The full API of this library can be found in [api.md](api.md).
 
 It is generated with [Stainless](https://www.stainlessapi.com/).
 
