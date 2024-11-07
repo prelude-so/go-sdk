@@ -3,10 +3,12 @@
 Response Types:
 
 - <a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go">prelude</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go#AuthenticationNewResponse">AuthenticationNewResponse</a>
+- <a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go">prelude</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go#AuthenticationGetResponse">AuthenticationGetResponse</a>
 
 Methods:
 
 - <code title="post /authentication">client.Authentication.<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go#AuthenticationService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go">prelude</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go#AuthenticationNewParams">AuthenticationNewParams</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go">prelude</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go#AuthenticationNewResponse">AuthenticationNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="get /authentication/{auth_uuid}">client.Authentication.<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go#AuthenticationService.Get">Get</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, authUuid <a href="https://pkg.go.dev/builtin#string">string</a>) (<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go">prelude</a>.<a href="https://pkg.go.dev/github.com/stainless-sdks/prelude-go#AuthenticationGetResponse">AuthenticationGetResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
 ## Feedback
 

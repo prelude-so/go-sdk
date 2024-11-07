@@ -33,7 +33,7 @@ func NewLookupService(opts ...option.RequestOption) (r *LookupService) {
 	return
 }
 
-// Perform a phone number lookup
+// Look up for phone number
 func (r *LookupService) Get(ctx context.Context, phoneNumber string, query LookupGetParams, opts ...option.RequestOption) (res *LookupGetResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	if phoneNumber == "" {
@@ -51,6 +51,35 @@ type LookupGetResponse struct {
 	// The ISO 3166-1 alpha-2 country code of the phone number.
 	CountryCode string `json:"country_code"`
 	// The type of phone line.
+	//
+	//   - `CallingCards` - Numbers that are associated with providers of pre-paid
+	//     domestic and international calling cards.
+	//   - `FixedLine` - Landline phone numbers.
+	//   - `InternetServiceProvider` - Numbers reserved for ISPs.
+	//   - `LocalRate` - Numbers that can be assigned non-geographically.
+	//   - `Mobile` - Mobile phone numbers.
+	//   - `Other` - Other types of services.
+	//   - `Pager` - Number ranges specifically allocated to paging devices.
+	//   - `PayPhone` - Allocated numbers for payphone kiosks in some countries.
+	//   - `PremiumRate` - Landline numbers where the calling party pays more than
+	//     standard.
+	//   - `Satellite` - Satellite phone numbers.
+	//   - `Service` - Automated applications.
+	//   - `SharedCost` - Specific landline ranges where the cost of making the call is
+	//     shared between the calling and called party.
+	//   - `ShortCodesCommercial` - Short codes are memorable, easy-to-use numbers, like
+	//     the UK's NHS 111, often sold to businesses. Not available in all countries.
+	//   - `TollFree` - Number where the called party pays for the cost of the call not
+	//     the calling party.
+	//   - `UniversalAccess` - Number ranges reserved for Universal Access initiatives.
+	//   - `Unknown` - Unknown phone number type.
+	//   - `VPN` - Numbers are used exclusively within a private telecommunications
+	//     network, connecting the operator's terminals internally and not accessible via
+	//     the public telephone network.
+	//   - `VoiceMail` - A specific category of Interactive Voice Response (IVR)
+	//     services.
+	//   - `Voip` - Specific ranges for providers of VoIP services to allow incoming
+	//     calls from the regular telephony network.
 	LineType LookupGetResponseLineType `json:"line_type"`
 	// The mobile country code of the phone number.
 	Mcc string `json:"mcc"`
@@ -86,25 +115,62 @@ func (r lookupGetResponseJSON) RawJSON() string {
 }
 
 // The type of phone line.
+//
+//   - `CallingCards` - Numbers that are associated with providers of pre-paid
+//     domestic and international calling cards.
+//   - `FixedLine` - Landline phone numbers.
+//   - `InternetServiceProvider` - Numbers reserved for ISPs.
+//   - `LocalRate` - Numbers that can be assigned non-geographically.
+//   - `Mobile` - Mobile phone numbers.
+//   - `Other` - Other types of services.
+//   - `Pager` - Number ranges specifically allocated to paging devices.
+//   - `PayPhone` - Allocated numbers for payphone kiosks in some countries.
+//   - `PremiumRate` - Landline numbers where the calling party pays more than
+//     standard.
+//   - `Satellite` - Satellite phone numbers.
+//   - `Service` - Automated applications.
+//   - `SharedCost` - Specific landline ranges where the cost of making the call is
+//     shared between the calling and called party.
+//   - `ShortCodesCommercial` - Short codes are memorable, easy-to-use numbers, like
+//     the UK's NHS 111, often sold to businesses. Not available in all countries.
+//   - `TollFree` - Number where the called party pays for the cost of the call not
+//     the calling party.
+//   - `UniversalAccess` - Number ranges reserved for Universal Access initiatives.
+//   - `Unknown` - Unknown phone number type.
+//   - `VPN` - Numbers are used exclusively within a private telecommunications
+//     network, connecting the operator's terminals internally and not accessible via
+//     the public telephone network.
+//   - `VoiceMail` - A specific category of Interactive Voice Response (IVR)
+//     services.
+//   - `Voip` - Specific ranges for providers of VoIP services to allow incoming
+//     calls from the regular telephony network.
 type LookupGetResponseLineType string
 
 const (
-	LookupGetResponseLineTypeFixedLine       LookupGetResponseLineType = "FixedLine"
-	LookupGetResponseLineTypeMobile          LookupGetResponseLineType = "Mobile"
-	LookupGetResponseLineTypeTollFree        LookupGetResponseLineType = "TollFree"
-	LookupGetResponseLineTypePremiumRate     LookupGetResponseLineType = "PremiumRate"
-	LookupGetResponseLineTypeSharedCost      LookupGetResponseLineType = "SharedCost"
-	LookupGetResponseLineTypeVoip            LookupGetResponseLineType = "Voip"
-	LookupGetResponseLineTypePager           LookupGetResponseLineType = "Pager"
-	LookupGetResponseLineTypeVoiceMail       LookupGetResponseLineType = "VoiceMail"
-	LookupGetResponseLineTypeUniversalAccess LookupGetResponseLineType = "UniversalAccess"
-	LookupGetResponseLineTypeService         LookupGetResponseLineType = "Service"
-	LookupGetResponseLineTypeUnknown         LookupGetResponseLineType = "Unknown"
+	LookupGetResponseLineTypeCallingCards            LookupGetResponseLineType = "CallingCards"
+	LookupGetResponseLineTypeFixedLine               LookupGetResponseLineType = "FixedLine"
+	LookupGetResponseLineTypeInternetServiceProvider LookupGetResponseLineType = "InternetServiceProvider"
+	LookupGetResponseLineTypeLocalRate               LookupGetResponseLineType = "LocalRate"
+	LookupGetResponseLineTypeMobile                  LookupGetResponseLineType = "Mobile"
+	LookupGetResponseLineTypeOther                   LookupGetResponseLineType = "Other"
+	LookupGetResponseLineTypePager                   LookupGetResponseLineType = "Pager"
+	LookupGetResponseLineTypePayPhone                LookupGetResponseLineType = "PayPhone"
+	LookupGetResponseLineTypePremiumRate             LookupGetResponseLineType = "PremiumRate"
+	LookupGetResponseLineTypeSatellite               LookupGetResponseLineType = "Satellite"
+	LookupGetResponseLineTypeService                 LookupGetResponseLineType = "Service"
+	LookupGetResponseLineTypeSharedCost              LookupGetResponseLineType = "SharedCost"
+	LookupGetResponseLineTypeShortCodesCommercial    LookupGetResponseLineType = "ShortCodesCommercial"
+	LookupGetResponseLineTypeTollFree                LookupGetResponseLineType = "TollFree"
+	LookupGetResponseLineTypeUniversalAccess         LookupGetResponseLineType = "UniversalAccess"
+	LookupGetResponseLineTypeUnknown                 LookupGetResponseLineType = "Unknown"
+	LookupGetResponseLineTypeVpn                     LookupGetResponseLineType = "VPN"
+	LookupGetResponseLineTypeVoiceMail               LookupGetResponseLineType = "VoiceMail"
+	LookupGetResponseLineTypeVoip                    LookupGetResponseLineType = "Voip"
 )
 
 func (r LookupGetResponseLineType) IsKnown() bool {
 	switch r {
-	case LookupGetResponseLineTypeFixedLine, LookupGetResponseLineTypeMobile, LookupGetResponseLineTypeTollFree, LookupGetResponseLineTypePremiumRate, LookupGetResponseLineTypeSharedCost, LookupGetResponseLineTypeVoip, LookupGetResponseLineTypePager, LookupGetResponseLineTypeVoiceMail, LookupGetResponseLineTypeUniversalAccess, LookupGetResponseLineTypeService, LookupGetResponseLineTypeUnknown:
+	case LookupGetResponseLineTypeCallingCards, LookupGetResponseLineTypeFixedLine, LookupGetResponseLineTypeInternetServiceProvider, LookupGetResponseLineTypeLocalRate, LookupGetResponseLineTypeMobile, LookupGetResponseLineTypeOther, LookupGetResponseLineTypePager, LookupGetResponseLineTypePayPhone, LookupGetResponseLineTypePremiumRate, LookupGetResponseLineTypeSatellite, LookupGetResponseLineTypeService, LookupGetResponseLineTypeSharedCost, LookupGetResponseLineTypeShortCodesCommercial, LookupGetResponseLineTypeTollFree, LookupGetResponseLineTypeUniversalAccess, LookupGetResponseLineTypeUnknown, LookupGetResponseLineTypeVpn, LookupGetResponseLineTypeVoiceMail, LookupGetResponseLineTypeVoip:
 		return true
 	}
 	return false
