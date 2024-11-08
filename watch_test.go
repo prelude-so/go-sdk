@@ -13,7 +13,7 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
-func TestWatchFeedbackWithOptionalParams(t *testing.T) {
+func TestWatchFeedBack(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -25,13 +25,13 @@ func TestWatchFeedbackWithOptionalParams(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIToken("My API Token"),
 	)
-	_, err := client.Watch.Feedback(context.TODO(), prelude.WatchFeedbackParams{
-		Target: prelude.F(prelude.WatchFeedbackParamsTarget{
-			Type:  prelude.F(prelude.WatchFeedbackParamsTargetTypePhoneNumber),
-			Value: prelude.F("+30123456789"),
+	_, err := client.Watch.FeedBack(context.TODO(), prelude.WatchFeedBackParams{
+		Feedback: prelude.F(prelude.WatchFeedBackParamsFeedback{
+			Type: prelude.F(prelude.WatchFeedBackParamsFeedbackTypeConfirmTarget),
 		}),
-		Feedback: prelude.F(prelude.WatchFeedbackParamsFeedback{
-			Type: prelude.F(prelude.WatchFeedbackParamsFeedbackTypeConfirmPhoneNumber),
+		Target: prelude.F(prelude.WatchFeedBackParamsTarget{
+			Type:  prelude.F(prelude.WatchFeedBackParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
 		}),
 	})
 	if err != nil {
