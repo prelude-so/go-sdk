@@ -32,7 +32,7 @@ func NewTransactionalService(opts ...option.RequestOption) (r *TransactionalServ
 	return
 }
 
-// Send a transactional message
+// Send a transactional message to your user.
 func (r *TransactionalService) Send(ctx context.Context, body TransactionalSendParams, opts ...option.RequestOption) (res *TransactionalSendResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/transactional"

@@ -41,7 +41,7 @@ func (r *VerificationService) New(ctx context.Context, body VerificationNewParam
 	return
 }
 
-// Check a code
+// Check the validity of a verification code.
 func (r *VerificationService) Check(ctx context.Context, body VerificationCheckParams, opts ...option.RequestOption) (res *VerificationCheckResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/verification/check"
@@ -204,8 +204,7 @@ func (r VerificationCheckResponseStatus) IsKnown() bool {
 }
 
 type VerificationNewParams struct {
-	// The target to verify. Currently this can only be an E.164 formatted phone
-	// number.
+	// The target. Currently this can only be an E.164 formatted phone number.
 	Target param.Field[VerificationNewParamsTarget] `json:"target,required"`
 	// The metadata for this verification. This object will be returned with every
 	// response or webhook sent that refers to this verification.
@@ -220,10 +219,9 @@ func (r VerificationNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The target to verify. Currently this can only be an E.164 formatted phone
-// number.
+// The target. Currently this can only be an E.164 formatted phone number.
 type VerificationNewParamsTarget struct {
-	// The type of the target to verify. Currently this can only be "phone_number".
+	// The type of the target. Currently this can only be "phone_number".
 	Type param.Field[VerificationNewParamsTargetType] `json:"type,required"`
 	// An E.164 formatted phone number to verify.
 	Value param.Field[string] `json:"value,required" format:"phone_number"`
@@ -233,7 +231,7 @@ func (r VerificationNewParamsTarget) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The type of the target to verify. Currently this can only be "phone_number".
+// The type of the target. Currently this can only be "phone_number".
 type VerificationNewParamsTargetType string
 
 const (
@@ -324,8 +322,7 @@ func (r VerificationNewParamsSignalsDeviceType) IsKnown() bool {
 }
 
 type VerificationCheckParams struct {
-	// The target to verify. Currently this can only be an E.164 formatted phone
-	// number.
+	// The target. Currently this can only be an E.164 formatted phone number.
 	Target param.Field[VerificationCheckParamsTarget] `json:"target,required"`
 	// The OTP code to validate.
 	Code param.Field[string] `json:"code"`
@@ -335,10 +332,9 @@ func (r VerificationCheckParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The target to verify. Currently this can only be an E.164 formatted phone
-// number.
+// The target. Currently this can only be an E.164 formatted phone number.
 type VerificationCheckParamsTarget struct {
-	// The type of the target to verify. Currently this can only be "phone_number".
+	// The type of the target. Currently this can only be "phone_number".
 	Type param.Field[VerificationCheckParamsTargetType] `json:"type,required"`
 	// An E.164 formatted phone number to verify.
 	Value param.Field[string] `json:"value,required" format:"phone_number"`
@@ -348,7 +344,7 @@ func (r VerificationCheckParamsTarget) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The type of the target to verify. Currently this can only be "phone_number".
+// The type of the target. Currently this can only be "phone_number".
 type VerificationCheckParamsTargetType string
 
 const (
