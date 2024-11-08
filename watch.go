@@ -33,7 +33,7 @@ func NewWatchService(opts ...option.RequestOption) (r *WatchService) {
 
 // Once the user with a trustworthy phone number demonstrates authentic behaviour,
 // call this endpoint to report their authenticity to our systems.
-func (r *WatchService) Feedback(ctx context.Context, body WatchFeedbackParams, opts ...option.RequestOption) (res *WatchFeedbackResponse, err error) {
+func (r *WatchService) FeedBack(ctx context.Context, body WatchFeedBackParams, opts ...option.RequestOption) (res *WatchFeedBackResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/watch/feedback"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
@@ -50,25 +50,25 @@ func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opt
 	return
 }
 
-type WatchFeedbackResponse struct {
+type WatchFeedBackResponse struct {
 	// A unique identifier for your feedback request.
 	ID   string                    `json:"id"`
-	JSON watchFeedbackResponseJSON `json:"-"`
+	JSON watchFeedBackResponseJSON `json:"-"`
 }
 
-// watchFeedbackResponseJSON contains the JSON metadata for the struct
-// [WatchFeedbackResponse]
-type watchFeedbackResponseJSON struct {
+// watchFeedBackResponseJSON contains the JSON metadata for the struct
+// [WatchFeedBackResponse]
+type watchFeedBackResponseJSON struct {
 	ID          apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *WatchFeedbackResponse) UnmarshalJSON(data []byte) (err error) {
+func (r *WatchFeedBackResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r watchFeedbackResponseJSON) RawJSON() string {
+func (r watchFeedBackResponseJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -159,68 +159,68 @@ func (r WatchPredictResponseReasoningCause) IsKnown() bool {
 	return false
 }
 
-type WatchFeedbackParams struct {
-	// The target. Currently this can only be an E.164 formatted phone number.
-	Target param.Field[WatchFeedbackParamsTarget] `json:"target,required"`
+type WatchFeedBackParams struct {
 	// You should send a feedback event back to Watch API when your user demonstrates
 	// authentic behaviour.
-	Feedback param.Field[WatchFeedbackParamsFeedback] `json:"feedback"`
+	Feedback param.Field[WatchFeedBackParamsFeedback] `json:"feedback,required"`
+	// The target. Currently this can only be an E.164 formatted phone number.
+	Target param.Field[WatchFeedBackParamsTarget] `json:"target,required"`
 }
 
-func (r WatchFeedbackParams) MarshalJSON() (data []byte, err error) {
+func (r WatchFeedBackParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The target. Currently this can only be an E.164 formatted phone number.
-type WatchFeedbackParamsTarget struct {
-	// The type of the target. Currently this can only be "phone_number".
-	Type param.Field[WatchFeedbackParamsTargetType] `json:"type,required"`
-	// An E.164 formatted phone number to verify.
-	Value param.Field[string] `json:"value,required" format:"phone_number"`
+// You should send a feedback event back to Watch API when your user demonstrates
+// authentic behaviour.
+type WatchFeedBackParamsFeedback struct {
+	// `CONFIRM_TARGET` should be sent when you are sure that the user with this target
+	// (e.g. phone number) is trustworthy.
+	Type param.Field[WatchFeedBackParamsFeedbackType] `json:"type,required"`
 }
 
-func (r WatchFeedbackParamsTarget) MarshalJSON() (data []byte, err error) {
+func (r WatchFeedBackParamsFeedback) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The type of the target. Currently this can only be "phone_number".
-type WatchFeedbackParamsTargetType string
+// `CONFIRM_TARGET` should be sent when you are sure that the user with this target
+// (e.g. phone number) is trustworthy.
+type WatchFeedBackParamsFeedbackType string
 
 const (
-	WatchFeedbackParamsTargetTypePhoneNumber WatchFeedbackParamsTargetType = "phone_number"
+	WatchFeedBackParamsFeedbackTypeConfirmTarget WatchFeedBackParamsFeedbackType = "CONFIRM_TARGET"
 )
 
-func (r WatchFeedbackParamsTargetType) IsKnown() bool {
+func (r WatchFeedBackParamsFeedbackType) IsKnown() bool {
 	switch r {
-	case WatchFeedbackParamsTargetTypePhoneNumber:
+	case WatchFeedBackParamsFeedbackTypeConfirmTarget:
 		return true
 	}
 	return false
 }
 
-// You should send a feedback event back to Watch API when your user demonstrates
-// authentic behaviour.
-type WatchFeedbackParamsFeedback struct {
-	// `CONFIRM_PHONE_NUMBER` should be sent when you are sure that the user with this
-	// phone number is trustworthy.
-	Type param.Field[WatchFeedbackParamsFeedbackType] `json:"type"`
+// The target. Currently this can only be an E.164 formatted phone number.
+type WatchFeedBackParamsTarget struct {
+	// The type of the target. Currently this can only be "phone_number".
+	Type param.Field[WatchFeedBackParamsTargetType] `json:"type,required"`
+	// An E.164 formatted phone number to verify.
+	Value param.Field[string] `json:"value,required" format:"phone_number"`
 }
 
-func (r WatchFeedbackParamsFeedback) MarshalJSON() (data []byte, err error) {
+func (r WatchFeedBackParamsTarget) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// `CONFIRM_PHONE_NUMBER` should be sent when you are sure that the user with this
-// phone number is trustworthy.
-type WatchFeedbackParamsFeedbackType string
+// The type of the target. Currently this can only be "phone_number".
+type WatchFeedBackParamsTargetType string
 
 const (
-	WatchFeedbackParamsFeedbackTypeConfirmPhoneNumber WatchFeedbackParamsFeedbackType = "CONFIRM_PHONE_NUMBER"
+	WatchFeedBackParamsTargetTypePhoneNumber WatchFeedBackParamsTargetType = "phone_number"
 )
 
-func (r WatchFeedbackParamsFeedbackType) IsKnown() bool {
+func (r WatchFeedBackParamsTargetType) IsKnown() bool {
 	switch r {
-	case WatchFeedbackParamsFeedbackTypeConfirmPhoneNumber:
+	case WatchFeedBackParamsTargetTypePhoneNumber:
 		return true
 	}
 	return false
