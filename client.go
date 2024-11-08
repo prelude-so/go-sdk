@@ -16,8 +16,9 @@ import (
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options       []option.RequestOption
-	Verification  *VerificationService
 	Transactional *TransactionalService
+	Verification  *VerificationService
+	Watch         *WatchService
 }
 
 // NewClient generates a new client with the default option read from the
@@ -33,8 +34,9 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 
 	r = &Client{Options: opts}
 
-	r.Verification = NewVerificationService(opts...)
 	r.Transactional = NewTransactionalService(opts...)
+	r.Verification = NewVerificationService(opts...)
+	r.Watch = NewWatchService(opts...)
 
 	return
 }
