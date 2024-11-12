@@ -44,7 +44,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			DeviceID:       prelude.F("device_id"),
 			DeviceModel:    prelude.F("device_model"),
 			DevicePlatform: prelude.F(prelude.VerificationNewParamsSignalsDevicePlatformAndroid),
-			IP:             prelude.F("ip"),
+			IP:             prelude.F("8.8.8.8"),
 			IsTrustedUser:  prelude.F("is_trusted_user"),
 			OsVersion:      prelude.F("os_version"),
 		}),
