@@ -34,19 +34,19 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			CorrelationID: prelude.F("correlation_id"),
 		}),
 		Options: prelude.F(prelude.VerificationNewParamsOptions{
+			AppRealm:   prelude.F("app_realm"),
 			Locale:     prelude.F("el-GR"),
 			SenderID:   prelude.F("sender_id"),
 			TemplateID: prelude.F("template_id"),
 		}),
 		Signals: prelude.F(prelude.VerificationNewParamsSignals{
-			AppRealm:      prelude.F("app_realm"),
-			AppVersion:    prelude.F("app_version"),
-			DeviceID:      prelude.F("device_id"),
-			DeviceModel:   prelude.F("device_model"),
-			DeviceType:    prelude.F(prelude.VerificationNewParamsSignalsDeviceTypeIos),
-			IP:            prelude.F("ip"),
-			IsTrustedUser: prelude.F("is_trusted_user"),
-			OsVersion:     prelude.F("os_version"),
+			AppVersion:     prelude.F("app_version"),
+			DeviceID:       prelude.F("device_id"),
+			DeviceModel:    prelude.F("device_model"),
+			DevicePlatform: prelude.F(prelude.VerificationNewParamsSignalsDevicePlatformAndroid),
+			IP:             prelude.F("ip"),
+			IsTrustedUser:  prelude.F("is_trusted_user"),
+			OsVersion:      prelude.F("os_version"),
 		}),
 	})
 	if err != nil {
@@ -58,7 +58,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVerificationCheckWithOptionalParams(t *testing.T) {
+func TestVerificationCheck(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -71,11 +71,11 @@ func TestVerificationCheckWithOptionalParams(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	_, err := client.Verification.Check(context.TODO(), prelude.VerificationCheckParams{
+		Code: prelude.F("12345"),
 		Target: prelude.F(prelude.VerificationCheckParamsTarget{
 			Type:  prelude.F(prelude.VerificationCheckParamsTargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
-		Code: prelude.F("12345"),
 	})
 	if err != nil {
 		var apierr *prelude.Error
