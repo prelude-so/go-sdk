@@ -140,7 +140,8 @@ type VerificationCheckResponse struct {
 	// The verification identifier.
 	ID string `json:"id"`
 	// The metadata for this verification.
-	Metadata VerificationCheckResponseMetadata `json:"metadata"`
+	Metadata  VerificationCheckResponseMetadata `json:"metadata"`
+	RequestID string                            `json:"request_id"`
 	// The status of the check.
 	Status VerificationCheckResponseStatus `json:"status"`
 	JSON   verificationCheckResponseJSON   `json:"-"`
@@ -151,6 +152,7 @@ type VerificationCheckResponse struct {
 type verificationCheckResponseJSON struct {
 	ID          apijson.Field
 	Metadata    apijson.Field
+	RequestID   apijson.Field
 	Status      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -259,6 +261,9 @@ func (r VerificationNewParamsMetadata) MarshalJSON() (data []byte, err error) {
 
 // Verification options
 type VerificationNewParamsOptions struct {
+	// The Android SMS Retriever API hash code that identifies your app. This allows
+	// you to automatically retrieve and fill the OTP code on Android devices.
+	AppRealm param.Field[string] `json:"app_realm"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
 	// code of the phone number. If the language specified doesn't exist, it defaults
@@ -279,9 +284,6 @@ func (r VerificationNewParamsOptions) MarshalJSON() (data []byte, err error) {
 
 // The signals used for anti-fraud.
 type VerificationNewParamsSignals struct {
-	// The Android SMS Retriever API hash code that identifies your app. This allows
-	// you to automatically retrieve and fill the OTP code on Android devices.
-	AppRealm param.Field[string] `json:"app_realm"`
 	// The version of your application.
 	AppVersion param.Field[string] `json:"app_version"`
 	// The unique identifier for the user's device. For Android, this corresponds to
@@ -290,7 +292,7 @@ type VerificationNewParamsSignals struct {
 	// The model of the user's device.
 	DeviceModel param.Field[string] `json:"device_model"`
 	// The type of the user's device.
-	DeviceType param.Field[VerificationNewParamsSignalsDeviceType] `json:"device_type"`
+	DevicePlatform param.Field[VerificationNewParamsSignalsDevicePlatform] `json:"device_platform"`
 	// The IP address of the user's device.
 	IP param.Field[string] `json:"ip" format:"ipv4"`
 	// This signal should provide a higher level of trust, indicating that the user is
@@ -305,27 +307,27 @@ func (r VerificationNewParamsSignals) MarshalJSON() (data []byte, err error) {
 }
 
 // The type of the user's device.
-type VerificationNewParamsSignalsDeviceType string
+type VerificationNewParamsSignalsDevicePlatform string
 
 const (
-	VerificationNewParamsSignalsDeviceTypeIos     VerificationNewParamsSignalsDeviceType = "IOS"
-	VerificationNewParamsSignalsDeviceTypeAndroid VerificationNewParamsSignalsDeviceType = "ANDROID"
-	VerificationNewParamsSignalsDeviceTypeWeb     VerificationNewParamsSignalsDeviceType = "WEB"
+	VerificationNewParamsSignalsDevicePlatformAndroid VerificationNewParamsSignalsDevicePlatform = "android"
+	VerificationNewParamsSignalsDevicePlatformIos     VerificationNewParamsSignalsDevicePlatform = "ios"
+	VerificationNewParamsSignalsDevicePlatformWeb     VerificationNewParamsSignalsDevicePlatform = "web"
 )
 
-func (r VerificationNewParamsSignalsDeviceType) IsKnown() bool {
+func (r VerificationNewParamsSignalsDevicePlatform) IsKnown() bool {
 	switch r {
-	case VerificationNewParamsSignalsDeviceTypeIos, VerificationNewParamsSignalsDeviceTypeAndroid, VerificationNewParamsSignalsDeviceTypeWeb:
+	case VerificationNewParamsSignalsDevicePlatformAndroid, VerificationNewParamsSignalsDevicePlatformIos, VerificationNewParamsSignalsDevicePlatformWeb:
 		return true
 	}
 	return false
 }
 
 type VerificationCheckParams struct {
+	// The OTP code to validate.
+	Code param.Field[string] `json:"code,required"`
 	// The target. Currently this can only be an E.164 formatted phone number.
 	Target param.Field[VerificationCheckParamsTarget] `json:"target,required"`
-	// The OTP code to validate.
-	Code param.Field[string] `json:"code"`
 }
 
 func (r VerificationCheckParams) MarshalJSON() (data []byte, err error) {

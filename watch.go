@@ -31,7 +31,7 @@ func NewWatchService(opts ...option.RequestOption) (r *WatchService) {
 	return
 }
 
-// Once the user with a trustworthy phone number demonstrates authentic behaviour,
+// Once the user with a trustworthy phone number demonstrates authentic behavior,
 // call this endpoint to report their authenticity to our systems.
 func (r *WatchService) FeedBack(ctx context.Context, body WatchFeedBackParams, opts ...option.RequestOption) (res *WatchFeedBackResponse, err error) {
 	opts = append(r.Options[:], opts...)
@@ -40,9 +40,9 @@ func (r *WatchService) FeedBack(ctx context.Context, body WatchFeedBackParams, o
 	return
 }
 
-// Identify trustworthy phone numbers to mitigate fake trafic or trafic involved in
-// fraud and international revenue share fraud (IRSF) patterns. This endpoint must
-// be implemented in conjuction with the `watch/feedback` endpoint.
+// Identify trustworthy phone numbers to mitigate fake traffic or traffic involved
+// in fraud and international revenue share fraud (IRSF) patterns. This endpoint
+// must be implemented in conjunction with the `watch/feedback` endpoint.
 func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opts ...option.RequestOption) (res *WatchPredictResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/watch/predict"
@@ -75,7 +75,7 @@ func (r watchFeedBackResponseJSON) RawJSON() string {
 type WatchPredictResponse struct {
 	// A unique identifier for your prediction request.
 	ID string `json:"id"`
-	// A label indicating the trustworthyness of the phone number.
+	// A label indicating the trustworthiness of the phone number.
 	Prediction WatchPredictResponsePrediction `json:"prediction"`
 	Reasoning  WatchPredictResponseReasoning  `json:"reasoning"`
 	JSON       watchPredictResponseJSON       `json:"-"`
@@ -99,7 +99,7 @@ func (r watchPredictResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// A label indicating the trustworthyness of the phone number.
+// A label indicating the trustworthiness of the phone number.
 type WatchPredictResponsePrediction string
 
 const (
@@ -161,7 +161,7 @@ func (r WatchPredictResponseReasoningCause) IsKnown() bool {
 
 type WatchFeedBackParams struct {
 	// You should send a feedback event back to Watch API when your user demonstrates
-	// authentic behaviour.
+	// authentic behavior.
 	Feedback param.Field[WatchFeedBackParamsFeedback] `json:"feedback,required"`
 	// The target. Currently this can only be an E.164 formatted phone number.
 	Target param.Field[WatchFeedBackParamsTarget] `json:"target,required"`
@@ -172,7 +172,7 @@ func (r WatchFeedBackParams) MarshalJSON() (data []byte, err error) {
 }
 
 // You should send a feedback event back to Watch API when your user demonstrates
-// authentic behaviour.
+// authentic behavior.
 type WatchFeedBackParamsFeedback struct {
 	// `CONFIRM_TARGET` should be sent when you are sure that the user with this target
 	// (e.g. phone number) is trustworthy.
