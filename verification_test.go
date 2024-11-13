@@ -40,13 +40,13 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			TemplateID: prelude.F("template_id"),
 		}),
 		Signals: prelude.F(prelude.VerificationNewParamsSignals{
-			AppVersion:     prelude.F("app_version"),
-			DeviceID:       prelude.F("device_id"),
-			DeviceModel:    prelude.F("device_model"),
+			AppVersion:     prelude.F("1.2.34"),
+			DeviceID:       prelude.F("8F0B8FDD-C2CB-4387-B20A-56E9B2E5A0D2"),
+			DeviceModel:    prelude.F("iPhone17,2"),
 			DevicePlatform: prelude.F(prelude.VerificationNewParamsSignalsDevicePlatformAndroid),
-			IP:             prelude.F("8.8.8.8"),
+			IP:             prelude.F("192.0.2.1"),
 			IsTrustedUser:  prelude.F("is_trusted_user"),
-			OsVersion:      prelude.F("os_version"),
+			OsVersion:      prelude.F("18.0.1"),
 		}),
 	})
 	if err != nil {
