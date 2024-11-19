@@ -35,6 +35,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 		}),
 		Options: prelude.F(prelude.VerificationNewParamsOptions{
 			AppRealm:   prelude.F("app_realm"),
+			CustomCode: prelude.F("custom_code"),
 			Locale:     prelude.F("el-GR"),
 			SenderID:   prelude.F("sender_id"),
 			TemplateID: prelude.F("template_id"),
