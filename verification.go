@@ -264,6 +264,10 @@ type VerificationNewParamsOptions struct {
 	// The Android SMS Retriever API hash code that identifies your app. This allows
 	// you to automatically retrieve and fill the OTP code on Android devices.
 	AppRealm param.Field[string] `json:"app_realm"`
+	// The custom code to use for OTP verification. This feature is only available for
+	// compatibility purposes and subject to Prelude’s approval. Contact us to discuss
+	// your use case.
+	CustomCode param.Field[string] `json:"custom_code"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
 	// code of the phone number. If the language specified doesn't exist, it defaults
@@ -312,12 +316,14 @@ type VerificationNewParamsSignalsDevicePlatform string
 const (
 	VerificationNewParamsSignalsDevicePlatformAndroid VerificationNewParamsSignalsDevicePlatform = "android"
 	VerificationNewParamsSignalsDevicePlatformIos     VerificationNewParamsSignalsDevicePlatform = "ios"
+	VerificationNewParamsSignalsDevicePlatformIpados  VerificationNewParamsSignalsDevicePlatform = "ipados"
+	VerificationNewParamsSignalsDevicePlatformTvos    VerificationNewParamsSignalsDevicePlatform = "tvos"
 	VerificationNewParamsSignalsDevicePlatformWeb     VerificationNewParamsSignalsDevicePlatform = "web"
 )
 
 func (r VerificationNewParamsSignalsDevicePlatform) IsKnown() bool {
 	switch r {
-	case VerificationNewParamsSignalsDevicePlatformAndroid, VerificationNewParamsSignalsDevicePlatformIos, VerificationNewParamsSignalsDevicePlatformWeb:
+	case VerificationNewParamsSignalsDevicePlatformAndroid, VerificationNewParamsSignalsDevicePlatformIos, VerificationNewParamsSignalsDevicePlatformIpados, VerificationNewParamsSignalsDevicePlatformTvos, VerificationNewParamsSignalsDevicePlatformWeb:
 		return true
 	}
 	return false
