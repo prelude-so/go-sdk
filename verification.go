@@ -51,25 +51,25 @@ func (r *VerificationService) Check(ctx context.Context, body VerificationCheckP
 
 type VerificationNewResponse struct {
 	// The verification identifier.
-	ID string `json:"id"`
-	// The metadata for this verification.
-	Metadata VerificationNewResponseMetadata `json:"metadata"`
+	ID string `json:"id,required"`
 	// The method used for verifying this phone number.
-	Method    VerificationNewResponseMethod `json:"method"`
-	RequestID string                        `json:"request_id"`
+	Method VerificationNewResponseMethod `json:"method,required"`
 	// The status of the verification.
-	Status VerificationNewResponseStatus `json:"status"`
-	JSON   verificationNewResponseJSON   `json:"-"`
+	Status VerificationNewResponseStatus `json:"status,required"`
+	// The metadata for this verification.
+	Metadata  VerificationNewResponseMetadata `json:"metadata"`
+	RequestID string                          `json:"request_id"`
+	JSON      verificationNewResponseJSON     `json:"-"`
 }
 
 // verificationNewResponseJSON contains the JSON metadata for the struct
 // [VerificationNewResponse]
 type verificationNewResponseJSON struct {
 	ID          apijson.Field
-	Metadata    apijson.Field
 	Method      apijson.Field
-	RequestID   apijson.Field
 	Status      apijson.Field
+	Metadata    apijson.Field
+	RequestID   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -79,28 +79,6 @@ func (r *VerificationNewResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r verificationNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// The metadata for this verification.
-type VerificationNewResponseMetadata struct {
-	CorrelationID string                              `json:"correlation_id"`
-	JSON          verificationNewResponseMetadataJSON `json:"-"`
-}
-
-// verificationNewResponseMetadataJSON contains the JSON metadata for the struct
-// [VerificationNewResponseMetadata]
-type verificationNewResponseMetadataJSON struct {
-	CorrelationID apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *VerificationNewResponseMetadata) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r verificationNewResponseMetadataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -136,24 +114,46 @@ func (r VerificationNewResponseStatus) IsKnown() bool {
 	return false
 }
 
+// The metadata for this verification.
+type VerificationNewResponseMetadata struct {
+	CorrelationID string                              `json:"correlation_id"`
+	JSON          verificationNewResponseMetadataJSON `json:"-"`
+}
+
+// verificationNewResponseMetadataJSON contains the JSON metadata for the struct
+// [VerificationNewResponseMetadata]
+type verificationNewResponseMetadataJSON struct {
+	CorrelationID apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *VerificationNewResponseMetadata) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r verificationNewResponseMetadataJSON) RawJSON() string {
+	return r.raw
+}
+
 type VerificationCheckResponse struct {
+	// The status of the check.
+	Status VerificationCheckResponseStatus `json:"status,required"`
 	// The verification identifier.
 	ID string `json:"id"`
 	// The metadata for this verification.
 	Metadata  VerificationCheckResponseMetadata `json:"metadata"`
 	RequestID string                            `json:"request_id"`
-	// The status of the check.
-	Status VerificationCheckResponseStatus `json:"status"`
-	JSON   verificationCheckResponseJSON   `json:"-"`
+	JSON      verificationCheckResponseJSON     `json:"-"`
 }
 
 // verificationCheckResponseJSON contains the JSON metadata for the struct
 // [VerificationCheckResponse]
 type verificationCheckResponseJSON struct {
+	Status      apijson.Field
 	ID          apijson.Field
 	Metadata    apijson.Field
 	RequestID   apijson.Field
-	Status      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -164,6 +164,23 @@ func (r *VerificationCheckResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r verificationCheckResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// The status of the check.
+type VerificationCheckResponseStatus string
+
+const (
+	VerificationCheckResponseStatusSuccess           VerificationCheckResponseStatus = "success"
+	VerificationCheckResponseStatusFailure           VerificationCheckResponseStatus = "failure"
+	VerificationCheckResponseStatusExpiredOrNotFound VerificationCheckResponseStatus = "expired_or_not_found"
+)
+
+func (r VerificationCheckResponseStatus) IsKnown() bool {
+	switch r {
+	case VerificationCheckResponseStatusSuccess, VerificationCheckResponseStatusFailure, VerificationCheckResponseStatusExpiredOrNotFound:
+		return true
+	}
+	return false
 }
 
 // The metadata for this verification.
@@ -186,23 +203,6 @@ func (r *VerificationCheckResponseMetadata) UnmarshalJSON(data []byte) (err erro
 
 func (r verificationCheckResponseMetadataJSON) RawJSON() string {
 	return r.raw
-}
-
-// The status of the check.
-type VerificationCheckResponseStatus string
-
-const (
-	VerificationCheckResponseStatusSuccess VerificationCheckResponseStatus = "success"
-	VerificationCheckResponseStatusFailure VerificationCheckResponseStatus = "failure"
-	VerificationCheckResponseStatusExpired VerificationCheckResponseStatus = "expired"
-)
-
-func (r VerificationCheckResponseStatus) IsKnown() bool {
-	switch r {
-	case VerificationCheckResponseStatusSuccess, VerificationCheckResponseStatusFailure, VerificationCheckResponseStatusExpired:
-		return true
-	}
-	return false
 }
 
 type VerificationNewParams struct {
