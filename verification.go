@@ -301,7 +301,7 @@ type VerificationNewParamsSignals struct {
 	IP param.Field[string] `json:"ip" format:"ipv4"`
 	// This signal should provide a higher level of trust, indicating that the user is
 	// genuine. For more details, refer to [Signals](/guides/prevent-fraud#signals).
-	IsTrustedUser param.Field[string] `json:"is_trusted_user"`
+	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
 }
