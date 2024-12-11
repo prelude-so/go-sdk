@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.3 (2024-12-11)
+
+Full Changelog: [v0.1.0-alpha.2...v0.1.0-alpha.3](https://github.com/prelude-so/go-sdk/compare/v0.1.0-alpha.2...v0.1.0-alpha.3)
+
+### Features
+
+* **api:** update via SDK Studio ([#8](https://github.com/prelude-so/go-sdk/issues/8)) ([6e56add](https://github.com/prelude-so/go-sdk/commit/6e56add5fe0c793a6fa9295236a6fc65cdfcc9e2))
+
 ## 0.1.0-alpha.2 (2024-11-27)
 
 Full Changelog: [v0.1.0-alpha.1...v0.1.0-alpha.2](https://github.com/prelude-so/go-sdk/compare/v0.1.0-alpha.1...v0.1.0-alpha.2)
