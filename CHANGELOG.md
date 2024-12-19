@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.0-alpha.4 (2024-12-19)
+
+Full Changelog: [v0.1.0-alpha.3...v0.1.0-alpha.4](https://github.com/prelude-so/go-sdk/compare/v0.1.0-alpha.3...v0.1.0-alpha.4)
+
+### Chores
+
+* **internal:** codegen related update ([#11](https://github.com/prelude-so/go-sdk/issues/11)) ([f65ed56](https://github.com/prelude-so/go-sdk/commit/f65ed56b7eafc300fa9b7877cd8b814ac9c74478))
+
 ## 0.1.0-alpha.3 (2024-12-11)
 
 Full Changelog: [v0.1.0-alpha.2...v0.1.0-alpha.3](https://github.com/prelude-so/go-sdk/compare/v0.1.0-alpha.2...v0.1.0-alpha.3)
