@@ -34,7 +34,11 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			CorrelationID: prelude.F("correlation_id"),
 		}),
 		Options: prelude.F(prelude.VerificationNewParamsOptions{
-			AppRealm:   prelude.F("app_realm"),
+			AppRealm: prelude.F(prelude.VerificationNewParamsOptionsAppRealm{
+				Platform: prelude.F(prelude.VerificationNewParamsOptionsAppRealmPlatformAndroid),
+				Value:    prelude.F("value"),
+			}),
+			CodeSize:   prelude.F(int64(5)),
 			CustomCode: prelude.F("custom_code"),
 			Locale:     prelude.F("el-GR"),
 			SenderID:   prelude.F("sender_id"),

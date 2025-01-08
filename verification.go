@@ -261,9 +261,12 @@ func (r VerificationNewParamsMetadata) MarshalJSON() (data []byte, err error) {
 
 // Verification options
 type VerificationNewParamsOptions struct {
-	// The Android SMS Retriever API hash code that identifies your app. This allows
-	// you to automatically retrieve and fill the OTP code on Android devices.
-	AppRealm param.Field[string] `json:"app_realm"`
+	// This allows you to automatically retrieve and fill the OTP code on mobile apps.
+	// Currently only Android devices are supported.
+	AppRealm param.Field[VerificationNewParamsOptionsAppRealm] `json:"app_realm"`
+	// The size of the code generated. It should be between 4 and 8. Defaults to the
+	// code size specified from the Dashboard.
+	CodeSize param.Field[int64] `json:"code_size"`
 	// The custom code to use for OTP verification. This feature is only available for
 	// compatibility purposes and subject to Prelude’s approval. Contact us to discuss
 	// your use case.
@@ -284,6 +287,36 @@ type VerificationNewParamsOptions struct {
 
 func (r VerificationNewParamsOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// This allows you to automatically retrieve and fill the OTP code on mobile apps.
+// Currently only Android devices are supported.
+type VerificationNewParamsOptionsAppRealm struct {
+	// The platform the SMS will be sent to. We are currently only supporting
+	// "android".
+	Platform param.Field[VerificationNewParamsOptionsAppRealmPlatform] `json:"platform,required"`
+	// The Android SMS Retriever API hash code that identifies your app.
+	Value param.Field[string] `json:"value,required"`
+}
+
+func (r VerificationNewParamsOptionsAppRealm) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The platform the SMS will be sent to. We are currently only supporting
+// "android".
+type VerificationNewParamsOptionsAppRealmPlatform string
+
+const (
+	VerificationNewParamsOptionsAppRealmPlatformAndroid VerificationNewParamsOptionsAppRealmPlatform = "android"
+)
+
+func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
+	switch r {
+	case VerificationNewParamsOptionsAppRealmPlatformAndroid:
+		return true
+	}
+	return false
 }
 
 // The signals used for anti-fraud.
