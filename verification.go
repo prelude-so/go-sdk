@@ -208,6 +208,8 @@ func (r verificationCheckResponseMetadataJSON) RawJSON() string {
 type VerificationNewParams struct {
 	// The target. Currently this can only be an E.164 formatted phone number.
 	Target param.Field[VerificationNewParamsTarget] `json:"target,required"`
+	// The identifier of the dispatch that came from the front-end SDK.
+	DispatchID param.Field[string] `json:"dispatch_id"`
 	// The metadata for this verification. This object will be returned with every
 	// response or webhook sent that refers to this verification.
 	Metadata param.Field[VerificationNewParamsMetadata] `json:"metadata"`
