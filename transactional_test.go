@@ -33,6 +33,7 @@ func TestTransactionalSendWithOptionalParams(t *testing.T) {
 		CorrelationID: prelude.F("correlation_id"),
 		ExpiresAt:     prelude.F("expires_at"),
 		From:          prelude.F("from"),
+		Locale:        prelude.F("el-GR"),
 		Variables: prelude.F(map[string]string{
 			"foo": "bar",
 		}),

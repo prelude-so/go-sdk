@@ -271,7 +271,8 @@ type VerificationNewParamsOptions struct {
 	CodeSize param.Field[int64] `json:"code_size"`
 	// The custom code to use for OTP verification. This feature is only available for
 	// compatibility purposes and subject to Prelude’s approval. Contact us to discuss
-	// your use case.
+	// your use case. For more details, refer to
+	// [Multi Routing](/concepts/multi-routing).
 	CustomCode param.Field[string] `json:"custom_code"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
