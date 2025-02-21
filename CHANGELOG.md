@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.2.0 (2025-02-21)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/prelude-so/go-sdk/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* **client:** send `X-Stainless-Timeout` header ([#27](https://github.com/prelude-so/go-sdk/issues/27)) ([7d81306](https://github.com/prelude-so/go-sdk/commit/7d8130689b1ff542a81405fc75b54bcc8ed59b7c))
+
+
+### Bug Fixes
+
+* **client:** don't truncate manually specified filenames ([#31](https://github.com/prelude-so/go-sdk/issues/31)) ([96fdb15](https://github.com/prelude-so/go-sdk/commit/96fdb150cc6e186c5a1341632bbf7a9f66870700))
+* do not call path.Base on ContentType ([#30](https://github.com/prelude-so/go-sdk/issues/30)) ([bc311ee](https://github.com/prelude-so/go-sdk/commit/bc311ee19fd8fd5d98794451d54566dcf508f5ba))
+* fix early cancel when RequestTimeout is provided for streaming requests ([#29](https://github.com/prelude-so/go-sdk/issues/29)) ([f690d25](https://github.com/prelude-so/go-sdk/commit/f690d25deaf8add9133537ad4ad7c350ade0c8af))
+* fix unicode encoding for json ([#25](https://github.com/prelude-so/go-sdk/issues/25)) ([1dbf55b](https://github.com/prelude-so/go-sdk/commit/1dbf55b8eca9c3f86a61fd35b68a5f1e17fc5b92))
+
+
+### Chores
+
+* add UnionUnmarshaler for responses that are interfaces ([#28](https://github.com/prelude-so/go-sdk/issues/28)) ([32c01d0](https://github.com/prelude-so/go-sdk/commit/32c01d07dd4d9d7cdef988572e523f979cd8c544))
+* **internal:** codegen related update ([#23](https://github.com/prelude-so/go-sdk/issues/23)) ([bd068d9](https://github.com/prelude-so/go-sdk/commit/bd068d94991e2a5fa38f20bd48012d0d6a8578d0))
+* **internal:** fix devcontainers setup ([#32](https://github.com/prelude-so/go-sdk/issues/32)) ([56a3b27](https://github.com/prelude-so/go-sdk/commit/56a3b27fc822f3085b33d9f816016c507d55c92f))
+
+
+### Documentation
+
+* document raw responses ([#26](https://github.com/prelude-so/go-sdk/issues/26)) ([17fe9f9](https://github.com/prelude-so/go-sdk/commit/17fe9f9d4f4a68cf23068bd104f4dd5dada53704))
+
 ## 0.1.0 (2025-02-05)
 
 Full Changelog: [v0.1.0-beta.1...v0.1.0](https://github.com/prelude-so/go-sdk/compare/v0.1.0-beta.1...v0.1.0)
