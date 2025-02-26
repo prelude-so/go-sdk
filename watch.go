@@ -52,7 +52,7 @@ func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opt
 
 type WatchFeedBackResponse struct {
 	// A unique identifier for your feedback request.
-	ID   string                    `json:"id,required"`
+	ID   string                    `json:"id"`
 	JSON watchFeedBackResponseJSON `json:"-"`
 }
 
@@ -74,10 +74,10 @@ func (r watchFeedBackResponseJSON) RawJSON() string {
 
 type WatchPredictResponse struct {
 	// A unique identifier for your prediction request.
-	ID string `json:"id,required"`
+	ID string `json:"id"`
 	// A label indicating the trustworthiness of the phone number.
-	Prediction WatchPredictResponsePrediction `json:"prediction,required"`
-	Reasoning  WatchPredictResponseReasoning  `json:"reasoning,required"`
+	Prediction WatchPredictResponsePrediction `json:"prediction"`
+	Reasoning  WatchPredictResponseReasoning  `json:"reasoning"`
 	JSON       watchPredictResponseJSON       `json:"-"`
 }
 
