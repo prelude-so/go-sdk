@@ -27,14 +27,15 @@ func TestTransactionalSendWithOptionalParams(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	_, err := client.Transactional.Send(context.TODO(), prelude.TransactionalSendParams{
-		TemplateID:    prelude.F("template_id"),
-		To:            prelude.F("to"),
+		TemplateID:    prelude.F("template_01jd1xq0cffycayqtdkdbv4d61"),
+		To:            prelude.F("+30123456789"),
 		CallbackURL:   prelude.F("callback_url"),
 		CorrelationID: prelude.F("correlation_id"),
 		ExpiresAt:     prelude.F("expires_at"),
 		From:          prelude.F("from"),
+		Locale:        prelude.F("el-GR"),
 		Variables: prelude.F(map[string]string{
-			"foo": "string",
+			"foo": "bar",
 		}),
 	})
 	if err != nil {

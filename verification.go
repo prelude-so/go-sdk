@@ -51,25 +51,25 @@ func (r *VerificationService) Check(ctx context.Context, body VerificationCheckP
 
 type VerificationNewResponse struct {
 	// The verification identifier.
-	ID string `json:"id"`
-	// The metadata for this verification.
-	Metadata VerificationNewResponseMetadata `json:"metadata"`
+	ID string `json:"id,required"`
 	// The method used for verifying this phone number.
-	Method    VerificationNewResponseMethod `json:"method"`
-	RequestID string                        `json:"request_id"`
+	Method VerificationNewResponseMethod `json:"method,required"`
 	// The status of the verification.
-	Status VerificationNewResponseStatus `json:"status"`
-	JSON   verificationNewResponseJSON   `json:"-"`
+	Status VerificationNewResponseStatus `json:"status,required"`
+	// The metadata for this verification.
+	Metadata  VerificationNewResponseMetadata `json:"metadata"`
+	RequestID string                          `json:"request_id"`
+	JSON      verificationNewResponseJSON     `json:"-"`
 }
 
 // verificationNewResponseJSON contains the JSON metadata for the struct
 // [VerificationNewResponse]
 type verificationNewResponseJSON struct {
 	ID          apijson.Field
-	Metadata    apijson.Field
 	Method      apijson.Field
-	RequestID   apijson.Field
 	Status      apijson.Field
+	Metadata    apijson.Field
+	RequestID   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -79,28 +79,6 @@ func (r *VerificationNewResponse) UnmarshalJSON(data []byte) (err error) {
 }
 
 func (r verificationNewResponseJSON) RawJSON() string {
-	return r.raw
-}
-
-// The metadata for this verification.
-type VerificationNewResponseMetadata struct {
-	CorrelationID string                              `json:"correlation_id"`
-	JSON          verificationNewResponseMetadataJSON `json:"-"`
-}
-
-// verificationNewResponseMetadataJSON contains the JSON metadata for the struct
-// [VerificationNewResponseMetadata]
-type verificationNewResponseMetadataJSON struct {
-	CorrelationID apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
-}
-
-func (r *VerificationNewResponseMetadata) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r verificationNewResponseMetadataJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -136,24 +114,46 @@ func (r VerificationNewResponseStatus) IsKnown() bool {
 	return false
 }
 
+// The metadata for this verification.
+type VerificationNewResponseMetadata struct {
+	CorrelationID string                              `json:"correlation_id"`
+	JSON          verificationNewResponseMetadataJSON `json:"-"`
+}
+
+// verificationNewResponseMetadataJSON contains the JSON metadata for the struct
+// [VerificationNewResponseMetadata]
+type verificationNewResponseMetadataJSON struct {
+	CorrelationID apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *VerificationNewResponseMetadata) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r verificationNewResponseMetadataJSON) RawJSON() string {
+	return r.raw
+}
+
 type VerificationCheckResponse struct {
+	// The status of the check.
+	Status VerificationCheckResponseStatus `json:"status,required"`
 	// The verification identifier.
 	ID string `json:"id"`
 	// The metadata for this verification.
 	Metadata  VerificationCheckResponseMetadata `json:"metadata"`
 	RequestID string                            `json:"request_id"`
-	// The status of the check.
-	Status VerificationCheckResponseStatus `json:"status"`
-	JSON   verificationCheckResponseJSON   `json:"-"`
+	JSON      verificationCheckResponseJSON     `json:"-"`
 }
 
 // verificationCheckResponseJSON contains the JSON metadata for the struct
 // [VerificationCheckResponse]
 type verificationCheckResponseJSON struct {
+	Status      apijson.Field
 	ID          apijson.Field
 	Metadata    apijson.Field
 	RequestID   apijson.Field
-	Status      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -164,6 +164,23 @@ func (r *VerificationCheckResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r verificationCheckResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// The status of the check.
+type VerificationCheckResponseStatus string
+
+const (
+	VerificationCheckResponseStatusSuccess           VerificationCheckResponseStatus = "success"
+	VerificationCheckResponseStatusFailure           VerificationCheckResponseStatus = "failure"
+	VerificationCheckResponseStatusExpiredOrNotFound VerificationCheckResponseStatus = "expired_or_not_found"
+)
+
+func (r VerificationCheckResponseStatus) IsKnown() bool {
+	switch r {
+	case VerificationCheckResponseStatusSuccess, VerificationCheckResponseStatusFailure, VerificationCheckResponseStatusExpiredOrNotFound:
+		return true
+	}
+	return false
 }
 
 // The metadata for this verification.
@@ -188,26 +205,11 @@ func (r verificationCheckResponseMetadataJSON) RawJSON() string {
 	return r.raw
 }
 
-// The status of the check.
-type VerificationCheckResponseStatus string
-
-const (
-	VerificationCheckResponseStatusSuccess VerificationCheckResponseStatus = "success"
-	VerificationCheckResponseStatusFailure VerificationCheckResponseStatus = "failure"
-	VerificationCheckResponseStatusExpired VerificationCheckResponseStatus = "expired"
-)
-
-func (r VerificationCheckResponseStatus) IsKnown() bool {
-	switch r {
-	case VerificationCheckResponseStatusSuccess, VerificationCheckResponseStatusFailure, VerificationCheckResponseStatusExpired:
-		return true
-	}
-	return false
-}
-
 type VerificationNewParams struct {
 	// The target. Currently this can only be an E.164 formatted phone number.
 	Target param.Field[VerificationNewParamsTarget] `json:"target,required"`
+	// The identifier of the dispatch that came from the front-end SDK.
+	DispatchID param.Field[string] `json:"dispatch_id"`
 	// The metadata for this verification. This object will be returned with every
 	// response or webhook sent that refers to this verification.
 	Metadata param.Field[VerificationNewParamsMetadata] `json:"metadata"`
@@ -261,9 +263,17 @@ func (r VerificationNewParamsMetadata) MarshalJSON() (data []byte, err error) {
 
 // Verification options
 type VerificationNewParamsOptions struct {
-	// The Android SMS Retriever API hash code that identifies your app. This allows
-	// you to automatically retrieve and fill the OTP code on Android devices.
-	AppRealm param.Field[string] `json:"app_realm"`
+	// This allows you to automatically retrieve and fill the OTP code on mobile apps.
+	// Currently only Android devices are supported.
+	AppRealm param.Field[VerificationNewParamsOptionsAppRealm] `json:"app_realm"`
+	// The size of the code generated. It should be between 4 and 8. Defaults to the
+	// code size specified from the Dashboard.
+	CodeSize param.Field[int64] `json:"code_size"`
+	// The custom code to use for OTP verification. This feature is only available for
+	// compatibility purposes and subject to Prelude’s approval. Contact us to discuss
+	// your use case. For more details, refer to
+	// [Multi Routing](/concepts/multi-routing).
+	CustomCode param.Field[string] `json:"custom_code"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
 	// code of the phone number. If the language specified doesn't exist, it defaults
@@ -282,6 +292,36 @@ func (r VerificationNewParamsOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// This allows you to automatically retrieve and fill the OTP code on mobile apps.
+// Currently only Android devices are supported.
+type VerificationNewParamsOptionsAppRealm struct {
+	// The platform the SMS will be sent to. We are currently only supporting
+	// "android".
+	Platform param.Field[VerificationNewParamsOptionsAppRealmPlatform] `json:"platform,required"`
+	// The Android SMS Retriever API hash code that identifies your app.
+	Value param.Field[string] `json:"value,required"`
+}
+
+func (r VerificationNewParamsOptionsAppRealm) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The platform the SMS will be sent to. We are currently only supporting
+// "android".
+type VerificationNewParamsOptionsAppRealmPlatform string
+
+const (
+	VerificationNewParamsOptionsAppRealmPlatformAndroid VerificationNewParamsOptionsAppRealmPlatform = "android"
+)
+
+func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
+	switch r {
+	case VerificationNewParamsOptionsAppRealmPlatformAndroid:
+		return true
+	}
+	return false
+}
+
 // The signals used for anti-fraud.
 type VerificationNewParamsSignals struct {
 	// The version of your application.
@@ -297,7 +337,7 @@ type VerificationNewParamsSignals struct {
 	IP param.Field[string] `json:"ip" format:"ipv4"`
 	// This signal should provide a higher level of trust, indicating that the user is
 	// genuine. For more details, refer to [Signals](/guides/prevent-fraud#signals).
-	IsTrustedUser param.Field[string] `json:"is_trusted_user"`
+	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
 }
@@ -312,12 +352,14 @@ type VerificationNewParamsSignalsDevicePlatform string
 const (
 	VerificationNewParamsSignalsDevicePlatformAndroid VerificationNewParamsSignalsDevicePlatform = "android"
 	VerificationNewParamsSignalsDevicePlatformIos     VerificationNewParamsSignalsDevicePlatform = "ios"
+	VerificationNewParamsSignalsDevicePlatformIpados  VerificationNewParamsSignalsDevicePlatform = "ipados"
+	VerificationNewParamsSignalsDevicePlatformTvos    VerificationNewParamsSignalsDevicePlatform = "tvos"
 	VerificationNewParamsSignalsDevicePlatformWeb     VerificationNewParamsSignalsDevicePlatform = "web"
 )
 
 func (r VerificationNewParamsSignalsDevicePlatform) IsKnown() bool {
 	switch r {
-	case VerificationNewParamsSignalsDevicePlatformAndroid, VerificationNewParamsSignalsDevicePlatformIos, VerificationNewParamsSignalsDevicePlatformWeb:
+	case VerificationNewParamsSignalsDevicePlatformAndroid, VerificationNewParamsSignalsDevicePlatformIos, VerificationNewParamsSignalsDevicePlatformIpados, VerificationNewParamsSignalsDevicePlatformTvos, VerificationNewParamsSignalsDevicePlatformWeb:
 		return true
 	}
 	return false
