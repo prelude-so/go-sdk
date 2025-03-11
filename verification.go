@@ -206,7 +206,8 @@ func (r verificationCheckResponseMetadataJSON) RawJSON() string {
 }
 
 type VerificationNewParams struct {
-	// The target. Currently this can only be an E.164 formatted phone number.
+	// The verification target. Either a phone number or an email address. To use the
+	// email verification feature contact us to discuss your use case.
 	Target param.Field[VerificationNewParamsTarget] `json:"target,required"`
 	// The identifier of the dispatch that came from the front-end SDK.
 	DispatchID param.Field[string] `json:"dispatch_id"`
@@ -215,7 +216,8 @@ type VerificationNewParams struct {
 	Metadata param.Field[VerificationNewParamsMetadata] `json:"metadata"`
 	// Verification options
 	Options param.Field[VerificationNewParamsOptions] `json:"options"`
-	// The signals used for anti-fraud.
+	// The signals used for anti-fraud. For more details, refer to
+	// [Signals](/guides/prevent-fraud#signals).
 	Signals param.Field[VerificationNewParamsSignals] `json:"signals"`
 }
 
@@ -223,28 +225,30 @@ func (r VerificationNewParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The target. Currently this can only be an E.164 formatted phone number.
+// The verification target. Either a phone number or an email address. To use the
+// email verification feature contact us to discuss your use case.
 type VerificationNewParamsTarget struct {
-	// The type of the target. Currently this can only be "phone_number".
+	// The type of the target. Either "phone_number" or "email_address".
 	Type param.Field[VerificationNewParamsTargetType] `json:"type,required"`
-	// An E.164 formatted phone number to verify.
-	Value param.Field[string] `json:"value,required" format:"phone_number"`
+	// An E.164 formatted phone number or an email address.
+	Value param.Field[string] `json:"value,required"`
 }
 
 func (r VerificationNewParamsTarget) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The type of the target. Currently this can only be "phone_number".
+// The type of the target. Either "phone_number" or "email_address".
 type VerificationNewParamsTargetType string
 
 const (
-	VerificationNewParamsTargetTypePhoneNumber VerificationNewParamsTargetType = "phone_number"
+	VerificationNewParamsTargetTypePhoneNumber  VerificationNewParamsTargetType = "phone_number"
+	VerificationNewParamsTargetTypeEmailAddress VerificationNewParamsTargetType = "email_address"
 )
 
 func (r VerificationNewParamsTargetType) IsKnown() bool {
 	switch r {
-	case VerificationNewParamsTargetTypePhoneNumber:
+	case VerificationNewParamsTargetTypePhoneNumber, VerificationNewParamsTargetTypeEmailAddress:
 		return true
 	}
 	return false
@@ -266,6 +270,10 @@ type VerificationNewParamsOptions struct {
 	// This allows you to automatically retrieve and fill the OTP code on mobile apps.
 	// Currently only Android devices are supported.
 	AppRealm param.Field[VerificationNewParamsOptionsAppRealm] `json:"app_realm"`
+	// The URL where webhooks will be sent when verification events occur, including
+	// verification creation, attempt creation, and delivery status changes. For more
+	// details, refer to [Webhook](/api-reference/v2/verify/webhook).
+	CallbackURL param.Field[string] `json:"callback_url"`
 	// The size of the code generated. It should be between 4 and 8. Defaults to the
 	// code size specified from the Dashboard.
 	CodeSize param.Field[int64] `json:"code_size"`
@@ -282,10 +290,11 @@ type VerificationNewParamsOptions struct {
 	// The Sender ID to use for this message. The Sender ID needs to be enabled by
 	// Prelude.
 	SenderID param.Field[string] `json:"sender_id"`
-	// The identifier of a verification settings template. It is used to be able to
-	// switch behavior for specific use cases. Contact us if you need to use this
-	// functionality.
+	// The identifier of a verification template. It applies use case-specific
+	// settings, such as the message content or certain verification parameters.
 	TemplateID param.Field[string] `json:"template_id"`
+	// The variables to be replaced in the template.
+	Variables param.Field[map[string]string] `json:"variables"`
 }
 
 func (r VerificationNewParamsOptions) MarshalJSON() (data []byte, err error) {
@@ -322,7 +331,8 @@ func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
 	return false
 }
 
-// The signals used for anti-fraud.
+// The signals used for anti-fraud. For more details, refer to
+// [Signals](/guides/prevent-fraud#signals).
 type VerificationNewParamsSignals struct {
 	// The version of your application.
 	AppVersion param.Field[string] `json:"app_version"`
@@ -340,6 +350,10 @@ type VerificationNewParamsSignals struct {
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
+	// The user agent of the user's device. If the individual fields (os_version,
+	// device_platform, device_model) are provided, we will prioritize those values
+	// instead of parsing them from the user agent string.
+	UserAgent param.Field[string] `json:"user_agent"`
 }
 
 func (r VerificationNewParamsSignals) MarshalJSON() (data []byte, err error) {
@@ -368,7 +382,8 @@ func (r VerificationNewParamsSignalsDevicePlatform) IsKnown() bool {
 type VerificationCheckParams struct {
 	// The OTP code to validate.
 	Code param.Field[string] `json:"code,required"`
-	// The target. Currently this can only be an E.164 formatted phone number.
+	// The verification target. Either a phone number or an email address. To use the
+	// email verification feature contact us to discuss your use case.
 	Target param.Field[VerificationCheckParamsTarget] `json:"target,required"`
 }
 
@@ -376,28 +391,30 @@ func (r VerificationCheckParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The target. Currently this can only be an E.164 formatted phone number.
+// The verification target. Either a phone number or an email address. To use the
+// email verification feature contact us to discuss your use case.
 type VerificationCheckParamsTarget struct {
-	// The type of the target. Currently this can only be "phone_number".
+	// The type of the target. Either "phone_number" or "email_address".
 	Type param.Field[VerificationCheckParamsTargetType] `json:"type,required"`
-	// An E.164 formatted phone number to verify.
-	Value param.Field[string] `json:"value,required" format:"phone_number"`
+	// An E.164 formatted phone number or an email address.
+	Value param.Field[string] `json:"value,required"`
 }
 
 func (r VerificationCheckParamsTarget) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The type of the target. Currently this can only be "phone_number".
+// The type of the target. Either "phone_number" or "email_address".
 type VerificationCheckParamsTargetType string
 
 const (
-	VerificationCheckParamsTargetTypePhoneNumber VerificationCheckParamsTargetType = "phone_number"
+	VerificationCheckParamsTargetTypePhoneNumber  VerificationCheckParamsTargetType = "phone_number"
+	VerificationCheckParamsTargetTypeEmailAddress VerificationCheckParamsTargetType = "email_address"
 )
 
 func (r VerificationCheckParamsTargetType) IsKnown() bool {
 	switch r {
-	case VerificationCheckParamsTargetTypePhoneNumber:
+	case VerificationCheckParamsTargetTypePhoneNumber, VerificationCheckParamsTargetTypeEmailAddress:
 		return true
 	}
 	return false

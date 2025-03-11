@@ -39,11 +39,15 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 				Platform: prelude.F(prelude.VerificationNewParamsOptionsAppRealmPlatformAndroid),
 				Value:    prelude.F("value"),
 			}),
-			CodeSize:   prelude.F(int64(5)),
-			CustomCode: prelude.F("custom_code"),
-			Locale:     prelude.F("el-GR"),
-			SenderID:   prelude.F("sender_id"),
-			TemplateID: prelude.F("template_id"),
+			CallbackURL: prelude.F("callback_url"),
+			CodeSize:    prelude.F(int64(5)),
+			CustomCode:  prelude.F("custom_code"),
+			Locale:      prelude.F("el-GR"),
+			SenderID:    prelude.F("sender_id"),
+			TemplateID:  prelude.F("prelude:psd2"),
+			Variables: prelude.F(map[string]string{
+				"foo": "bar",
+			}),
 		}),
 		Signals: prelude.F(prelude.VerificationNewParamsSignals{
 			AppVersion:     prelude.F("1.2.34"),
@@ -53,6 +57,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			IP:             prelude.F("192.0.2.1"),
 			IsTrustedUser:  prelude.F(false),
 			OsVersion:      prelude.F("18.0.1"),
+			UserAgent:      prelude.F("Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1"),
 		}),
 	})
 	if err != nil {
