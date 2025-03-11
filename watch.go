@@ -163,7 +163,8 @@ type WatchFeedBackParams struct {
 	// You should send a feedback event back to Watch API when your user demonstrates
 	// authentic behavior.
 	Feedback param.Field[WatchFeedBackParamsFeedback] `json:"feedback,required"`
-	// The target. Currently this can only be an E.164 formatted phone number.
+	// The verification target. Either a phone number or an email address. To use the
+	// email verification feature contact us to discuss your use case.
 	Target param.Field[WatchFeedBackParamsTarget] `json:"target,required"`
 }
 
@@ -199,35 +200,38 @@ func (r WatchFeedBackParamsFeedbackType) IsKnown() bool {
 	return false
 }
 
-// The target. Currently this can only be an E.164 formatted phone number.
+// The verification target. Either a phone number or an email address. To use the
+// email verification feature contact us to discuss your use case.
 type WatchFeedBackParamsTarget struct {
-	// The type of the target. Currently this can only be "phone_number".
+	// The type of the target. Either "phone_number" or "email_address".
 	Type param.Field[WatchFeedBackParamsTargetType] `json:"type,required"`
-	// An E.164 formatted phone number to verify.
-	Value param.Field[string] `json:"value,required" format:"phone_number"`
+	// An E.164 formatted phone number or an email address.
+	Value param.Field[string] `json:"value,required"`
 }
 
 func (r WatchFeedBackParamsTarget) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The type of the target. Currently this can only be "phone_number".
+// The type of the target. Either "phone_number" or "email_address".
 type WatchFeedBackParamsTargetType string
 
 const (
-	WatchFeedBackParamsTargetTypePhoneNumber WatchFeedBackParamsTargetType = "phone_number"
+	WatchFeedBackParamsTargetTypePhoneNumber  WatchFeedBackParamsTargetType = "phone_number"
+	WatchFeedBackParamsTargetTypeEmailAddress WatchFeedBackParamsTargetType = "email_address"
 )
 
 func (r WatchFeedBackParamsTargetType) IsKnown() bool {
 	switch r {
-	case WatchFeedBackParamsTargetTypePhoneNumber:
+	case WatchFeedBackParamsTargetTypePhoneNumber, WatchFeedBackParamsTargetTypeEmailAddress:
 		return true
 	}
 	return false
 }
 
 type WatchPredictParams struct {
-	// The target. Currently this can only be an E.164 formatted phone number.
+	// The verification target. Either a phone number or an email address. To use the
+	// email verification feature contact us to discuss your use case.
 	Target param.Field[WatchPredictParamsTarget] `json:"target,required"`
 	// It is highly recommended that you provide the signals to increase prediction
 	// performance.
@@ -238,28 +242,30 @@ func (r WatchPredictParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The target. Currently this can only be an E.164 formatted phone number.
+// The verification target. Either a phone number or an email address. To use the
+// email verification feature contact us to discuss your use case.
 type WatchPredictParamsTarget struct {
-	// The type of the target. Currently this can only be "phone_number".
+	// The type of the target. Either "phone_number" or "email_address".
 	Type param.Field[WatchPredictParamsTargetType] `json:"type,required"`
-	// An E.164 formatted phone number to verify.
-	Value param.Field[string] `json:"value,required" format:"phone_number"`
+	// An E.164 formatted phone number or an email address.
+	Value param.Field[string] `json:"value,required"`
 }
 
 func (r WatchPredictParamsTarget) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The type of the target. Currently this can only be "phone_number".
+// The type of the target. Either "phone_number" or "email_address".
 type WatchPredictParamsTargetType string
 
 const (
-	WatchPredictParamsTargetTypePhoneNumber WatchPredictParamsTargetType = "phone_number"
+	WatchPredictParamsTargetTypePhoneNumber  WatchPredictParamsTargetType = "phone_number"
+	WatchPredictParamsTargetTypeEmailAddress WatchPredictParamsTargetType = "email_address"
 )
 
 func (r WatchPredictParamsTargetType) IsKnown() bool {
 	switch r {
-	case WatchPredictParamsTargetTypePhoneNumber:
+	case WatchPredictParamsTargetTypePhoneNumber, WatchPredictParamsTargetTypeEmailAddress:
 		return true
 	}
 	return false
