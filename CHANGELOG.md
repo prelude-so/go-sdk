@@ -1,5 +1,45 @@
 # Changelog
 
+## 0.2.0 (2025-03-11)
+
+Full Changelog: [v0.1.0...v0.2.0](https://github.com/prelude-so/go-sdk/compare/v0.1.0...v0.2.0)
+
+### Features
+
+* add SKIP_BREW env var to ./scripts/bootstrap ([#37](https://github.com/prelude-so/go-sdk/issues/37)) ([c3f0d41](https://github.com/prelude-so/go-sdk/commit/c3f0d41329dae63f04ae339e99eed1cec9615a3f))
+* **api:** update via SDK Studio ([#40](https://github.com/prelude-so/go-sdk/issues/40)) ([33ad2ad](https://github.com/prelude-so/go-sdk/commit/33ad2ad2fbde7526730303e0a6e5c4fa14af9af8))
+* **client:** accept RFC6838 JSON content types ([#38](https://github.com/prelude-so/go-sdk/issues/38)) ([a3b19b1](https://github.com/prelude-so/go-sdk/commit/a3b19b13d6ac2eae424574e7260c635804eaf67b))
+* **client:** allow custom baseurls without trailing slash ([#36](https://github.com/prelude-so/go-sdk/issues/36)) ([2830cfb](https://github.com/prelude-so/go-sdk/commit/2830cfbaedcf5468e87c412e7a4a4842beaa1b5a))
+* **client:** send `X-Stainless-Timeout` header ([#27](https://github.com/prelude-so/go-sdk/issues/27)) ([7d81306](https://github.com/prelude-so/go-sdk/commit/7d8130689b1ff542a81405fc75b54bcc8ed59b7c))
+
+
+### Bug Fixes
+
+* **client:** don't truncate manually specified filenames ([#31](https://github.com/prelude-so/go-sdk/issues/31)) ([96fdb15](https://github.com/prelude-so/go-sdk/commit/96fdb150cc6e186c5a1341632bbf7a9f66870700))
+* do not call path.Base on ContentType ([#30](https://github.com/prelude-so/go-sdk/issues/30)) ([bc311ee](https://github.com/prelude-so/go-sdk/commit/bc311ee19fd8fd5d98794451d54566dcf508f5ba))
+* fix early cancel when RequestTimeout is provided for streaming requests ([#29](https://github.com/prelude-so/go-sdk/issues/29)) ([f690d25](https://github.com/prelude-so/go-sdk/commit/f690d25deaf8add9133537ad4ad7c350ade0c8af))
+* fix unicode encoding for json ([#25](https://github.com/prelude-so/go-sdk/issues/25)) ([1dbf55b](https://github.com/prelude-so/go-sdk/commit/1dbf55b8eca9c3f86a61fd35b68a5f1e17fc5b92))
+
+
+### Chores
+
+* add UnionUnmarshaler for responses that are interfaces ([#28](https://github.com/prelude-so/go-sdk/issues/28)) ([32c01d0](https://github.com/prelude-so/go-sdk/commit/32c01d07dd4d9d7cdef988572e523f979cd8c544))
+* **internal:** codegen related update ([#23](https://github.com/prelude-so/go-sdk/issues/23)) ([bd068d9](https://github.com/prelude-so/go-sdk/commit/bd068d94991e2a5fa38f20bd48012d0d6a8578d0))
+* **internal:** codegen related update ([#33](https://github.com/prelude-so/go-sdk/issues/33)) ([b120ab9](https://github.com/prelude-so/go-sdk/commit/b120ab94db58004c6d135fe3fc5b7558fa1caaa5))
+* **internal:** codegen related update ([#34](https://github.com/prelude-so/go-sdk/issues/34)) ([991c6d2](https://github.com/prelude-so/go-sdk/commit/991c6d23eaed8597a2d0f5f3594f2c4b3bbc0c29))
+* **internal:** fix devcontainers setup ([#32](https://github.com/prelude-so/go-sdk/issues/32)) ([56a3b27](https://github.com/prelude-so/go-sdk/commit/56a3b27fc822f3085b33d9f816016c507d55c92f))
+
+
+### Documentation
+
+* document raw responses ([#26](https://github.com/prelude-so/go-sdk/issues/26)) ([17fe9f9](https://github.com/prelude-so/go-sdk/commit/17fe9f9d4f4a68cf23068bd104f4dd5dada53704))
+* update URLs from stainlessapi.com to stainless.com ([#35](https://github.com/prelude-so/go-sdk/issues/35)) ([fea942e](https://github.com/prelude-so/go-sdk/commit/fea942e0da9c3c8f0d766a3fe1f7e195512ea597))
+
+
+### Refactors
+
+* tidy up dependencies ([#39](https://github.com/prelude-so/go-sdk/issues/39)) ([5079ac1](https://github.com/prelude-so/go-sdk/commit/5079ac1f780f30fc27a18da83530604603b0c3b8))
+
 ## 0.1.0 (2025-02-05)
 
 Full Changelog: [v0.1.0-beta.1...v0.1.0](https://github.com/prelude-so/go-sdk/compare/v0.1.0-beta.1...v0.1.0)
