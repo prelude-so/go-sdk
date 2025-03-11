@@ -5,7 +5,7 @@
 The Prelude Go library provides convenient access to [the Prelude REST
 API](https://docs.prelude.so) from applications written in Go. The full API of this library can be found in [api.md](api.md).
 
-It is generated with [Stainless](https://www.stainlessapi.com/).
+It is generated with [Stainless](https://www.stainless.com/).
 
 ## Installation
 
@@ -24,7 +24,7 @@ Or to pin the version:
 <!-- x-release-please-start-version -->
 
 ```sh
-go get -u 'github.com/prelude-so/go-sdk@v0.1.0'
+go get -u 'github.com/prelude-so/go-sdk@v0.2.0'
 ```
 
 <!-- x-release-please-end -->
@@ -260,6 +260,33 @@ client.Verification.New(
 	},
 	option.WithMaxRetries(5),
 )
+```
+
+### Accessing raw response data (e.g. response headers)
+
+You can access the raw HTTP response data by using the `option.WithResponseInto()` request option. This is useful when
+you need to examine response headers, status codes, or other details.
+
+```go
+// Create a variable to store the HTTP response
+var response *http.Response
+verification, err := client.Verification.New(
+	context.TODO(),
+	prelude.VerificationNewParams{
+		Target: prelude.F(prelude.VerificationNewParamsTarget{
+			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
+	},
+	option.WithResponseInto(&response),
+)
+if err != nil {
+	// handle error
+}
+fmt.Printf("%+v\n", verification)
+
+fmt.Printf("Status Code: %d\n", response.StatusCode)
+fmt.Printf("Headers: %+#v\n", response.Header)
 ```
 
 ### Making custom/undocumented requests
