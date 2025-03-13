@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.3.0 (2025-03-13)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/prelude-so/go-sdk/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **client:** improve default client options support ([#42](https://github.com/prelude-so/go-sdk/issues/42)) ([0e6914b](https://github.com/prelude-so/go-sdk/commit/0e6914b94ae832cd1f4c69874713ea0d556eb39f))
+
+
+### Chores
+
+* **internal:** remove extra empty newlines ([#44](https://github.com/prelude-so/go-sdk/issues/44)) ([9d04921](https://github.com/prelude-so/go-sdk/commit/9d04921cd42e9df3416c8a79831c973eaeb026b8))
+
 ## 0.2.0 (2025-03-11)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/prelude-so/go-sdk/compare/v0.1.0...v0.2.0)
