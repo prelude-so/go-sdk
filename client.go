@@ -16,9 +16,20 @@ import (
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
 	Options       []option.RequestOption
+	Lookup        *LookupService
 	Transactional *TransactionalService
 	Verification  *VerificationService
 	Watch         *WatchService
+}
+
+// DefaultClientOptions read from the environment (API_TOKEN). This should be used
+// to initialize new clients.
+func DefaultClientOptions() []option.RequestOption {
+	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
+	if o, ok := os.LookupEnv("API_TOKEN"); ok {
+		defaults = append(defaults, option.WithAPIToken(o))
+	}
+	return defaults
 }
 
 // NewClient generates a new client with the default option read from the
@@ -26,14 +37,11 @@ type Client struct {
 // these default arguments, and all option will be passed down to the services and
 // requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r *Client) {
-	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
-	if o, ok := os.LookupEnv("API_TOKEN"); ok {
-		defaults = append(defaults, option.WithAPIToken(o))
-	}
-	opts = append(defaults, opts...)
+	opts = append(DefaultClientOptions(), opts...)
 
 	r = &Client{Options: opts}
 
+	r.Lookup = NewLookupService(opts...)
 	r.Transactional = NewTransactionalService(opts...)
 	r.Verification = NewVerificationService(opts...)
 	r.Watch = NewWatchService(opts...)

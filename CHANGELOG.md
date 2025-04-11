@@ -1,5 +1,33 @@
 # Changelog
 
+## 0.3.0 (2025-04-11)
+
+Full Changelog: [v0.2.0...v0.3.0](https://github.com/prelude-so/go-sdk/compare/v0.2.0...v0.3.0)
+
+### Features
+
+* **api:** update via SDK Studio ([838fe81](https://github.com/prelude-so/go-sdk/commit/838fe81c948b2898e2bf3240e96c5638a2f2ac36))
+* **api:** update via SDK Studio ([f1241b1](https://github.com/prelude-so/go-sdk/commit/f1241b1249182e053f98e05b67becabc3b4ab384))
+* **client:** improve default client options support ([#42](https://github.com/prelude-so/go-sdk/issues/42)) ([0e6914b](https://github.com/prelude-so/go-sdk/commit/0e6914b94ae832cd1f4c69874713ea0d556eb39f))
+* **client:** support custom http clients ([#50](https://github.com/prelude-so/go-sdk/issues/50)) ([e1c08b6](https://github.com/prelude-so/go-sdk/commit/e1c08b6e64fa387071e93c0c9bd564c862d6b131))
+
+
+### Bug Fixes
+
+* **client:** return error on bad custom url instead of panic ([#49](https://github.com/prelude-so/go-sdk/issues/49)) ([adc11db](https://github.com/prelude-so/go-sdk/commit/adc11db706c3b32e5a9a7c505b744e85c6edcddd))
+* **test:** return early after test failure ([#47](https://github.com/prelude-so/go-sdk/issues/47)) ([9a44846](https://github.com/prelude-so/go-sdk/commit/9a448469de751b96447822b0bf73c5fe0f2fc177))
+
+
+### Chores
+
+* add request options to client tests ([#46](https://github.com/prelude-so/go-sdk/issues/46)) ([de700e5](https://github.com/prelude-so/go-sdk/commit/de700e5c622cb8e869c6bc792dfc8dcf91b56d47))
+* **docs:** improve security documentation ([#45](https://github.com/prelude-so/go-sdk/issues/45)) ([7e200cb](https://github.com/prelude-so/go-sdk/commit/7e200cbb0bd779490cd6911cc620240260d06329))
+* fix typos ([#48](https://github.com/prelude-so/go-sdk/issues/48)) ([ae49898](https://github.com/prelude-so/go-sdk/commit/ae49898459f1ad2bfb4916edebadc81678c38cd4))
+* **internal:** expand CI branch coverage ([#52](https://github.com/prelude-so/go-sdk/issues/52)) ([a814dc5](https://github.com/prelude-so/go-sdk/commit/a814dc5d46d99350187dd30117b22659c15e0073))
+* **internal:** reduce CI branch coverage ([b723f9d](https://github.com/prelude-so/go-sdk/commit/b723f9d7ab07502b19187a58e56f57794abe2288))
+* **internal:** remove extra empty newlines ([#44](https://github.com/prelude-so/go-sdk/issues/44)) ([9d04921](https://github.com/prelude-so/go-sdk/commit/9d04921cd42e9df3416c8a79831c973eaeb026b8))
+* **tests:** improve enum examples ([#51](https://github.com/prelude-so/go-sdk/issues/51)) ([8a3b337](https://github.com/prelude-so/go-sdk/commit/8a3b3370c962930777f9612b9c71be7a4bbd1d11))
+
 ## 0.2.0 (2025-03-11)
 
 Full Changelog: [v0.1.0...v0.2.0](https://github.com/prelude-so/go-sdk/compare/v0.1.0...v0.2.0)

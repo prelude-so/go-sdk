@@ -31,18 +31,7 @@ func NewWatchService(opts ...option.RequestOption) (r *WatchService) {
 	return
 }
 
-// Once the user with a trustworthy phone number demonstrates authentic behavior,
-// call this endpoint to report their authenticity to our systems.
-func (r *WatchService) FeedBack(ctx context.Context, body WatchFeedBackParams, opts ...option.RequestOption) (res *WatchFeedBackResponse, err error) {
-	opts = append(r.Options[:], opts...)
-	path := "v2/watch/feedback"
-	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
-}
-
-// Identify trustworthy phone numbers to mitigate fake traffic or traffic involved
-// in fraud and international revenue share fraud (IRSF) patterns. This endpoint
-// must be implemented in conjunction with the `watch/feedback` endpoint.
+// Predict the outcome of a verification based on Prelude’s anti-fraud system.
 func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opts ...option.RequestOption) (res *WatchPredictResponse, err error) {
 	opts = append(r.Options[:], opts...)
 	path := "v2/watch/predict"
@@ -50,35 +39,33 @@ func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opt
 	return
 }
 
-type WatchFeedBackResponse struct {
-	// A unique identifier for your feedback request.
-	ID   string                    `json:"id,required"`
-	JSON watchFeedBackResponseJSON `json:"-"`
+// Send real-time event data from end-user interactions within your application.
+// Events will be analyzed for proactive fraud prevention and risk scoring.
+func (r *WatchService) SendEvents(ctx context.Context, body WatchSendEventsParams, opts ...option.RequestOption) (res *WatchSendEventsResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "v2/watch/event"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
 }
 
-// watchFeedBackResponseJSON contains the JSON metadata for the struct
-// [WatchFeedBackResponse]
-type watchFeedBackResponseJSON struct {
-	ID          apijson.Field
-	raw         string
-	ExtraFields map[string]apijson.Field
-}
-
-func (r *WatchFeedBackResponse) UnmarshalJSON(data []byte) (err error) {
-	return apijson.UnmarshalRoot(data, r)
-}
-
-func (r watchFeedBackResponseJSON) RawJSON() string {
-	return r.raw
+// Send feedback regarding your end-users verification funnel. Events will be
+// analyzed for proactive fraud prevention and risk scoring.
+func (r *WatchService) SendFeedbacks(ctx context.Context, body WatchSendFeedbacksParams, opts ...option.RequestOption) (res *WatchSendFeedbacksResponse, err error) {
+	opts = append(r.Options[:], opts...)
+	path := "v2/watch/feedback"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return
 }
 
 type WatchPredictResponse struct {
-	// A unique identifier for your prediction request.
+	// The prediction identifier.
 	ID string `json:"id,required"`
-	// A label indicating the trustworthiness of the phone number.
+	// The prediction outcome.
 	Prediction WatchPredictResponsePrediction `json:"prediction,required"`
-	Reasoning  WatchPredictResponseReasoning  `json:"reasoning,required"`
-	JSON       watchPredictResponseJSON       `json:"-"`
+	// A string that identifies this specific request. Report it back to us to help us
+	// diagnose your issues.
+	RequestID string                   `json:"request_id,required"`
+	JSON      watchPredictResponseJSON `json:"-"`
 }
 
 // watchPredictResponseJSON contains the JSON metadata for the struct
@@ -86,7 +73,7 @@ type WatchPredictResponse struct {
 type watchPredictResponseJSON struct {
 	ID          apijson.Field
 	Prediction  apijson.Field
-	Reasoning   apijson.Field
+	RequestID   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -99,142 +86,113 @@ func (r watchPredictResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// A label indicating the trustworthiness of the phone number.
+// The prediction outcome.
 type WatchPredictResponsePrediction string
 
 const (
-	WatchPredictResponsePredictionAllow WatchPredictResponsePrediction = "allow"
-	WatchPredictResponsePredictionBlock WatchPredictResponsePrediction = "block"
+	WatchPredictResponsePredictionLegitimate WatchPredictResponsePrediction = "legitimate"
+	WatchPredictResponsePredictionSuspicious WatchPredictResponsePrediction = "suspicious"
 )
 
 func (r WatchPredictResponsePrediction) IsKnown() bool {
 	switch r {
-	case WatchPredictResponsePredictionAllow, WatchPredictResponsePredictionBlock:
+	case WatchPredictResponsePredictionLegitimate, WatchPredictResponsePredictionSuspicious:
 		return true
 	}
 	return false
 }
 
-type WatchPredictResponseReasoning struct {
-	// A label explaining why the phone number was classified as not trustworthy
-	Cause WatchPredictResponseReasoningCause `json:"cause"`
-	// Indicates the risk of the phone number being genuine or involved in fraudulent
-	// patterns. The higher the riskier.
-	Score float64                           `json:"score"`
-	JSON  watchPredictResponseReasoningJSON `json:"-"`
+type WatchSendEventsResponse struct {
+	// A string that identifies this specific request. Report it back to us to help us
+	// diagnose your issues.
+	RequestID string `json:"request_id,required"`
+	// The status of the events dispatch.
+	Status WatchSendEventsResponseStatus `json:"status,required"`
+	JSON   watchSendEventsResponseJSON   `json:"-"`
 }
 
-// watchPredictResponseReasoningJSON contains the JSON metadata for the struct
-// [WatchPredictResponseReasoning]
-type watchPredictResponseReasoningJSON struct {
-	Cause       apijson.Field
-	Score       apijson.Field
+// watchSendEventsResponseJSON contains the JSON metadata for the struct
+// [WatchSendEventsResponse]
+type watchSendEventsResponseJSON struct {
+	RequestID   apijson.Field
+	Status      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
 
-func (r *WatchPredictResponseReasoning) UnmarshalJSON(data []byte) (err error) {
+func (r *WatchSendEventsResponse) UnmarshalJSON(data []byte) (err error) {
 	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r watchPredictResponseReasoningJSON) RawJSON() string {
+func (r watchSendEventsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// A label explaining why the phone number was classified as not trustworthy
-type WatchPredictResponseReasoningCause string
+// The status of the events dispatch.
+type WatchSendEventsResponseStatus string
 
 const (
-	WatchPredictResponseReasoningCauseNone           WatchPredictResponseReasoningCause = "none"
-	WatchPredictResponseReasoningCauseSmartAntifraud WatchPredictResponseReasoningCause = "smart_antifraud"
-	WatchPredictResponseReasoningCauseRepeatNumber   WatchPredictResponseReasoningCause = "repeat_number"
-	WatchPredictResponseReasoningCauseInvalidLine    WatchPredictResponseReasoningCause = "invalid_line"
+	WatchSendEventsResponseStatusSuccess WatchSendEventsResponseStatus = "success"
 )
 
-func (r WatchPredictResponseReasoningCause) IsKnown() bool {
+func (r WatchSendEventsResponseStatus) IsKnown() bool {
 	switch r {
-	case WatchPredictResponseReasoningCauseNone, WatchPredictResponseReasoningCauseSmartAntifraud, WatchPredictResponseReasoningCauseRepeatNumber, WatchPredictResponseReasoningCauseInvalidLine:
+	case WatchSendEventsResponseStatusSuccess:
 		return true
 	}
 	return false
 }
 
-type WatchFeedBackParams struct {
-	// You should send a feedback event back to Watch API when your user demonstrates
-	// authentic behavior.
-	Feedback param.Field[WatchFeedBackParamsFeedback] `json:"feedback,required"`
-	// The verification target. Either a phone number or an email address. To use the
-	// email verification feature contact us to discuss your use case.
-	Target param.Field[WatchFeedBackParamsTarget] `json:"target,required"`
+type WatchSendFeedbacksResponse struct {
+	// A string that identifies this specific request. Report it back to us to help us
+	// diagnose your issues.
+	RequestID string `json:"request_id,required"`
+	// The status of the feedbacks sending.
+	Status WatchSendFeedbacksResponseStatus `json:"status,required"`
+	JSON   watchSendFeedbacksResponseJSON   `json:"-"`
 }
 
-func (r WatchFeedBackParams) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+// watchSendFeedbacksResponseJSON contains the JSON metadata for the struct
+// [WatchSendFeedbacksResponse]
+type watchSendFeedbacksResponseJSON struct {
+	RequestID   apijson.Field
+	Status      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
 }
 
-// You should send a feedback event back to Watch API when your user demonstrates
-// authentic behavior.
-type WatchFeedBackParamsFeedback struct {
-	// `CONFIRM_TARGET` should be sent when you are sure that the user with this target
-	// (e.g. phone number) is trustworthy.
-	Type param.Field[WatchFeedBackParamsFeedbackType] `json:"type,required"`
+func (r *WatchSendFeedbacksResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
 }
 
-func (r WatchFeedBackParamsFeedback) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
+func (r watchSendFeedbacksResponseJSON) RawJSON() string {
+	return r.raw
 }
 
-// `CONFIRM_TARGET` should be sent when you are sure that the user with this target
-// (e.g. phone number) is trustworthy.
-type WatchFeedBackParamsFeedbackType string
+// The status of the feedbacks sending.
+type WatchSendFeedbacksResponseStatus string
 
 const (
-	WatchFeedBackParamsFeedbackTypeConfirmTarget WatchFeedBackParamsFeedbackType = "CONFIRM_TARGET"
+	WatchSendFeedbacksResponseStatusSuccess WatchSendFeedbacksResponseStatus = "success"
 )
 
-func (r WatchFeedBackParamsFeedbackType) IsKnown() bool {
+func (r WatchSendFeedbacksResponseStatus) IsKnown() bool {
 	switch r {
-	case WatchFeedBackParamsFeedbackTypeConfirmTarget:
-		return true
-	}
-	return false
-}
-
-// The verification target. Either a phone number or an email address. To use the
-// email verification feature contact us to discuss your use case.
-type WatchFeedBackParamsTarget struct {
-	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[WatchFeedBackParamsTargetType] `json:"type,required"`
-	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
-}
-
-func (r WatchFeedBackParamsTarget) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The type of the target. Either "phone_number" or "email_address".
-type WatchFeedBackParamsTargetType string
-
-const (
-	WatchFeedBackParamsTargetTypePhoneNumber  WatchFeedBackParamsTargetType = "phone_number"
-	WatchFeedBackParamsTargetTypeEmailAddress WatchFeedBackParamsTargetType = "email_address"
-)
-
-func (r WatchFeedBackParamsTargetType) IsKnown() bool {
-	switch r {
-	case WatchFeedBackParamsTargetTypePhoneNumber, WatchFeedBackParamsTargetTypeEmailAddress:
+	case WatchSendFeedbacksResponseStatusSuccess:
 		return true
 	}
 	return false
 }
 
 type WatchPredictParams struct {
-	// The verification target. Either a phone number or an email address. To use the
-	// email verification feature contact us to discuss your use case.
+	// The prediction target. Only supports phone numbers for now.
 	Target param.Field[WatchPredictParamsTarget] `json:"target,required"`
-	// It is highly recommended that you provide the signals to increase prediction
-	// performance.
+	// The identifier of the dispatch that came from the front-end SDK.
+	DispatchID param.Field[string] `json:"dispatch_id"`
+	// The metadata for this prediction.
+	Metadata param.Field[WatchPredictParamsMetadata] `json:"metadata"`
+	// The signals used for anti-fraud. For more details, refer to
+	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	Signals param.Field[WatchPredictParamsSignals] `json:"signals"`
 }
 
@@ -242,8 +200,7 @@ func (r WatchPredictParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The verification target. Either a phone number or an email address. To use the
-// email verification feature contact us to discuss your use case.
+// The prediction target. Only supports phone numbers for now.
 type WatchPredictParamsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
 	Type param.Field[WatchPredictParamsTargetType] `json:"type,required"`
@@ -271,20 +228,260 @@ func (r WatchPredictParamsTargetType) IsKnown() bool {
 	return false
 }
 
-// It is highly recommended that you provide the signals to increase prediction
-// performance.
+// The metadata for this prediction.
+type WatchPredictParamsMetadata struct {
+	// A user-defined identifier to correlate this prediction with.
+	CorrelationID param.Field[string] `json:"correlation_id"`
+}
+
+func (r WatchPredictParamsMetadata) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The signals used for anti-fraud. For more details, refer to
+// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 type WatchPredictParamsSignals struct {
+	// The version of your application.
+	AppVersion param.Field[string] `json:"app_version"`
 	// The unique identifier for the user's device. For Android, this corresponds to
 	// the `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
 	DeviceID param.Field[string] `json:"device_id"`
 	// The model of the user's device.
 	DeviceModel param.Field[string] `json:"device_model"`
 	// The type of the user's device.
-	DeviceType param.Field[string] `json:"device_type"`
-	// The IPv4 address of the user's device
-	IP param.Field[string] `json:"ip"`
+	DevicePlatform param.Field[WatchPredictParamsSignalsDevicePlatform] `json:"device_platform"`
+	// The IP address of the user's device.
+	IP param.Field[string] `json:"ip" format:"ipv4"`
+	// This signal should provide a higher level of trust, indicating that the user is
+	// genuine. For more details, refer to
+	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
+	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
+	// The version of the user's device operating system.
+	OsVersion param.Field[string] `json:"os_version"`
+	// The user agent of the user's device. If the individual fields (os_version,
+	// device_platform, device_model) are provided, we will prioritize those values
+	// instead of parsing them from the user agent string.
+	UserAgent param.Field[string] `json:"user_agent"`
 }
 
 func (r WatchPredictParamsSignals) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The type of the user's device.
+type WatchPredictParamsSignalsDevicePlatform string
+
+const (
+	WatchPredictParamsSignalsDevicePlatformAndroid WatchPredictParamsSignalsDevicePlatform = "android"
+	WatchPredictParamsSignalsDevicePlatformIos     WatchPredictParamsSignalsDevicePlatform = "ios"
+	WatchPredictParamsSignalsDevicePlatformIpados  WatchPredictParamsSignalsDevicePlatform = "ipados"
+	WatchPredictParamsSignalsDevicePlatformTvos    WatchPredictParamsSignalsDevicePlatform = "tvos"
+	WatchPredictParamsSignalsDevicePlatformWeb     WatchPredictParamsSignalsDevicePlatform = "web"
+)
+
+func (r WatchPredictParamsSignalsDevicePlatform) IsKnown() bool {
+	switch r {
+	case WatchPredictParamsSignalsDevicePlatformAndroid, WatchPredictParamsSignalsDevicePlatformIos, WatchPredictParamsSignalsDevicePlatformIpados, WatchPredictParamsSignalsDevicePlatformTvos, WatchPredictParamsSignalsDevicePlatformWeb:
+		return true
+	}
+	return false
+}
+
+type WatchSendEventsParams struct {
+	// A list of events to dispatch.
+	Events param.Field[[]WatchSendEventsParamsEvent] `json:"events,required"`
+}
+
+func (r WatchSendEventsParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type WatchSendEventsParamsEvent struct {
+	// A confidence level you want to assign to the event.
+	Confidence param.Field[WatchSendEventsParamsEventsConfidence] `json:"confidence,required"`
+	// A label to describe what the event refers to.
+	Label param.Field[string] `json:"label,required"`
+	// The event target. Only supports phone numbers for now.
+	Target param.Field[WatchSendEventsParamsEventsTarget] `json:"target,required"`
+}
+
+func (r WatchSendEventsParamsEvent) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// A confidence level you want to assign to the event.
+type WatchSendEventsParamsEventsConfidence string
+
+const (
+	WatchSendEventsParamsEventsConfidenceMaximum WatchSendEventsParamsEventsConfidence = "maximum"
+	WatchSendEventsParamsEventsConfidenceHigh    WatchSendEventsParamsEventsConfidence = "high"
+	WatchSendEventsParamsEventsConfidenceNeutral WatchSendEventsParamsEventsConfidence = "neutral"
+	WatchSendEventsParamsEventsConfidenceLow     WatchSendEventsParamsEventsConfidence = "low"
+	WatchSendEventsParamsEventsConfidenceMinimum WatchSendEventsParamsEventsConfidence = "minimum"
+)
+
+func (r WatchSendEventsParamsEventsConfidence) IsKnown() bool {
+	switch r {
+	case WatchSendEventsParamsEventsConfidenceMaximum, WatchSendEventsParamsEventsConfidenceHigh, WatchSendEventsParamsEventsConfidenceNeutral, WatchSendEventsParamsEventsConfidenceLow, WatchSendEventsParamsEventsConfidenceMinimum:
+		return true
+	}
+	return false
+}
+
+// The event target. Only supports phone numbers for now.
+type WatchSendEventsParamsEventsTarget struct {
+	// The type of the target. Either "phone_number" or "email_address".
+	Type param.Field[WatchSendEventsParamsEventsTargetType] `json:"type,required"`
+	// An E.164 formatted phone number or an email address.
+	Value param.Field[string] `json:"value,required"`
+}
+
+func (r WatchSendEventsParamsEventsTarget) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The type of the target. Either "phone_number" or "email_address".
+type WatchSendEventsParamsEventsTargetType string
+
+const (
+	WatchSendEventsParamsEventsTargetTypePhoneNumber  WatchSendEventsParamsEventsTargetType = "phone_number"
+	WatchSendEventsParamsEventsTargetTypeEmailAddress WatchSendEventsParamsEventsTargetType = "email_address"
+)
+
+func (r WatchSendEventsParamsEventsTargetType) IsKnown() bool {
+	switch r {
+	case WatchSendEventsParamsEventsTargetTypePhoneNumber, WatchSendEventsParamsEventsTargetTypeEmailAddress:
+		return true
+	}
+	return false
+}
+
+type WatchSendFeedbacksParams struct {
+	// A list of feedbacks to send.
+	Feedbacks param.Field[[]WatchSendFeedbacksParamsFeedback] `json:"feedbacks,required"`
+}
+
+func (r WatchSendFeedbacksParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type WatchSendFeedbacksParamsFeedback struct {
+	// The feedback target. Only supports phone numbers for now.
+	Target param.Field[WatchSendFeedbacksParamsFeedbacksTarget] `json:"target,required"`
+	// The type of feedback.
+	Type param.Field[WatchSendFeedbacksParamsFeedbacksType] `json:"type,required"`
+	// The identifier of the dispatch that came from the front-end SDK.
+	DispatchID param.Field[string] `json:"dispatch_id"`
+	// The metadata for this feedback.
+	Metadata param.Field[WatchSendFeedbacksParamsFeedbacksMetadata] `json:"metadata"`
+	// The signals used for anti-fraud. For more details, refer to
+	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
+	Signals param.Field[WatchSendFeedbacksParamsFeedbacksSignals] `json:"signals"`
+}
+
+func (r WatchSendFeedbacksParamsFeedback) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The feedback target. Only supports phone numbers for now.
+type WatchSendFeedbacksParamsFeedbacksTarget struct {
+	// The type of the target. Either "phone_number" or "email_address".
+	Type param.Field[WatchSendFeedbacksParamsFeedbacksTargetType] `json:"type,required"`
+	// An E.164 formatted phone number or an email address.
+	Value param.Field[string] `json:"value,required"`
+}
+
+func (r WatchSendFeedbacksParamsFeedbacksTarget) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The type of the target. Either "phone_number" or "email_address".
+type WatchSendFeedbacksParamsFeedbacksTargetType string
+
+const (
+	WatchSendFeedbacksParamsFeedbacksTargetTypePhoneNumber  WatchSendFeedbacksParamsFeedbacksTargetType = "phone_number"
+	WatchSendFeedbacksParamsFeedbacksTargetTypeEmailAddress WatchSendFeedbacksParamsFeedbacksTargetType = "email_address"
+)
+
+func (r WatchSendFeedbacksParamsFeedbacksTargetType) IsKnown() bool {
+	switch r {
+	case WatchSendFeedbacksParamsFeedbacksTargetTypePhoneNumber, WatchSendFeedbacksParamsFeedbacksTargetTypeEmailAddress:
+		return true
+	}
+	return false
+}
+
+// The type of feedback.
+type WatchSendFeedbacksParamsFeedbacksType string
+
+const (
+	WatchSendFeedbacksParamsFeedbacksTypeVerificationStarted   WatchSendFeedbacksParamsFeedbacksType = "verification.started"
+	WatchSendFeedbacksParamsFeedbacksTypeVerificationCompleted WatchSendFeedbacksParamsFeedbacksType = "verification.completed"
+)
+
+func (r WatchSendFeedbacksParamsFeedbacksType) IsKnown() bool {
+	switch r {
+	case WatchSendFeedbacksParamsFeedbacksTypeVerificationStarted, WatchSendFeedbacksParamsFeedbacksTypeVerificationCompleted:
+		return true
+	}
+	return false
+}
+
+// The metadata for this feedback.
+type WatchSendFeedbacksParamsFeedbacksMetadata struct {
+	// A user-defined identifier to correlate this feedback with.
+	CorrelationID param.Field[string] `json:"correlation_id"`
+}
+
+func (r WatchSendFeedbacksParamsFeedbacksMetadata) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The signals used for anti-fraud. For more details, refer to
+// [Signals](/verify/v2/documentation/prevent-fraud#signals).
+type WatchSendFeedbacksParamsFeedbacksSignals struct {
+	// The version of your application.
+	AppVersion param.Field[string] `json:"app_version"`
+	// The unique identifier for the user's device. For Android, this corresponds to
+	// the `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
+	DeviceID param.Field[string] `json:"device_id"`
+	// The model of the user's device.
+	DeviceModel param.Field[string] `json:"device_model"`
+	// The type of the user's device.
+	DevicePlatform param.Field[WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform] `json:"device_platform"`
+	// The IP address of the user's device.
+	IP param.Field[string] `json:"ip" format:"ipv4"`
+	// This signal should provide a higher level of trust, indicating that the user is
+	// genuine. For more details, refer to
+	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
+	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
+	// The version of the user's device operating system.
+	OsVersion param.Field[string] `json:"os_version"`
+	// The user agent of the user's device. If the individual fields (os_version,
+	// device_platform, device_model) are provided, we will prioritize those values
+	// instead of parsing them from the user agent string.
+	UserAgent param.Field[string] `json:"user_agent"`
+}
+
+func (r WatchSendFeedbacksParamsFeedbacksSignals) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// The type of the user's device.
+type WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform string
+
+const (
+	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformAndroid WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "android"
+	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIos     WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "ios"
+	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIpados  WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "ipados"
+	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformTvos    WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "tvos"
+	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformWeb     WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "web"
+)
+
+func (r WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform) IsKnown() bool {
+	switch r {
+	case WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformAndroid, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIos, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIpados, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformTvos, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformWeb:
+		return true
+	}
+	return false
 }

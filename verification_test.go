@@ -34,6 +34,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 		Metadata: prelude.F(prelude.VerificationNewParamsMetadata{
 			CorrelationID: prelude.F("correlation_id"),
 		}),
+		Method: prelude.F(prelude.VerificationNewParamsMethodAuto),
 		Options: prelude.F(prelude.VerificationNewParamsOptions{
 			AppRealm: prelude.F(prelude.VerificationNewParamsOptionsAppRealm{
 				Platform: prelude.F(prelude.VerificationNewParamsOptionsAppRealmPlatformAndroid),
@@ -53,7 +54,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			AppVersion:     prelude.F("1.2.34"),
 			DeviceID:       prelude.F("8F0B8FDD-C2CB-4387-B20A-56E9B2E5A0D2"),
 			DeviceModel:    prelude.F("iPhone17,2"),
-			DevicePlatform: prelude.F(prelude.VerificationNewParamsSignalsDevicePlatformAndroid),
+			DevicePlatform: prelude.F(prelude.VerificationNewParamsSignalsDevicePlatformIos),
 			IP:             prelude.F("192.0.2.1"),
 			IsTrustedUser:  prelude.F(false),
 			OsVersion:      prelude.F("18.0.1"),

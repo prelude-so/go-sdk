@@ -4,6 +4,7 @@ package prelude_test
 
 import (
 	"context"
+	"errors"
 	"os"
 	"testing"
 
@@ -12,7 +13,7 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
-func TestUsage(t *testing.T) {
+func TestLookupLookupWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -24,15 +25,18 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIToken("My API Token"),
 	)
-	verification, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
-			Value: prelude.F("+30123456789"),
-		}),
-	})
+	_, err := client.Lookup.Lookup(
+		context.TODO(),
+		"+12065550100",
+		prelude.LookupLookupParams{
+			Type: prelude.F([]prelude.LookupLookupParamsType{prelude.LookupLookupParamsTypeCnam}),
+		},
+	)
 	if err != nil {
-		t.Error(err)
-		return
+		var apierr *prelude.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
 	}
-	t.Logf("%+v\n", verification.ID)
 }
