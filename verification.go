@@ -214,10 +214,16 @@ type VerificationNewParams struct {
 	// The metadata for this verification. This object will be returned with every
 	// response or webhook sent that refers to this verification.
 	Metadata param.Field[VerificationNewParamsMetadata] `json:"metadata"`
+	// The method used for verifying this phone number. The 'voice' option provides an
+	// accessible alternative for visually impaired users by delivering the
+	// verification code through a phone call rather than a text message. It also
+	// allows verification of landline numbers that cannot receive SMS messages.
+	// **Coming soon.**
+	Method param.Field[VerificationNewParamsMethod] `json:"method"`
 	// Verification options
 	Options param.Field[VerificationNewParamsOptions] `json:"options"`
 	// The signals used for anti-fraud. For more details, refer to
-	// [Signals](/guides/prevent-fraud#signals).
+	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	Signals param.Field[VerificationNewParamsSignals] `json:"signals"`
 }
 
@@ -265,6 +271,26 @@ func (r VerificationNewParamsMetadata) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// The method used for verifying this phone number. The 'voice' option provides an
+// accessible alternative for visually impaired users by delivering the
+// verification code through a phone call rather than a text message. It also
+// allows verification of landline numbers that cannot receive SMS messages.
+// **Coming soon.**
+type VerificationNewParamsMethod string
+
+const (
+	VerificationNewParamsMethodAuto  VerificationNewParamsMethod = "auto"
+	VerificationNewParamsMethodVoice VerificationNewParamsMethod = "voice"
+)
+
+func (r VerificationNewParamsMethod) IsKnown() bool {
+	switch r {
+	case VerificationNewParamsMethodAuto, VerificationNewParamsMethodVoice:
+		return true
+	}
+	return false
+}
+
 // Verification options
 type VerificationNewParamsOptions struct {
 	// This allows you to automatically retrieve and fill the OTP code on mobile apps.
@@ -272,7 +298,7 @@ type VerificationNewParamsOptions struct {
 	AppRealm param.Field[VerificationNewParamsOptionsAppRealm] `json:"app_realm"`
 	// The URL where webhooks will be sent when verification events occur, including
 	// verification creation, attempt creation, and delivery status changes. For more
-	// details, refer to [Webhook](/api-reference/v2/verify/webhook).
+	// details, refer to [Webhook](/verify/v2/documentation/webhook).
 	CallbackURL param.Field[string] `json:"callback_url"`
 	// The size of the code generated. It should be between 4 and 8. Defaults to the
 	// code size specified from the Dashboard.
@@ -280,7 +306,7 @@ type VerificationNewParamsOptions struct {
 	// The custom code to use for OTP verification. This feature is only available for
 	// compatibility purposes and subject to Prelude’s approval. Contact us to discuss
 	// your use case. For more details, refer to
-	// [Multi Routing](/concepts/multi-routing).
+	// [Multi Routing](/introduction/concepts/multi-routing).
 	CustomCode param.Field[string] `json:"custom_code"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
@@ -332,7 +358,7 @@ func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
 }
 
 // The signals used for anti-fraud. For more details, refer to
-// [Signals](/guides/prevent-fraud#signals).
+// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 type VerificationNewParamsSignals struct {
 	// The version of your application.
 	AppVersion param.Field[string] `json:"app_version"`
@@ -346,7 +372,8 @@ type VerificationNewParamsSignals struct {
 	// The IP address of the user's device.
 	IP param.Field[string] `json:"ip" format:"ipv4"`
 	// This signal should provide a higher level of trust, indicating that the user is
-	// genuine. For more details, refer to [Signals](/guides/prevent-fraud#signals).
+	// genuine. For more details, refer to
+	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
