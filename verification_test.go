@@ -34,6 +34,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 		Metadata: prelude.F(prelude.VerificationNewParamsMetadata{
 			CorrelationID: prelude.F("correlation_id"),
 		}),
+		Method: prelude.F(prelude.VerificationNewParamsMethodAuto),
 		Options: prelude.F(prelude.VerificationNewParamsOptions{
 			AppRealm: prelude.F(prelude.VerificationNewParamsOptionsAppRealm{
 				Platform: prelude.F(prelude.VerificationNewParamsOptionsAppRealmPlatformAndroid),
