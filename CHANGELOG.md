@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.4.0 (2025-04-15)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/prelude-so/go-sdk/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* **client:** add support for reading base URL from environment variable ([6425aaa](https://github.com/prelude-so/go-sdk/commit/6425aaa98169585728a22b9dafd8e22850e5bcdb))
+
+
+### Chores
+
+* **docs:** document pre-request options ([e87f9ea](https://github.com/prelude-so/go-sdk/commit/e87f9ea11681827ee8b3e8c50f938fbd163a1fda))
+
+
+### Documentation
+
+* update documentation links to be more uniform ([d7bfab0](https://github.com/prelude-so/go-sdk/commit/d7bfab07dfe42cfca734a3becc72f232a11bca55))
+
 ## 0.3.0 (2025-04-11)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/prelude-so/go-sdk/compare/v0.2.0...v0.3.0)
