@@ -253,7 +253,7 @@ type WatchPredictParamsSignals struct {
 	// The IP address of the user's device.
 	IP param.Field[string] `json:"ip" format:"ipv4"`
 	// This signal should provide a higher level of trust, indicating that the user is
-	// genuine. For more details, refer to
+	// genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
 	// The version of the user's device operating system.
@@ -452,7 +452,7 @@ type WatchSendFeedbacksParamsFeedbacksSignals struct {
 	// The IP address of the user's device.
 	IP param.Field[string] `json:"ip" format:"ipv4"`
 	// This signal should provide a higher level of trust, indicating that the user is
-	// genuine. For more details, refer to
+	// genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
 	// The version of the user's device operating system.
