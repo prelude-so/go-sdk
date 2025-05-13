@@ -49,6 +49,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			Variables: prelude.F(map[string]string{
 				"foo": "bar",
 			}),
+			PreferredChannel: prelude.F(prelude.VerificationNewParamsOptionsPreferredChannelWhatsapp),
 		}),
 		Signals: prelude.F(prelude.VerificationNewParamsSignals{
 			AppVersion:     prelude.F("1.2.34"),

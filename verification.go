@@ -252,6 +252,16 @@ const (
 	VerificationNewParamsTargetTypeEmailAddress VerificationNewParamsTargetType = "email_address"
 )
 
+type VerificationNewParamsOptionsPreferredChannel string
+
+const (
+	VerificationNewParamsOptionsPreferredChannelSms      VerificationNewParamsOptionsPreferredChannel = "sms"
+	VerificationNewParamsOptionsPreferredChannelRcs      VerificationNewParamsOptionsPreferredChannel = "rcs"
+	VerificationNewParamsOptionsPreferredChannelWhatsapp VerificationNewParamsOptionsPreferredChannel = "whatsapp"
+	VerificationNewParamsOptionsPreferredChannelViber    VerificationNewParamsOptionsPreferredChannel = "viber"
+	VerificationNewParamsOptionsPreferredChannelZalo     VerificationNewParamsOptionsPreferredChannel = "zalo"
+)
+
 func (r VerificationNewParamsTargetType) IsKnown() bool {
 	switch r {
 	case VerificationNewParamsTargetTypePhoneNumber, VerificationNewParamsTargetTypeEmailAddress:
@@ -321,6 +331,8 @@ type VerificationNewParamsOptions struct {
 	TemplateID param.Field[string] `json:"template_id"`
 	// The variables to be replaced in the template.
 	Variables param.Field[map[string]string] `json:"variables"`
+	// preferred_channel
+	PreferredChannel param.Field[VerificationNewParamsOptionsPreferredChannel] `json:"preferred_channel"`
 }
 
 func (r VerificationNewParamsOptions) MarshalJSON() (data []byte, err error) {
