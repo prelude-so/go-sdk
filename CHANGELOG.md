@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0 (2025-05-13)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/prelude-so/go-sdk/compare/v0.4.0...v0.5.0)
+
+### Features
+
+* **client:** add support for endpoint-specific base URLs in python ([8a88868](https://github.com/prelude-so/go-sdk/commit/8a88868b6e87eb44042fb84eb055563dd1b833d6))
+
 ## 0.4.0 (2025-05-13)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/prelude-so/go-sdk/compare/v0.3.0...v0.4.0)
