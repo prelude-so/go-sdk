@@ -56,6 +56,8 @@ type VerificationNewResponse struct {
 	Method VerificationNewResponseMethod `json:"method,required"`
 	// The status of the verification.
 	Status VerificationNewResponseStatus `json:"status,required"`
+	// The ordered sequence of channels to be used for verification
+	Channels []string `json:"channels"`
 	// The metadata for this verification.
 	Metadata  VerificationNewResponseMetadata `json:"metadata"`
 	RequestID string                          `json:"request_id"`
@@ -68,6 +70,7 @@ type verificationNewResponseJSON struct {
 	ID          apijson.Field
 	Method      apijson.Field
 	Status      apijson.Field
+	Channels    apijson.Field
 	Metadata    apijson.Field
 	RequestID   apijson.Field
 	raw         string
@@ -214,12 +217,6 @@ type VerificationNewParams struct {
 	// The metadata for this verification. This object will be returned with every
 	// response or webhook sent that refers to this verification.
 	Metadata param.Field[VerificationNewParamsMetadata] `json:"metadata"`
-	// The method used for verifying this phone number. The 'voice' option provides an
-	// accessible alternative for visually impaired users by delivering the
-	// verification code through a phone call rather than a text message. It also
-	// allows verification of landline numbers that cannot receive SMS messages.
-	// **Coming soon.**
-	Method param.Field[VerificationNewParamsMethod] `json:"method"`
 	// Verification options
 	Options param.Field[VerificationNewParamsOptions] `json:"options"`
 	// The signals used for anti-fraud. For more details, refer to
@@ -271,26 +268,6 @@ func (r VerificationNewParamsMetadata) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The method used for verifying this phone number. The 'voice' option provides an
-// accessible alternative for visually impaired users by delivering the
-// verification code through a phone call rather than a text message. It also
-// allows verification of landline numbers that cannot receive SMS messages.
-// **Coming soon.**
-type VerificationNewParamsMethod string
-
-const (
-	VerificationNewParamsMethodAuto  VerificationNewParamsMethod = "auto"
-	VerificationNewParamsMethodVoice VerificationNewParamsMethod = "voice"
-)
-
-func (r VerificationNewParamsMethod) IsKnown() bool {
-	switch r {
-	case VerificationNewParamsMethodAuto, VerificationNewParamsMethodVoice:
-		return true
-	}
-	return false
-}
-
 // Verification options
 type VerificationNewParamsOptions struct {
 	// This allows you to automatically retrieve and fill the OTP code on mobile apps.
@@ -303,16 +280,22 @@ type VerificationNewParamsOptions struct {
 	// The size of the code generated. It should be between 4 and 8. Defaults to the
 	// code size specified from the Dashboard.
 	CodeSize param.Field[int64] `json:"code_size"`
-	// The custom code to use for OTP verification. This feature is only available for
-	// compatibility purposes and subject to Prelude’s approval. Contact us to discuss
-	// your use case. For more details, refer to
-	// [Multi Routing](/introduction/concepts/multi-routing).
+	// The custom code to use for OTP verification. To use the custom code feature,
+	// contact us to enable it for your account. For more details, refer to
+	// [Custom Code](/verify/v2/documentation/custom-code).
 	CustomCode param.Field[string] `json:"custom_code"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
 	// code of the phone number. If the language specified doesn't exist, it defaults
 	// to US English.
 	Locale param.Field[string] `json:"locale"`
+	// The method used for verifying this phone number. The 'voice' option provides an
+	// accessible alternative for visually impaired users by delivering the
+	// verification code through a phone call rather than a text message. It also
+	// allows verification of landline numbers that cannot receive SMS messages.
+	Method param.Field[VerificationNewParamsOptionsMethod] `json:"method"`
+	// The preferred channel to be used in priority for verification.
+	PreferredChannel param.Field[VerificationNewParamsOptionsPreferredChannel] `json:"preferred_channel"`
 	// The Sender ID to use for this message. The Sender ID needs to be enabled by
 	// Prelude.
 	SenderID param.Field[string] `json:"sender_id"`
@@ -357,6 +340,44 @@ func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
 	return false
 }
 
+// The method used for verifying this phone number. The 'voice' option provides an
+// accessible alternative for visually impaired users by delivering the
+// verification code through a phone call rather than a text message. It also
+// allows verification of landline numbers that cannot receive SMS messages.
+type VerificationNewParamsOptionsMethod string
+
+const (
+	VerificationNewParamsOptionsMethodAuto  VerificationNewParamsOptionsMethod = "auto"
+	VerificationNewParamsOptionsMethodVoice VerificationNewParamsOptionsMethod = "voice"
+)
+
+func (r VerificationNewParamsOptionsMethod) IsKnown() bool {
+	switch r {
+	case VerificationNewParamsOptionsMethodAuto, VerificationNewParamsOptionsMethodVoice:
+		return true
+	}
+	return false
+}
+
+// The preferred channel to be used in priority for verification.
+type VerificationNewParamsOptionsPreferredChannel string
+
+const (
+	VerificationNewParamsOptionsPreferredChannelSMS      VerificationNewParamsOptionsPreferredChannel = "sms"
+	VerificationNewParamsOptionsPreferredChannelRcs      VerificationNewParamsOptionsPreferredChannel = "rcs"
+	VerificationNewParamsOptionsPreferredChannelWhatsapp VerificationNewParamsOptionsPreferredChannel = "whatsapp"
+	VerificationNewParamsOptionsPreferredChannelViber    VerificationNewParamsOptionsPreferredChannel = "viber"
+	VerificationNewParamsOptionsPreferredChannelZalo     VerificationNewParamsOptionsPreferredChannel = "zalo"
+)
+
+func (r VerificationNewParamsOptionsPreferredChannel) IsKnown() bool {
+	switch r {
+	case VerificationNewParamsOptionsPreferredChannelSMS, VerificationNewParamsOptionsPreferredChannelRcs, VerificationNewParamsOptionsPreferredChannelWhatsapp, VerificationNewParamsOptionsPreferredChannelViber, VerificationNewParamsOptionsPreferredChannelZalo:
+		return true
+	}
+	return false
+}
+
 // The signals used for anti-fraud. For more details, refer to
 // [Signals](/verify/v2/documentation/prevent-fraud#signals).
 type VerificationNewParamsSignals struct {
@@ -372,7 +393,7 @@ type VerificationNewParamsSignals struct {
 	// The IP address of the user's device.
 	IP param.Field[string] `json:"ip" format:"ipv4"`
 	// This signal should provide a higher level of trust, indicating that the user is
-	// genuine. For more details, refer to
+	// genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
 	// The version of the user's device operating system.

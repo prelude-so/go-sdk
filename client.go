@@ -22,10 +22,13 @@ type Client struct {
 	Watch         *WatchService
 }
 
-// DefaultClientOptions read from the environment (API_TOKEN). This should be used
-// to initialize new clients.
+// DefaultClientOptions read from the environment (API_TOKEN, PRELUDE_BASE_URL).
+// This should be used to initialize new clients.
 func DefaultClientOptions() []option.RequestOption {
 	defaults := []option.RequestOption{option.WithEnvironmentProduction()}
+	if o, ok := os.LookupEnv("PRELUDE_BASE_URL"); ok {
+		defaults = append(defaults, option.WithBaseURL(o))
+	}
 	if o, ok := os.LookupEnv("API_TOKEN"); ok {
 		defaults = append(defaults, option.WithAPIToken(o))
 	}
@@ -33,9 +36,9 @@ func DefaultClientOptions() []option.RequestOption {
 }
 
 // NewClient generates a new client with the default option read from the
-// environment (API_TOKEN). The option passed in as arguments are applied after
-// these default arguments, and all option will be passed down to the services and
-// requests that this client makes.
+// environment (API_TOKEN, PRELUDE_BASE_URL). The option passed in as arguments are
+// applied after these default arguments, and all option will be passed down to the
+// services and requests that this client makes.
 func NewClient(opts ...option.RequestOption) (r *Client) {
 	opts = append(DefaultClientOptions(), opts...)
 

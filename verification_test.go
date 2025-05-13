@@ -14,6 +14,7 @@ import (
 )
 
 func TestVerificationNewWithOptionalParams(t *testing.T) {
+	t.Skip("skipped: currently no good way to test endpoints defining callbacks, Prism mock server will fail trying to reach the provided callback url")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -34,18 +35,19 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 		Metadata: prelude.F(prelude.VerificationNewParamsMetadata{
 			CorrelationID: prelude.F("correlation_id"),
 		}),
-		Method: prelude.F(prelude.VerificationNewParamsMethodAuto),
 		Options: prelude.F(prelude.VerificationNewParamsOptions{
 			AppRealm: prelude.F(prelude.VerificationNewParamsOptionsAppRealm{
 				Platform: prelude.F(prelude.VerificationNewParamsOptionsAppRealmPlatformAndroid),
 				Value:    prelude.F("value"),
 			}),
-			CallbackURL: prelude.F("callback_url"),
-			CodeSize:    prelude.F(int64(5)),
-			CustomCode:  prelude.F("custom_code"),
-			Locale:      prelude.F("el-GR"),
-			SenderID:    prelude.F("sender_id"),
-			TemplateID:  prelude.F("prelude:psd2"),
+			CallbackURL:      prelude.F("callback_url"),
+			CodeSize:         prelude.F(int64(5)),
+			CustomCode:       prelude.F("123456"),
+			Locale:           prelude.F("el-GR"),
+			Method:           prelude.F(prelude.VerificationNewParamsOptionsMethodAuto),
+			PreferredChannel: prelude.F(prelude.VerificationNewParamsOptionsPreferredChannelSMS),
+			SenderID:         prelude.F("sender_id"),
+			TemplateID:       prelude.F("prelude:psd2"),
 			Variables: prelude.F(map[string]string{
 				"foo": "bar",
 			}),
