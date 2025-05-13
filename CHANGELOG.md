@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.4.0 (2025-05-13)
+
+Full Changelog: [v0.3.0...v0.4.0](https://github.com/prelude-so/go-sdk/compare/v0.3.0...v0.4.0)
+
+### Features
+
+* **api:** update via SDK Studio ([c5cb0f8](https://github.com/prelude-so/go-sdk/commit/c5cb0f8243ed85f87691c55b45208beea508809e))
+* **client:** add support for reading base URL from environment variable ([6425aaa](https://github.com/prelude-so/go-sdk/commit/6425aaa98169585728a22b9dafd8e22850e5bcdb))
+
+
+### Bug Fixes
+
+* **client:** clean up reader resources ([29c742a](https://github.com/prelude-so/go-sdk/commit/29c742ab17f2d18bc502792a120e717edfd2f171))
+* **client:** correctly update body in WithJSONSet ([e3a7f75](https://github.com/prelude-so/go-sdk/commit/e3a7f755580e3a15ea7839cfc77b39e908def51c))
+* handle empty bodies in WithJSONSet ([960afe6](https://github.com/prelude-so/go-sdk/commit/960afe66f028812a1d8dd2d2ea627ac5044ea583))
+
+
+### Chores
+
+* **ci:** add timeout thresholds for CI jobs ([26b3f82](https://github.com/prelude-so/go-sdk/commit/26b3f827e738009e9e441d7b90d71b0f8ee7d172))
+* **ci:** only use depot for staging repos ([7dd3e52](https://github.com/prelude-so/go-sdk/commit/7dd3e52a5c51b0aaf5c513764bc4fbdd9af1f795))
+* **ci:** run on more branches and use depot runners ([54428fe](https://github.com/prelude-so/go-sdk/commit/54428fe0808ad1877990d8d88c4e468f3e6cca84))
+* **docs:** document pre-request options ([e87f9ea](https://github.com/prelude-so/go-sdk/commit/e87f9ea11681827ee8b3e8c50f938fbd163a1fda))
+
+
+### Documentation
+
+* update documentation links to be more uniform ([d7bfab0](https://github.com/prelude-so/go-sdk/commit/d7bfab07dfe42cfca734a3becc72f232a11bca55))
+
 ## 0.3.0 (2025-04-11)
 
 Full Changelog: [v0.2.0...v0.3.0](https://github.com/prelude-so/go-sdk/compare/v0.2.0...v0.3.0)
