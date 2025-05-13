@@ -4,7 +4,6 @@ To set up the repository, run:
 
 ```sh
 $ ./scripts/bootstrap
-$ ./scripts/build
 ```
 
 This will install all the required dependencies and build the SDK.
