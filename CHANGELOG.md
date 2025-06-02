@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.5.0 (2025-06-02)
+
+Full Changelog: [v0.4.0...v0.5.0](https://github.com/prelude-so/go-sdk/compare/v0.4.0...v0.5.0)
+
+### Features
+
+* **api:** update via SDK Studio ([9e5bbd6](https://github.com/prelude-so/go-sdk/commit/9e5bbd6d5d95b3920ca0d331dc5ff01e4d6aaff0))
+* **client:** add support for endpoint-specific base URLs in python ([8a88868](https://github.com/prelude-so/go-sdk/commit/8a88868b6e87eb44042fb84eb055563dd1b833d6))
+
+
+### Chores
+
+* **docs:** grammar improvements ([e298d78](https://github.com/prelude-so/go-sdk/commit/e298d784e4b48e344ced24d11475ef448678a037))
+* improve devcontainer setup ([7e19069](https://github.com/prelude-so/go-sdk/commit/7e19069917354f694ae6f224d8e9f182a3e58a6a))
+* make go mod tidy continue on error ([986e865](https://github.com/prelude-so/go-sdk/commit/986e865c53cb0aa3e93ba5e630211f4b51eac1cc))
+
 ## 0.4.0 (2025-05-13)
 
 Full Changelog: [v0.3.0...v0.4.0](https://github.com/prelude-so/go-sdk/compare/v0.3.0...v0.4.0)

@@ -59,9 +59,14 @@ type VerificationNewResponse struct {
 	// The ordered sequence of channels to be used for verification
 	Channels []string `json:"channels"`
 	// The metadata for this verification.
-	Metadata  VerificationNewResponseMetadata `json:"metadata"`
-	RequestID string                          `json:"request_id"`
-	JSON      verificationNewResponseJSON     `json:"-"`
+	Metadata VerificationNewResponseMetadata `json:"metadata"`
+	// The reason why the verification was blocked. Only present when status is
+	// "blocked".
+	Reason    VerificationNewResponseReason `json:"reason"`
+	RequestID string                        `json:"request_id"`
+	// The silent verification specific properties.
+	Silent VerificationNewResponseSilent `json:"silent"`
+	JSON   verificationNewResponseJSON   `json:"-"`
 }
 
 // verificationNewResponseJSON contains the JSON metadata for the struct
@@ -72,7 +77,9 @@ type verificationNewResponseJSON struct {
 	Status      apijson.Field
 	Channels    apijson.Field
 	Metadata    apijson.Field
+	Reason      apijson.Field
 	RequestID   apijson.Field
+	Silent      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -90,11 +97,13 @@ type VerificationNewResponseMethod string
 
 const (
 	VerificationNewResponseMethodMessage VerificationNewResponseMethod = "message"
+	VerificationNewResponseMethodSilent  VerificationNewResponseMethod = "silent"
+	VerificationNewResponseMethodVoice   VerificationNewResponseMethod = "voice"
 )
 
 func (r VerificationNewResponseMethod) IsKnown() bool {
 	switch r {
-	case VerificationNewResponseMethodMessage:
+	case VerificationNewResponseMethodMessage, VerificationNewResponseMethodSilent, VerificationNewResponseMethodVoice:
 		return true
 	}
 	return false
@@ -136,6 +145,49 @@ func (r *VerificationNewResponseMetadata) UnmarshalJSON(data []byte) (err error)
 }
 
 func (r verificationNewResponseMetadataJSON) RawJSON() string {
+	return r.raw
+}
+
+// The reason why the verification was blocked. Only present when status is
+// "blocked".
+type VerificationNewResponseReason string
+
+const (
+	VerificationNewResponseReasonSuspicious         VerificationNewResponseReason = "suspicious"
+	VerificationNewResponseReasonRepeatedAttempts   VerificationNewResponseReason = "repeated_attempts"
+	VerificationNewResponseReasonInvalidPhoneLine   VerificationNewResponseReason = "invalid_phone_line"
+	VerificationNewResponseReasonInvalidPhoneNumber VerificationNewResponseReason = "invalid_phone_number"
+	VerificationNewResponseReasonInBlockList        VerificationNewResponseReason = "in_block_list"
+)
+
+func (r VerificationNewResponseReason) IsKnown() bool {
+	switch r {
+	case VerificationNewResponseReasonSuspicious, VerificationNewResponseReasonRepeatedAttempts, VerificationNewResponseReasonInvalidPhoneLine, VerificationNewResponseReasonInvalidPhoneNumber, VerificationNewResponseReasonInBlockList:
+		return true
+	}
+	return false
+}
+
+// The silent verification specific properties.
+type VerificationNewResponseSilent struct {
+	// The URL to start the silent verification towards.
+	RequestURL string                            `json:"request_url,required"`
+	JSON       verificationNewResponseSilentJSON `json:"-"`
+}
+
+// verificationNewResponseSilentJSON contains the JSON metadata for the struct
+// [VerificationNewResponseSilent]
+type verificationNewResponseSilentJSON struct {
+	RequestURL  apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VerificationNewResponseSilent) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r verificationNewResponseSilentJSON) RawJSON() string {
 	return r.raw
 }
 
@@ -282,7 +334,7 @@ type VerificationNewParamsOptions struct {
 	CodeSize param.Field[int64] `json:"code_size"`
 	// The custom code to use for OTP verification. To use the custom code feature,
 	// contact us to enable it for your account. For more details, refer to
-	// [Custom Code](/verify/v2/documentation/custom-code).
+	// [Custom Code](/verify/v2/documentation/custom-codes).
 	CustomCode param.Field[string] `json:"custom_code"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
@@ -368,11 +420,14 @@ const (
 	VerificationNewParamsOptionsPreferredChannelWhatsapp VerificationNewParamsOptionsPreferredChannel = "whatsapp"
 	VerificationNewParamsOptionsPreferredChannelViber    VerificationNewParamsOptionsPreferredChannel = "viber"
 	VerificationNewParamsOptionsPreferredChannelZalo     VerificationNewParamsOptionsPreferredChannel = "zalo"
+	VerificationNewParamsOptionsPreferredChannelTelegram VerificationNewParamsOptionsPreferredChannel = "telegram"
+	VerificationNewParamsOptionsPreferredChannelSilent   VerificationNewParamsOptionsPreferredChannel = "silent"
+	VerificationNewParamsOptionsPreferredChannelVoice    VerificationNewParamsOptionsPreferredChannel = "voice"
 )
 
 func (r VerificationNewParamsOptionsPreferredChannel) IsKnown() bool {
 	switch r {
-	case VerificationNewParamsOptionsPreferredChannelSMS, VerificationNewParamsOptionsPreferredChannelRcs, VerificationNewParamsOptionsPreferredChannelWhatsapp, VerificationNewParamsOptionsPreferredChannelViber, VerificationNewParamsOptionsPreferredChannelZalo:
+	case VerificationNewParamsOptionsPreferredChannelSMS, VerificationNewParamsOptionsPreferredChannelRcs, VerificationNewParamsOptionsPreferredChannelWhatsapp, VerificationNewParamsOptionsPreferredChannelViber, VerificationNewParamsOptionsPreferredChannelZalo, VerificationNewParamsOptionsPreferredChannelTelegram, VerificationNewParamsOptionsPreferredChannelSilent, VerificationNewParamsOptionsPreferredChannelVoice:
 		return true
 	}
 	return false
