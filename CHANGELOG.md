@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.6.0 (2025-06-17)
+
+Full Changelog: [v0.5.0...v0.6.0](https://github.com/prelude-so/go-sdk/compare/v0.5.0...v0.6.0)
+
+### Features
+
+* **client:** add debug log helper ([bdc01e5](https://github.com/prelude-so/go-sdk/commit/bdc01e53e36b3aa16aaf7c5bbcc55e8994598c88))
+
+
+### Chores
+
+* **ci:** enable for pull requests ([3b46ccd](https://github.com/prelude-so/go-sdk/commit/3b46ccdb10b8d4f25365a75ba5aed537af5a30f0))
+
 ## 0.5.0 (2025-06-02)
 
 Full Changelog: [v0.4.0...v0.5.0](https://github.com/prelude-so/go-sdk/compare/v0.4.0...v0.5.0)
