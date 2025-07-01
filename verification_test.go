@@ -31,7 +31,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
-		DispatchID: prelude.F("dispatch_id"),
+		DispatchID: prelude.F("123e4567-e89b-12d3-a456-426614174000"),
 		Metadata: prelude.F(prelude.VerificationNewParamsMetadata{
 			CorrelationID: prelude.F("correlation_id"),
 		}),

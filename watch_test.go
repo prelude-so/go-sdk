@@ -30,7 +30,7 @@ func TestWatchPredictWithOptionalParams(t *testing.T) {
 			Type:  prelude.F(prelude.WatchPredictParamsTargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
-		DispatchID: prelude.F("dispatch_id"),
+		DispatchID: prelude.F("123e4567-e89b-12d3-a456-426614174000"),
 		Metadata: prelude.F(prelude.WatchPredictParamsMetadata{
 			CorrelationID: prelude.F("correlation_id"),
 		}),
@@ -104,7 +104,7 @@ func TestWatchSendFeedbacks(t *testing.T) {
 				Value: prelude.F("+30123456789"),
 			}),
 			Type:       prelude.F(prelude.WatchSendFeedbacksParamsFeedbacksTypeVerificationStarted),
-			DispatchID: prelude.F("dispatch_id"),
+			DispatchID: prelude.F("123e4567-e89b-12d3-a456-426614174000"),
 			Metadata: prelude.F(prelude.WatchSendFeedbacksParamsFeedbacksMetadata{
 				CorrelationID: prelude.F("correlation_id"),
 			}),

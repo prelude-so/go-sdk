@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.7.0 (2025-07-01)
+
+Full Changelog: [v0.6.0...v0.7.0](https://github.com/prelude-so/go-sdk/compare/v0.6.0...v0.7.0)
+
+### Features
+
+* **api:** update via SDK Studio ([e6b3ca1](https://github.com/prelude-so/go-sdk/commit/e6b3ca1528c7726398987af37c1f079b84f31fb4))
+
+
+### Bug Fixes
+
+* don't try to deserialize as json when ResponseBodyInto is []byte ([cf385aa](https://github.com/prelude-so/go-sdk/commit/cf385aae3a726932291f4c9893153e347f26d610))
+
+
+### Chores
+
+* **ci:** only run for pushes and fork pull requests ([0da7840](https://github.com/prelude-so/go-sdk/commit/0da7840eb5ef751b927a0759b13a5a972a96a036))
+
 ## 0.6.0 (2025-06-17)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/prelude-so/go-sdk/compare/v0.5.0...v0.6.0)
