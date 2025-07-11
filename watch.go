@@ -230,7 +230,8 @@ func (r WatchPredictParamsTargetType) IsKnown() bool {
 
 // The metadata for this prediction.
 type WatchPredictParamsMetadata struct {
-	// A user-defined identifier to correlate this prediction with.
+	// A user-defined identifier to correlate this prediction with. It is returned in
+	// the response and any webhook events that refer to this prediction.
 	CorrelationID param.Field[string] `json:"correlation_id"`
 }
 
@@ -429,7 +430,8 @@ func (r WatchSendFeedbacksParamsFeedbacksType) IsKnown() bool {
 
 // The metadata for this feedback.
 type WatchSendFeedbacksParamsFeedbacksMetadata struct {
-	// A user-defined identifier to correlate this feedback with.
+	// A user-defined identifier to correlate this feedback with. It is returned in the
+	// response and any webhook events that refer to this feedback.
 	CorrelationID param.Field[string] `json:"correlation_id"`
 }
 
