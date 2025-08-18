@@ -96,6 +96,7 @@ func (r verificationNewResponseJSON) RawJSON() string {
 type VerificationNewResponseMethod string
 
 const (
+	VerificationNewResponseMethodEmail   VerificationNewResponseMethod = "email"
 	VerificationNewResponseMethodMessage VerificationNewResponseMethod = "message"
 	VerificationNewResponseMethodSilent  VerificationNewResponseMethod = "silent"
 	VerificationNewResponseMethodVoice   VerificationNewResponseMethod = "voice"
@@ -103,7 +104,7 @@ const (
 
 func (r VerificationNewResponseMethod) IsKnown() bool {
 	switch r {
-	case VerificationNewResponseMethodMessage, VerificationNewResponseMethodSilent, VerificationNewResponseMethodVoice:
+	case VerificationNewResponseMethodEmail, VerificationNewResponseMethodMessage, VerificationNewResponseMethodSilent, VerificationNewResponseMethodVoice:
 		return true
 	}
 	return false
@@ -129,19 +130,19 @@ func (r VerificationNewResponseStatus) IsKnown() bool {
 type VerificationNewResponseChannel string
 
 const (
-	VerificationNewResponseChannelSMS      VerificationNewResponseChannel = "sms"
 	VerificationNewResponseChannelRcs      VerificationNewResponseChannel = "rcs"
-	VerificationNewResponseChannelWhatsapp VerificationNewResponseChannel = "whatsapp"
-	VerificationNewResponseChannelViber    VerificationNewResponseChannel = "viber"
-	VerificationNewResponseChannelZalo     VerificationNewResponseChannel = "zalo"
-	VerificationNewResponseChannelTelegram VerificationNewResponseChannel = "telegram"
 	VerificationNewResponseChannelSilent   VerificationNewResponseChannel = "silent"
+	VerificationNewResponseChannelSMS      VerificationNewResponseChannel = "sms"
+	VerificationNewResponseChannelTelegram VerificationNewResponseChannel = "telegram"
+	VerificationNewResponseChannelViber    VerificationNewResponseChannel = "viber"
 	VerificationNewResponseChannelVoice    VerificationNewResponseChannel = "voice"
+	VerificationNewResponseChannelWhatsapp VerificationNewResponseChannel = "whatsapp"
+	VerificationNewResponseChannelZalo     VerificationNewResponseChannel = "zalo"
 )
 
 func (r VerificationNewResponseChannel) IsKnown() bool {
 	switch r {
-	case VerificationNewResponseChannelSMS, VerificationNewResponseChannelRcs, VerificationNewResponseChannelWhatsapp, VerificationNewResponseChannelViber, VerificationNewResponseChannelZalo, VerificationNewResponseChannelTelegram, VerificationNewResponseChannelSilent, VerificationNewResponseChannelVoice:
+	case VerificationNewResponseChannelRcs, VerificationNewResponseChannelSilent, VerificationNewResponseChannelSMS, VerificationNewResponseChannelTelegram, VerificationNewResponseChannelViber, VerificationNewResponseChannelVoice, VerificationNewResponseChannelWhatsapp, VerificationNewResponseChannelZalo:
 		return true
 	}
 	return false
