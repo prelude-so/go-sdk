@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.7.0 (2025-09-03)
+
+Full Changelog: [v0.6.0...v0.7.0](https://github.com/prelude-so/go-sdk/compare/v0.6.0...v0.7.0)
+
+### Features
+
+* **api:** api update ([63d9f36](https://github.com/prelude-so/go-sdk/commit/63d9f36a681073587b1e963e1d889d2b7fb96751))
+* **api:** update via SDK Studio ([e6b3ca1](https://github.com/prelude-so/go-sdk/commit/e6b3ca1528c7726398987af37c1f079b84f31fb4))
+* **client:** support optional json html escaping ([8f9d8a4](https://github.com/prelude-so/go-sdk/commit/8f9d8a472bdbd401d01f035e6b2868589cad555c))
+
+
+### Bug Fixes
+
+* **client:** process custom base url ahead of time ([3f1d80f](https://github.com/prelude-so/go-sdk/commit/3f1d80f7d1931c767188c384499e6972e00a3b78))
+* close body before retrying ([c503f08](https://github.com/prelude-so/go-sdk/commit/c503f08458a701e16ac84ec7a10d09ead3acff2d))
+* don't try to deserialize as json when ResponseBodyInto is []byte ([cf385aa](https://github.com/prelude-so/go-sdk/commit/cf385aae3a726932291f4c9893153e347f26d610))
+* remove null from release please manifest ([6fb6926](https://github.com/prelude-so/go-sdk/commit/6fb6926185c0175d582ab4ccb289cca574c63dc7))
+* use release please annotations on more places ([2b1481e](https://github.com/prelude-so/go-sdk/commit/2b1481e4f3c7684ec6e509ffae64f39805ea13fe))
+
+
+### Chores
+
+* **ci:** only run for pushes and fork pull requests ([0da7840](https://github.com/prelude-so/go-sdk/commit/0da7840eb5ef751b927a0759b13a5a972a96a036))
+* **internal:** fix lint script for tests ([5412ddc](https://github.com/prelude-so/go-sdk/commit/5412ddc451370366f3995b6247dd8d5bd4e5cbf5))
+* **internal:** update comment in script ([bd5b3c3](https://github.com/prelude-so/go-sdk/commit/bd5b3c383dbeee8b28a78145b105b6092829b1c3))
+* **internal:** update test skipping reason ([71d160b](https://github.com/prelude-so/go-sdk/commit/71d160b5cf297b1ba48f0d5a610fd906d53f2105))
+* lint tests ([ebc4caa](https://github.com/prelude-so/go-sdk/commit/ebc4caa7ca3a7c4e4d8c673c25d6e83d2efe5609))
+* lint tests in subpackages ([9d28dc7](https://github.com/prelude-so/go-sdk/commit/9d28dc7de841d96d18f6d3f55f471129fad9e749))
+* update @stainless-api/prism-cli to v5.15.0 ([640c13b](https://github.com/prelude-so/go-sdk/commit/640c13b615f6a2956443015c707d38dab2196672))
+
 ## 0.6.0 (2025-06-17)
 
 Full Changelog: [v0.5.0...v0.6.0](https://github.com/prelude-so/go-sdk/compare/v0.5.0...v0.6.0)

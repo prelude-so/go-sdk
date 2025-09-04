@@ -57,7 +57,7 @@ type VerificationNewResponse struct {
 	// The status of the verification.
 	Status VerificationNewResponseStatus `json:"status,required"`
 	// The ordered sequence of channels to be used for verification
-	Channels []string `json:"channels"`
+	Channels []VerificationNewResponseChannel `json:"channels"`
 	// The metadata for this verification.
 	Metadata VerificationNewResponseMetadata `json:"metadata"`
 	// The reason why the verification was blocked. Only present when status is
@@ -96,6 +96,7 @@ func (r verificationNewResponseJSON) RawJSON() string {
 type VerificationNewResponseMethod string
 
 const (
+	VerificationNewResponseMethodEmail   VerificationNewResponseMethod = "email"
 	VerificationNewResponseMethodMessage VerificationNewResponseMethod = "message"
 	VerificationNewResponseMethodSilent  VerificationNewResponseMethod = "silent"
 	VerificationNewResponseMethodVoice   VerificationNewResponseMethod = "voice"
@@ -103,7 +104,7 @@ const (
 
 func (r VerificationNewResponseMethod) IsKnown() bool {
 	switch r {
-	case VerificationNewResponseMethodMessage, VerificationNewResponseMethodSilent, VerificationNewResponseMethodVoice:
+	case VerificationNewResponseMethodEmail, VerificationNewResponseMethodMessage, VerificationNewResponseMethodSilent, VerificationNewResponseMethodVoice:
 		return true
 	}
 	return false
@@ -126,8 +127,31 @@ func (r VerificationNewResponseStatus) IsKnown() bool {
 	return false
 }
 
+type VerificationNewResponseChannel string
+
+const (
+	VerificationNewResponseChannelRcs      VerificationNewResponseChannel = "rcs"
+	VerificationNewResponseChannelSilent   VerificationNewResponseChannel = "silent"
+	VerificationNewResponseChannelSMS      VerificationNewResponseChannel = "sms"
+	VerificationNewResponseChannelTelegram VerificationNewResponseChannel = "telegram"
+	VerificationNewResponseChannelViber    VerificationNewResponseChannel = "viber"
+	VerificationNewResponseChannelVoice    VerificationNewResponseChannel = "voice"
+	VerificationNewResponseChannelWhatsapp VerificationNewResponseChannel = "whatsapp"
+	VerificationNewResponseChannelZalo     VerificationNewResponseChannel = "zalo"
+)
+
+func (r VerificationNewResponseChannel) IsKnown() bool {
+	switch r {
+	case VerificationNewResponseChannelRcs, VerificationNewResponseChannelSilent, VerificationNewResponseChannelSMS, VerificationNewResponseChannelTelegram, VerificationNewResponseChannelViber, VerificationNewResponseChannelVoice, VerificationNewResponseChannelWhatsapp, VerificationNewResponseChannelZalo:
+		return true
+	}
+	return false
+}
+
 // The metadata for this verification.
 type VerificationNewResponseMetadata struct {
+	// A user-defined identifier to correlate this verification with. It is returned in
+	// the response and any webhook events that refer to this verification.
 	CorrelationID string                              `json:"correlation_id"`
 	JSON          verificationNewResponseMetadataJSON `json:"-"`
 }
@@ -153,16 +177,18 @@ func (r verificationNewResponseMetadataJSON) RawJSON() string {
 type VerificationNewResponseReason string
 
 const (
-	VerificationNewResponseReasonSuspicious         VerificationNewResponseReason = "suspicious"
-	VerificationNewResponseReasonRepeatedAttempts   VerificationNewResponseReason = "repeated_attempts"
+	VerificationNewResponseReasonExpiredSignature   VerificationNewResponseReason = "expired_signature"
+	VerificationNewResponseReasonInBlockList        VerificationNewResponseReason = "in_block_list"
 	VerificationNewResponseReasonInvalidPhoneLine   VerificationNewResponseReason = "invalid_phone_line"
 	VerificationNewResponseReasonInvalidPhoneNumber VerificationNewResponseReason = "invalid_phone_number"
-	VerificationNewResponseReasonInBlockList        VerificationNewResponseReason = "in_block_list"
+	VerificationNewResponseReasonInvalidSignature   VerificationNewResponseReason = "invalid_signature"
+	VerificationNewResponseReasonRepeatedAttempts   VerificationNewResponseReason = "repeated_attempts"
+	VerificationNewResponseReasonSuspicious         VerificationNewResponseReason = "suspicious"
 )
 
 func (r VerificationNewResponseReason) IsKnown() bool {
 	switch r {
-	case VerificationNewResponseReasonSuspicious, VerificationNewResponseReasonRepeatedAttempts, VerificationNewResponseReasonInvalidPhoneLine, VerificationNewResponseReasonInvalidPhoneNumber, VerificationNewResponseReasonInBlockList:
+	case VerificationNewResponseReasonExpiredSignature, VerificationNewResponseReasonInBlockList, VerificationNewResponseReasonInvalidPhoneLine, VerificationNewResponseReasonInvalidPhoneNumber, VerificationNewResponseReasonInvalidSignature, VerificationNewResponseReasonRepeatedAttempts, VerificationNewResponseReasonSuspicious:
 		return true
 	}
 	return false
@@ -240,6 +266,8 @@ func (r VerificationCheckResponseStatus) IsKnown() bool {
 
 // The metadata for this verification.
 type VerificationCheckResponseMetadata struct {
+	// A user-defined identifier to correlate this verification with. It is returned in
+	// the response and any webhook events that refer to this verification.
 	CorrelationID string                                `json:"correlation_id"`
 	JSON          verificationCheckResponseMetadataJSON `json:"-"`
 }
@@ -312,7 +340,8 @@ func (r VerificationNewParamsTargetType) IsKnown() bool {
 // The metadata for this verification. This object will be returned with every
 // response or webhook sent that refers to this verification.
 type VerificationNewParamsMetadata struct {
-	// A user-defined identifier to correlate this verification with.
+	// A user-defined identifier to correlate this verification with. It is returned in
+	// the response and any webhook events that refer to this verification.
 	CorrelationID param.Field[string] `json:"correlation_id"`
 }
 
@@ -421,13 +450,11 @@ const (
 	VerificationNewParamsOptionsPreferredChannelViber    VerificationNewParamsOptionsPreferredChannel = "viber"
 	VerificationNewParamsOptionsPreferredChannelZalo     VerificationNewParamsOptionsPreferredChannel = "zalo"
 	VerificationNewParamsOptionsPreferredChannelTelegram VerificationNewParamsOptionsPreferredChannel = "telegram"
-	VerificationNewParamsOptionsPreferredChannelSilent   VerificationNewParamsOptionsPreferredChannel = "silent"
-	VerificationNewParamsOptionsPreferredChannelVoice    VerificationNewParamsOptionsPreferredChannel = "voice"
 )
 
 func (r VerificationNewParamsOptionsPreferredChannel) IsKnown() bool {
 	switch r {
-	case VerificationNewParamsOptionsPreferredChannelSMS, VerificationNewParamsOptionsPreferredChannelRcs, VerificationNewParamsOptionsPreferredChannelWhatsapp, VerificationNewParamsOptionsPreferredChannelViber, VerificationNewParamsOptionsPreferredChannelZalo, VerificationNewParamsOptionsPreferredChannelTelegram, VerificationNewParamsOptionsPreferredChannelSilent, VerificationNewParamsOptionsPreferredChannelVoice:
+	case VerificationNewParamsOptionsPreferredChannelSMS, VerificationNewParamsOptionsPreferredChannelRcs, VerificationNewParamsOptionsPreferredChannelWhatsapp, VerificationNewParamsOptionsPreferredChannelViber, VerificationNewParamsOptionsPreferredChannelZalo, VerificationNewParamsOptionsPreferredChannelTelegram:
 		return true
 	}
 	return false

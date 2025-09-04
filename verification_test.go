@@ -14,7 +14,7 @@ import (
 )
 
 func TestVerificationNewWithOptionalParams(t *testing.T) {
-	t.Skip("skipped: currently no good way to test endpoints defining callbacks, Prism mock server will fail trying to reach the provided callback url")
+	t.Skip("Prism doesn't support callbacks yet")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -31,7 +31,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
-		DispatchID: prelude.F("dispatch_id"),
+		DispatchID: prelude.F("123e4567-e89b-12d3-a456-426614174000"),
 		Metadata: prelude.F(prelude.VerificationNewParamsMetadata{
 			CorrelationID: prelude.F("correlation_id"),
 		}),

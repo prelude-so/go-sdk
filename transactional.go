@@ -55,7 +55,9 @@ type TransactionalSendResponse struct {
 	Variables map[string]string `json:"variables,required"`
 	// The callback URL.
 	CallbackURL string `json:"callback_url"`
-	// A unique, user-defined identifier that will be included in webhook events.
+	// A user-defined identifier to correlate this transactional message with. It is
+	// returned in the response and any webhook events that refer to this transactional
+	// message.
 	CorrelationID string `json:"correlation_id"`
 	// The Sender ID.
 	From string                        `json:"from"`
@@ -93,7 +95,9 @@ type TransactionalSendParams struct {
 	To param.Field[string] `json:"to,required"`
 	// The callback URL.
 	CallbackURL param.Field[string] `json:"callback_url"`
-	// A unique, user-defined identifier that will be included in webhook events.
+	// A user-defined identifier to correlate this transactional message with. It is
+	// returned in the response and any webhook events that refer to this
+	// transactionalmessage.
 	CorrelationID param.Field[string] `json:"correlation_id"`
 	// The message expiration date.
 	ExpiresAt param.Field[string] `json:"expires_at"`
