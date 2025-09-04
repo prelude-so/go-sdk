@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.8.0 (2025-09-04)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/prelude-so/go-sdk/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **api:** api update ([9ad4c14](https://github.com/prelude-so/go-sdk/commit/9ad4c14447cc16828d2a2433e6984f441625cdda))
+
 ## 0.7.0 (2025-09-03)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/prelude-so/go-sdk/compare/v0.6.0...v0.7.0)
