@@ -5,6 +5,7 @@ package prelude
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/prelude-so/go-sdk/internal/apijson"
 	"github.com/prelude-so/go-sdk/internal/param"
@@ -35,7 +36,7 @@ func NewVerificationService(opts ...option.RequestOption) (r *VerificationServic
 // verification exists (the request is performed within the verification window),
 // this endpoint will perform a retry instead.
 func (r *VerificationService) New(ctx context.Context, body VerificationNewParams, opts ...option.RequestOption) (res *VerificationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -43,7 +44,7 @@ func (r *VerificationService) New(ctx context.Context, body VerificationNewParam
 
 // Check the validity of a verification code.
 func (r *VerificationService) Check(ctx context.Context, body VerificationCheckParams, opts ...option.RequestOption) (res *VerificationCheckResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/check"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
