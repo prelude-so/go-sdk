@@ -5,6 +5,7 @@ package prelude
 import (
 	"context"
 	"net/http"
+	"slices"
 	"time"
 
 	"github.com/prelude-so/go-sdk/internal/apijson"
@@ -34,7 +35,7 @@ func NewTransactionalService(opts ...option.RequestOption) (r *TransactionalServ
 
 // Send a transactional message to your user.
 func (r *TransactionalService) Send(ctx context.Context, body TransactionalSendParams, opts ...option.RequestOption) (res *TransactionalSendResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/transactional"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
