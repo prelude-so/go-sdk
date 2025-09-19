@@ -31,7 +31,7 @@ go get -u 'github.com/prelude-so/go-sdk@v0.7.0'
 
 ## Requirements
 
-This library requires Go 1.18+.
+This library requires Go 1.22+.
 
 ## Usage
 
