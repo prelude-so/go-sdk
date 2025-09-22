@@ -43,6 +43,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			CallbackURL:      prelude.F("callback_url"),
 			CodeSize:         prelude.F(int64(5)),
 			CustomCode:       prelude.F("123456"),
+			Integration:      prelude.F(prelude.VerificationNewParamsOptionsIntegrationAuth0),
 			Locale:           prelude.F("el-GR"),
 			Method:           prelude.F(prelude.VerificationNewParamsOptionsMethodAuto),
 			PreferredChannel: prelude.F(prelude.VerificationNewParamsOptionsPreferredChannelSMS),
