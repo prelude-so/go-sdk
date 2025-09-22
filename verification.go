@@ -392,6 +392,8 @@ type VerificationNewParamsOptions struct {
 	// contact us to enable it for your account. For more details, refer to
 	// [Custom Code](/verify/v2/documentation/custom-codes).
 	CustomCode param.Field[string] `json:"custom_code"`
+	// The integration that triggered the verification.
+	Integration param.Field[VerificationNewParamsOptionsIntegration] `json:"integration"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
 	// code of the phone number. If the language specified doesn't exist, it defaults
@@ -443,6 +445,22 @@ const (
 func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
 	switch r {
 	case VerificationNewParamsOptionsAppRealmPlatformAndroid:
+		return true
+	}
+	return false
+}
+
+// The integration that triggered the verification.
+type VerificationNewParamsOptionsIntegration string
+
+const (
+	VerificationNewParamsOptionsIntegrationAuth0    VerificationNewParamsOptionsIntegration = "auth0"
+	VerificationNewParamsOptionsIntegrationSupabase VerificationNewParamsOptionsIntegration = "supabase"
+)
+
+func (r VerificationNewParamsOptionsIntegration) IsKnown() bool {
+	switch r {
+	case VerificationNewParamsOptionsIntegrationAuth0, VerificationNewParamsOptionsIntegrationSupabase:
 		return true
 	}
 	return false
