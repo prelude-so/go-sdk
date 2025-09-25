@@ -258,6 +258,10 @@ type WatchPredictParamsSignals struct {
 	// genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
+	// The JA4 fingerprint observed for the connection. Prelude will infer it
+	// automatically when requests go through our client SDK (which uses Prelude's
+	// edge), but you can also provide it explicitly if you terminate TLS yourself.
+	Ja4Fingerprint param.Field[string] `json:"ja4_fingerprint"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
 	// The user agent of the user's device. If the individual fields (os_version,
@@ -458,6 +462,10 @@ type WatchSendFeedbacksParamsFeedbacksSignals struct {
 	// genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
+	// The JA4 fingerprint observed for the connection. Prelude will infer it
+	// automatically when requests go through our client SDK (which uses Prelude's
+	// edge), but you can also provide it explicitly if you terminate TLS yourself.
+	Ja4Fingerprint param.Field[string] `json:"ja4_fingerprint"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
 	// The user agent of the user's device. If the individual fields (os_version,
