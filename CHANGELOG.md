@@ -1,5 +1,28 @@
 # Changelog
 
+## 0.8.0 (2025-09-25)
+
+Full Changelog: [v0.7.0...v0.8.0](https://github.com/prelude-so/go-sdk/compare/v0.7.0...v0.8.0)
+
+### Features
+
+* **api:** api update ([26a6130](https://github.com/prelude-so/go-sdk/commit/26a6130bbc2dd0c1c61f3ff39eb8d3a8fce43b1e))
+* **api:** api update ([0d1e889](https://github.com/prelude-so/go-sdk/commit/0d1e88966226302c1dcec3e8dbb0a7a7b4b9aa59))
+* **api:** api update ([9ad4c14](https://github.com/prelude-so/go-sdk/commit/9ad4c14447cc16828d2a2433e6984f441625cdda))
+
+
+### Bug Fixes
+
+* bugfix for setting JSON keys with special characters ([b116360](https://github.com/prelude-so/go-sdk/commit/b11636067c7611807ddcae1405e5a31caaa3eaba))
+* use slices.Concat instead of sometimes modifying r.Options ([063e46f](https://github.com/prelude-so/go-sdk/commit/063e46f0117ac38e95f39525e4d4c06fcdee122c))
+
+
+### Chores
+
+* bump minimum go version to 1.22 ([7ae34c5](https://github.com/prelude-so/go-sdk/commit/7ae34c522207fec7ad24750066c11999a99bab50))
+* do not install brew dependencies in ./scripts/bootstrap by default ([0ea92dd](https://github.com/prelude-so/go-sdk/commit/0ea92ddfaad7dc28b5ace9ee6d7b44fa8899fc45))
+* update more docs for 1.22 ([e4c4dd1](https://github.com/prelude-so/go-sdk/commit/e4c4dd17256f134a7e3ec5b2311b627ff57e4d58))
+
 ## 0.7.0 (2025-09-03)
 
 Full Changelog: [v0.6.0...v0.7.0](https://github.com/prelude-so/go-sdk/compare/v0.6.0...v0.7.0)
