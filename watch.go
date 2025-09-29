@@ -5,6 +5,7 @@ package prelude
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/prelude-so/go-sdk/internal/apijson"
 	"github.com/prelude-so/go-sdk/internal/param"
@@ -33,7 +34,7 @@ func NewWatchService(opts ...option.RequestOption) (r *WatchService) {
 
 // Predict the outcome of a verification based on Prelude’s anti-fraud system.
 func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opts ...option.RequestOption) (res *WatchPredictResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/predict"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -42,7 +43,7 @@ func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opt
 // Send real-time event data from end-user interactions within your application.
 // Events will be analyzed for proactive fraud prevention and risk scoring.
 func (r *WatchService) SendEvents(ctx context.Context, body WatchSendEventsParams, opts ...option.RequestOption) (res *WatchSendEventsResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/event"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -51,7 +52,7 @@ func (r *WatchService) SendEvents(ctx context.Context, body WatchSendEventsParam
 // Send feedback regarding your end-users verification funnel. Events will be
 // analyzed for proactive fraud prevention and risk scoring.
 func (r *WatchService) SendFeedbacks(ctx context.Context, body WatchSendFeedbacksParams, opts ...option.RequestOption) (res *WatchSendFeedbacksResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/feedback"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -257,6 +258,10 @@ type WatchPredictParamsSignals struct {
 	// genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
+	// The JA4 fingerprint observed for the connection. Prelude will infer it
+	// automatically when requests go through our client SDK (which uses Prelude's
+	// edge), but you can also provide it explicitly if you terminate TLS yourself.
+	Ja4Fingerprint param.Field[string] `json:"ja4_fingerprint"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
 	// The user agent of the user's device. If the individual fields (os_version,
@@ -457,6 +462,10 @@ type WatchSendFeedbacksParamsFeedbacksSignals struct {
 	// genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
+	// The JA4 fingerprint observed for the connection. Prelude will infer it
+	// automatically when requests go through our client SDK (which uses Prelude's
+	// edge), but you can also provide it explicitly if you terminate TLS yourself.
+	Ja4Fingerprint param.Field[string] `json:"ja4_fingerprint"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
 	// The user agent of the user's device. If the individual fields (os_version,

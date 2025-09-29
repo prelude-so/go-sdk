@@ -5,6 +5,7 @@ package prelude
 import (
 	"context"
 	"net/http"
+	"slices"
 
 	"github.com/prelude-so/go-sdk/internal/apijson"
 	"github.com/prelude-so/go-sdk/internal/param"
@@ -35,7 +36,7 @@ func NewVerificationService(opts ...option.RequestOption) (r *VerificationServic
 // verification exists (the request is performed within the verification window),
 // this endpoint will perform a retry instead.
 func (r *VerificationService) New(ctx context.Context, body VerificationNewParams, opts ...option.RequestOption) (res *VerificationNewResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -43,7 +44,7 @@ func (r *VerificationService) New(ctx context.Context, body VerificationNewParam
 
 // Check the validity of a verification code.
 func (r *VerificationService) Check(ctx context.Context, body VerificationCheckParams, opts ...option.RequestOption) (res *VerificationCheckResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/check"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
@@ -62,6 +63,19 @@ type VerificationNewResponse struct {
 	Metadata VerificationNewResponseMetadata `json:"metadata"`
 	// The reason why the verification was blocked. Only present when status is
 	// "blocked".
+	//
+	//   - `expired_signature` - The signature of the SDK signals is expired. They should
+	//     be sent within the hour following their collection.
+	//   - `in_block_list` - The phone number is part of the configured block list.
+	//   - `invalid_phone_line` - The phone number is not a valid line number (e.g.
+	//     landline).
+	//   - `invalid_phone_number` - The phone number is not a valid phone number (e.g.
+	//     unallocated range).
+	//   - `invalid_signature` - The signature of the SDK signals is invalid.
+	//   - `repeated_attempts` - The phone number has made too many verification
+	//     attempts.
+	//   - `suspicious` - The verification attempt was deemed suspicious by the
+	//     anti-fraud system.
 	Reason    VerificationNewResponseReason `json:"reason"`
 	RequestID string                        `json:"request_id"`
 	// The silent verification specific properties.
@@ -174,6 +188,19 @@ func (r verificationNewResponseMetadataJSON) RawJSON() string {
 
 // The reason why the verification was blocked. Only present when status is
 // "blocked".
+//
+//   - `expired_signature` - The signature of the SDK signals is expired. They should
+//     be sent within the hour following their collection.
+//   - `in_block_list` - The phone number is part of the configured block list.
+//   - `invalid_phone_line` - The phone number is not a valid line number (e.g.
+//     landline).
+//   - `invalid_phone_number` - The phone number is not a valid phone number (e.g.
+//     unallocated range).
+//   - `invalid_signature` - The signature of the SDK signals is invalid.
+//   - `repeated_attempts` - The phone number has made too many verification
+//     attempts.
+//   - `suspicious` - The verification attempt was deemed suspicious by the
+//     anti-fraud system.
 type VerificationNewResponseReason string
 
 const (
@@ -365,6 +392,8 @@ type VerificationNewParamsOptions struct {
 	// contact us to enable it for your account. For more details, refer to
 	// [Custom Code](/verify/v2/documentation/custom-codes).
 	CustomCode param.Field[string] `json:"custom_code"`
+	// The integration that triggered the verification.
+	Integration param.Field[VerificationNewParamsOptionsIntegration] `json:"integration"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
 	// code of the phone number. If the language specified doesn't exist, it defaults
@@ -416,6 +445,22 @@ const (
 func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
 	switch r {
 	case VerificationNewParamsOptionsAppRealmPlatformAndroid:
+		return true
+	}
+	return false
+}
+
+// The integration that triggered the verification.
+type VerificationNewParamsOptionsIntegration string
+
+const (
+	VerificationNewParamsOptionsIntegrationAuth0    VerificationNewParamsOptionsIntegration = "auth0"
+	VerificationNewParamsOptionsIntegrationSupabase VerificationNewParamsOptionsIntegration = "supabase"
+)
+
+func (r VerificationNewParamsOptionsIntegration) IsKnown() bool {
+	switch r {
+	case VerificationNewParamsOptionsIntegrationAuth0, VerificationNewParamsOptionsIntegrationSupabase:
 		return true
 	}
 	return false
@@ -478,6 +523,10 @@ type VerificationNewParamsSignals struct {
 	// genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
+	// The JA4 fingerprint observed for the connection. Prelude will infer it
+	// automatically when requests go through our client SDK (which uses Prelude's
+	// edge), but you can also provide it explicitly if you terminate TLS yourself.
+	Ja4Fingerprint param.Field[string] `json:"ja4_fingerprint"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
 	// The user agent of the user's device. If the individual fields (os_version,

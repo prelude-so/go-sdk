@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"slices"
 
 	"github.com/prelude-so/go-sdk/internal/apijson"
 	"github.com/prelude-so/go-sdk/internal/apiquery"
@@ -38,7 +39,7 @@ func NewLookupService(opts ...option.RequestOption) (r *LookupService) {
 // Retrieve detailed information about a phone number including carrier data, line
 // type, and portability status.
 func (r *LookupService) Lookup(ctx context.Context, phoneNumber string, query LookupLookupParams, opts ...option.RequestOption) (res *LookupLookupResponse, err error) {
-	opts = append(r.Options[:], opts...)
+	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
 		return
