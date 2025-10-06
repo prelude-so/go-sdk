@@ -426,7 +426,9 @@ type VerificationNewParamsOptionsAppRealm struct {
 	// The platform the SMS will be sent to. We are currently only supporting
 	// "android".
 	Platform param.Field[VerificationNewParamsOptionsAppRealmPlatform] `json:"platform,required"`
-	// The Android SMS Retriever API hash code that identifies your app.
+	// The Android SMS Retriever API hash code that identifies your app. For more
+	// information, see
+	// [Google documentation](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string).
 	Value param.Field[string] `json:"value,required"`
 }
 
