@@ -30,6 +30,18 @@ Methods:
 - <code title="post /v2/verification">client.Verification.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationService.New">New</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/prelude-so/go-sdk">prelude</a>.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationNewParams">VerificationNewParams</a>) (<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk">prelude</a>.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationNewResponse">VerificationNewResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 - <code title="post /v2/verification/check">client.Verification.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationService.Check">Check</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/prelude-so/go-sdk">prelude</a>.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationCheckParams">VerificationCheckParams</a>) (<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk">prelude</a>.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationCheckResponse">VerificationCheckResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
 
+# VerificationManagement
+
+Response Types:
+
+- <a href="https://pkg.go.dev/github.com/prelude-so/go-sdk">prelude</a>.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationManagementListSenderIDsResponse">VerificationManagementListSenderIDsResponse</a>
+- <a href="https://pkg.go.dev/github.com/prelude-so/go-sdk">prelude</a>.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationManagementSubmitSenderIDResponse">VerificationManagementSubmitSenderIDResponse</a>
+
+Methods:
+
+- <code title="get /v2/verification/management/sender-id">client.VerificationManagement.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationManagementService.ListSenderIDs">ListSenderIDs</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>) ([]<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk">prelude</a>.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationManagementListSenderIDsResponse">VerificationManagementListSenderIDsResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+- <code title="post /v2/verification/management/sender-id">client.VerificationManagement.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationManagementService.SubmitSenderID">SubmitSenderID</a>(ctx <a href="https://pkg.go.dev/context">context</a>.<a href="https://pkg.go.dev/context#Context">Context</a>, body <a href="https://pkg.go.dev/github.com/prelude-so/go-sdk">prelude</a>.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationManagementSubmitSenderIDParams">VerificationManagementSubmitSenderIDParams</a>) (<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk">prelude</a>.<a href="https://pkg.go.dev/github.com/prelude-so/go-sdk#VerificationManagementSubmitSenderIDResponse">VerificationManagementSubmitSenderIDResponse</a>, <a href="https://pkg.go.dev/builtin#error">error</a>)</code>
+
 # Watch
 
 Response Types:
