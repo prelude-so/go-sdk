@@ -35,14 +35,14 @@ func NewVerificationManagementService(opts ...option.RequestOption) (r *Verifica
 // Retrieve sender IDs list.
 //
 // In order to get access to this endpoint, contact our support team.
-func (r *VerificationManagementService) ListSenderIDs(ctx context.Context, opts ...option.RequestOption) (res *[]VerificationManagementListSenderIDsResponse, err error) {
+func (r *VerificationManagementService) ListSenderIDs(ctx context.Context, opts ...option.RequestOption) (res *VerificationManagementListSenderIDsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/management/sender-id"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
 	return
 }
 
-// This endpoint allows you to add a new sender ID for verification purposes.
+// This endpoint allows you to submit a new sender ID for verification purposes.
 //
 // In order to get access to this endpoint, contact our support team.
 func (r *VerificationManagementService) SubmitSenderID(ctx context.Context, body VerificationManagementSubmitSenderIDParams, opts ...option.RequestOption) (res *VerificationManagementSubmitSenderIDResponse, err error) {
@@ -52,23 +52,16 @@ func (r *VerificationManagementService) SubmitSenderID(ctx context.Context, body
 	return
 }
 
+// A list of Sender ID.
 type VerificationManagementListSenderIDsResponse struct {
-	// It indicates the status of the sender ID. Possible values are:
-	//
-	// - `approved` - The sender ID is approved.
-	// - `pending` - The sender ID is pending.
-	// - `rejected` - The sender ID is rejected.
-	Status VerificationManagementListSenderIDsResponseStatus `json:"status"`
-	// Value that will be presented as Sender ID
-	Value string                                          `json:"value"`
-	JSON  verificationManagementListSenderIDsResponseJSON `json:"-"`
+	SenderIDs []VerificationManagementListSenderIDsResponseSenderID `json:"sender_ids"`
+	JSON      verificationManagementListSenderIDsResponseJSON       `json:"-"`
 }
 
 // verificationManagementListSenderIDsResponseJSON contains the JSON metadata for
 // the struct [VerificationManagementListSenderIDsResponse]
 type verificationManagementListSenderIDsResponseJSON struct {
-	Status      apijson.Field
-	Value       apijson.Field
+	SenderIDs   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -81,22 +74,51 @@ func (r verificationManagementListSenderIDsResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// It indicates the status of the sender ID. Possible values are:
+type VerificationManagementListSenderIDsResponseSenderID struct {
+	// Value that will be presented as Sender ID
+	SenderID string `json:"sender_id"`
+	// It indicates the status of the Sender ID. Possible values are:
+	//
+	// - `approved` - The Sender ID is approved.
+	// - `pending` - The Sender ID is pending.
+	// - `rejected` - The Sender ID is rejected.
+	Status VerificationManagementListSenderIDsResponseSenderIDsStatus `json:"status"`
+	JSON   verificationManagementListSenderIDsResponseSenderIDJSON    `json:"-"`
+}
+
+// verificationManagementListSenderIDsResponseSenderIDJSON contains the JSON
+// metadata for the struct [VerificationManagementListSenderIDsResponseSenderID]
+type verificationManagementListSenderIDsResponseSenderIDJSON struct {
+	SenderID    apijson.Field
+	Status      apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VerificationManagementListSenderIDsResponseSenderID) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r verificationManagementListSenderIDsResponseSenderIDJSON) RawJSON() string {
+	return r.raw
+}
+
+// It indicates the status of the Sender ID. Possible values are:
 //
-// - `approved` - The sender ID is approved.
-// - `pending` - The sender ID is pending.
-// - `rejected` - The sender ID is rejected.
-type VerificationManagementListSenderIDsResponseStatus string
+// - `approved` - The Sender ID is approved.
+// - `pending` - The Sender ID is pending.
+// - `rejected` - The Sender ID is rejected.
+type VerificationManagementListSenderIDsResponseSenderIDsStatus string
 
 const (
-	VerificationManagementListSenderIDsResponseStatusApproved VerificationManagementListSenderIDsResponseStatus = "approved"
-	VerificationManagementListSenderIDsResponseStatusPending  VerificationManagementListSenderIDsResponseStatus = "pending"
-	VerificationManagementListSenderIDsResponseStatusRejected VerificationManagementListSenderIDsResponseStatus = "rejected"
+	VerificationManagementListSenderIDsResponseSenderIDsStatusApproved VerificationManagementListSenderIDsResponseSenderIDsStatus = "approved"
+	VerificationManagementListSenderIDsResponseSenderIDsStatusPending  VerificationManagementListSenderIDsResponseSenderIDsStatus = "pending"
+	VerificationManagementListSenderIDsResponseSenderIDsStatusRejected VerificationManagementListSenderIDsResponseSenderIDsStatus = "rejected"
 )
 
-func (r VerificationManagementListSenderIDsResponseStatus) IsKnown() bool {
+func (r VerificationManagementListSenderIDsResponseSenderIDsStatus) IsKnown() bool {
 	switch r {
-	case VerificationManagementListSenderIDsResponseStatusApproved, VerificationManagementListSenderIDsResponseStatusPending, VerificationManagementListSenderIDsResponseStatusRejected:
+	case VerificationManagementListSenderIDsResponseSenderIDsStatusApproved, VerificationManagementListSenderIDsResponseSenderIDsStatusPending, VerificationManagementListSenderIDsResponseSenderIDsStatusRejected:
 		return true
 	}
 	return false
