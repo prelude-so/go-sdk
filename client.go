@@ -16,11 +16,12 @@ import (
 // interacting with the Prelude API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options       []option.RequestOption
-	Lookup        *LookupService
-	Transactional *TransactionalService
-	Verification  *VerificationService
-	Watch         *WatchService
+	Options                []option.RequestOption
+	Lookup                 *LookupService
+	Transactional          *TransactionalService
+	Verification           *VerificationService
+	VerificationManagement *VerificationManagementService
+	Watch                  *WatchService
 }
 
 // DefaultClientOptions read from the environment (API_TOKEN, PRELUDE_BASE_URL).
@@ -48,6 +49,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Lookup = NewLookupService(opts...)
 	r.Transactional = NewTransactionalService(opts...)
 	r.Verification = NewVerificationService(opts...)
+	r.VerificationManagement = NewVerificationManagementService(opts...)
 	r.Watch = NewWatchService(opts...)
 
 	return

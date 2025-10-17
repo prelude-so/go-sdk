@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.9.0 (2025-10-17)
+
+Full Changelog: [v0.8.0...v0.9.0](https://github.com/prelude-so/go-sdk/compare/v0.8.0...v0.9.0)
+
+### Features
+
+* **api:** api update ([7d03714](https://github.com/prelude-so/go-sdk/commit/7d03714a9b6d9e1b0bb763f6feca1a783e45fe78))
+* **api:** api update ([ab44c73](https://github.com/prelude-so/go-sdk/commit/ab44c732d54e56ce52d2b9310fd8c53781084394))
+* **api:** api update ([ae74d88](https://github.com/prelude-so/go-sdk/commit/ae74d88df68cccf5c6303db498834278de15f011))
+* **api:** expose verification management methods ([852ff3b](https://github.com/prelude-so/go-sdk/commit/852ff3b4b849dab157bca92a08494e9190f3eaab))
+
 ## 0.8.0 (2025-09-25)
 
 Full Changelog: [v0.7.0...v0.8.0](https://github.com/prelude-so/go-sdk/compare/v0.7.0...v0.8.0)
