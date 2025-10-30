@@ -117,7 +117,7 @@ type TransactionalSendParams struct {
 	// be sent via WhatsApp first, with automatic fallback to SMS if WhatsApp delivery
 	// is unavailable.
 	//
-	// Supported channels: `sms`, `whatsapp`.
+	// Supported channels: `sms`, `rcs`, `whatsapp`.
 	PreferredChannel param.Field[TransactionalSendParamsPreferredChannel] `json:"preferred_channel"`
 	// The variables to be replaced in the template.
 	Variables param.Field[map[string]string] `json:"variables"`
@@ -135,17 +135,18 @@ func (r TransactionalSendParams) MarshalJSON() (data []byte, err error) {
 // be sent via WhatsApp first, with automatic fallback to SMS if WhatsApp delivery
 // is unavailable.
 //
-// Supported channels: `sms`, `whatsapp`.
+// Supported channels: `sms`, `rcs`, `whatsapp`.
 type TransactionalSendParamsPreferredChannel string
 
 const (
 	TransactionalSendParamsPreferredChannelSMS      TransactionalSendParamsPreferredChannel = "sms"
+	TransactionalSendParamsPreferredChannelRcs      TransactionalSendParamsPreferredChannel = "rcs"
 	TransactionalSendParamsPreferredChannelWhatsapp TransactionalSendParamsPreferredChannel = "whatsapp"
 )
 
 func (r TransactionalSendParamsPreferredChannel) IsKnown() bool {
 	switch r {
-	case TransactionalSendParamsPreferredChannelSMS, TransactionalSendParamsPreferredChannelWhatsapp:
+	case TransactionalSendParamsPreferredChannelSMS, TransactionalSendParamsPreferredChannelRcs, TransactionalSendParamsPreferredChannelWhatsapp:
 		return true
 	}
 	return false
