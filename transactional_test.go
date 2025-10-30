@@ -27,7 +27,7 @@ func TestTransactionalSendWithOptionalParams(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	_, err := client.Transactional.Send(context.TODO(), prelude.TransactionalSendParams{
-		TemplateID:       prelude.F("template_01jd1xq0cffycayqtdkdbv4d61"),
+		TemplateID:       prelude.F("template_01hynf45qvevj844m9az2x2f3c"),
 		To:               prelude.F("+30123456789"),
 		CallbackURL:      prelude.F("callback_url"),
 		CorrelationID:    prelude.F("correlation_id"),
