@@ -4,8 +4,10 @@ package prelude
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"slices"
+	"time"
 
 	"github.com/prelude-so/go-sdk/internal/apijson"
 	"github.com/prelude-so/go-sdk/internal/param"
@@ -32,6 +34,30 @@ func NewVerificationManagementService(opts ...option.RequestOption) (r *Verifica
 	return
 }
 
+// Remove a phone number from the allow or block list.
+//
+// This operation is idempotent - re-deleting the same phone number will not result
+// in errors. If the phone number does not exist in the specified list, the
+// operation will succeed without making any changes.
+//
+// In order to get access to this endpoint, contact our support team.
+func (r *VerificationManagementService) DeletePhoneNumber(ctx context.Context, action VerificationManagementDeletePhoneNumberParamsAction, body VerificationManagementDeletePhoneNumberParams, opts ...option.RequestOption) (res *VerificationManagementDeletePhoneNumberResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("v2/verification/management/phone-numbers/%v", action)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
+	return
+}
+
+// Retrieve the list of phone numbers in the allow or block list.
+//
+// In order to get access to this endpoint, contact our support team.
+func (r *VerificationManagementService) ListPhoneNumbers(ctx context.Context, action VerificationManagementListPhoneNumbersParamsAction, opts ...option.RequestOption) (res *VerificationManagementListPhoneNumbersResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("v2/verification/management/phone-numbers/%v", action)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
 // Retrieve sender IDs list.
 //
 // In order to get access to this endpoint, contact our support team.
@@ -39,6 +65,20 @@ func (r *VerificationManagementService) ListSenderIDs(ctx context.Context, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/management/sender-id"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
+	return
+}
+
+// Add a phone number to the allow or block list.
+//
+// This operation is idempotent - re-adding the same phone number will not result
+// in duplicate entries or errors. If the phone number already exists in the
+// specified list, the operation will succeed without making any changes.
+//
+// In order to get access to this endpoint, contact our support team.
+func (r *VerificationManagementService) SetPhoneNumber(ctx context.Context, action VerificationManagementSetPhoneNumberParamsAction, body VerificationManagementSetPhoneNumberParams, opts ...option.RequestOption) (res *VerificationManagementSetPhoneNumberResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := fmt.Sprintf("v2/verification/management/phone-numbers/%v", action)
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
 }
 
@@ -50,6 +90,76 @@ func (r *VerificationManagementService) SubmitSenderID(ctx context.Context, body
 	path := "v2/verification/management/sender-id"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
 	return
+}
+
+type VerificationManagementDeletePhoneNumberResponse struct {
+	// The E.164 formatted phone number that was removed from the list.
+	PhoneNumber string                                              `json:"phone_number,required" format:"phone_number"`
+	JSON        verificationManagementDeletePhoneNumberResponseJSON `json:"-"`
+}
+
+// verificationManagementDeletePhoneNumberResponseJSON contains the JSON metadata
+// for the struct [VerificationManagementDeletePhoneNumberResponse]
+type verificationManagementDeletePhoneNumberResponseJSON struct {
+	PhoneNumber apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VerificationManagementDeletePhoneNumberResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r verificationManagementDeletePhoneNumberResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type VerificationManagementListPhoneNumbersResponse struct {
+	// A list of phone numbers in the allow or block list.
+	PhoneNumbers []VerificationManagementListPhoneNumbersResponsePhoneNumber `json:"phone_numbers,required"`
+	JSON         verificationManagementListPhoneNumbersResponseJSON          `json:"-"`
+}
+
+// verificationManagementListPhoneNumbersResponseJSON contains the JSON metadata
+// for the struct [VerificationManagementListPhoneNumbersResponse]
+type verificationManagementListPhoneNumbersResponseJSON struct {
+	PhoneNumbers apijson.Field
+	raw          string
+	ExtraFields  map[string]apijson.Field
+}
+
+func (r *VerificationManagementListPhoneNumbersResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r verificationManagementListPhoneNumbersResponseJSON) RawJSON() string {
+	return r.raw
+}
+
+type VerificationManagementListPhoneNumbersResponsePhoneNumber struct {
+	// The date and time when the phone number was added to the list.
+	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	// An E.164 formatted phone number.
+	PhoneNumber string                                                        `json:"phone_number,required" format:"phone_number"`
+	JSON        verificationManagementListPhoneNumbersResponsePhoneNumberJSON `json:"-"`
+}
+
+// verificationManagementListPhoneNumbersResponsePhoneNumberJSON contains the JSON
+// metadata for the struct
+// [VerificationManagementListPhoneNumbersResponsePhoneNumber]
+type verificationManagementListPhoneNumbersResponsePhoneNumberJSON struct {
+	CreatedAt   apijson.Field
+	PhoneNumber apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VerificationManagementListPhoneNumbersResponsePhoneNumber) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r verificationManagementListPhoneNumbersResponsePhoneNumberJSON) RawJSON() string {
+	return r.raw
 }
 
 // A list of Sender ID.
@@ -124,6 +234,28 @@ func (r VerificationManagementListSenderIDsResponseSenderIDsStatus) IsKnown() bo
 	return false
 }
 
+type VerificationManagementSetPhoneNumberResponse struct {
+	// The E.164 formatted phone number that was added to the list.
+	PhoneNumber string                                           `json:"phone_number,required" format:"phone_number"`
+	JSON        verificationManagementSetPhoneNumberResponseJSON `json:"-"`
+}
+
+// verificationManagementSetPhoneNumberResponseJSON contains the JSON metadata for
+// the struct [VerificationManagementSetPhoneNumberResponse]
+type verificationManagementSetPhoneNumberResponseJSON struct {
+	PhoneNumber apijson.Field
+	raw         string
+	ExtraFields map[string]apijson.Field
+}
+
+func (r *VerificationManagementSetPhoneNumberResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r verificationManagementSetPhoneNumberResponseJSON) RawJSON() string {
+	return r.raw
+}
+
 type VerificationManagementSubmitSenderIDResponse struct {
 	// The sender ID that was added.
 	SenderID string `json:"sender_id,required"`
@@ -172,6 +304,69 @@ const (
 func (r VerificationManagementSubmitSenderIDResponseStatus) IsKnown() bool {
 	switch r {
 	case VerificationManagementSubmitSenderIDResponseStatusApproved, VerificationManagementSubmitSenderIDResponseStatusPending, VerificationManagementSubmitSenderIDResponseStatusRejected:
+		return true
+	}
+	return false
+}
+
+type VerificationManagementDeletePhoneNumberParams struct {
+	// An E.164 formatted phone number to remove from the list.
+	PhoneNumber param.Field[string] `json:"phone_number,required" format:"phone_number"`
+}
+
+func (r VerificationManagementDeletePhoneNumberParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type VerificationManagementDeletePhoneNumberParamsAction string
+
+const (
+	VerificationManagementDeletePhoneNumberParamsActionAllow VerificationManagementDeletePhoneNumberParamsAction = "allow"
+	VerificationManagementDeletePhoneNumberParamsActionBlock VerificationManagementDeletePhoneNumberParamsAction = "block"
+)
+
+func (r VerificationManagementDeletePhoneNumberParamsAction) IsKnown() bool {
+	switch r {
+	case VerificationManagementDeletePhoneNumberParamsActionAllow, VerificationManagementDeletePhoneNumberParamsActionBlock:
+		return true
+	}
+	return false
+}
+
+type VerificationManagementListPhoneNumbersParamsAction string
+
+const (
+	VerificationManagementListPhoneNumbersParamsActionAllow VerificationManagementListPhoneNumbersParamsAction = "allow"
+	VerificationManagementListPhoneNumbersParamsActionBlock VerificationManagementListPhoneNumbersParamsAction = "block"
+)
+
+func (r VerificationManagementListPhoneNumbersParamsAction) IsKnown() bool {
+	switch r {
+	case VerificationManagementListPhoneNumbersParamsActionAllow, VerificationManagementListPhoneNumbersParamsActionBlock:
+		return true
+	}
+	return false
+}
+
+type VerificationManagementSetPhoneNumberParams struct {
+	// An E.164 formatted phone number to add to the list.
+	PhoneNumber param.Field[string] `json:"phone_number,required" format:"phone_number"`
+}
+
+func (r VerificationManagementSetPhoneNumberParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+type VerificationManagementSetPhoneNumberParamsAction string
+
+const (
+	VerificationManagementSetPhoneNumberParamsActionAllow VerificationManagementSetPhoneNumberParamsAction = "allow"
+	VerificationManagementSetPhoneNumberParamsActionBlock VerificationManagementSetPhoneNumberParamsAction = "block"
+)
+
+func (r VerificationManagementSetPhoneNumberParamsAction) IsKnown() bool {
+	switch r {
+	case VerificationManagementSetPhoneNumberParamsActionAllow, VerificationManagementSetPhoneNumberParamsActionBlock:
 		return true
 	}
 	return false
