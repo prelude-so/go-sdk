@@ -33,7 +33,10 @@ func NewTransactionalService(opts ...option.RequestOption) (r *TransactionalServ
 	return
 }
 
-// Send a transactional message to your user.
+// Legacy route maintained for backward compatibility. Migrate to `/v2/notify`
+// instead.
+//
+// Deprecated: deprecated
 func (r *TransactionalService) Send(ctx context.Context, body TransactionalSendParams, opts ...option.RequestOption) (res *TransactionalSendResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/transactional"
