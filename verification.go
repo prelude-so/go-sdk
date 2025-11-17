@@ -402,7 +402,10 @@ type VerificationNewParamsOptions struct {
 	// The method used for verifying this phone number. The 'voice' option provides an
 	// accessible alternative for visually impaired users by delivering the
 	// verification code through a phone call rather than a text message. It also
-	// allows verification of landline numbers that cannot receive SMS messages.
+	// allows verification of landline numbers that cannot receive SMS messages. The
+	// 'message' option explicitly requests message delivery (SMS, WhatsApp ...) and
+	// skips silent verification, useful for scenarios requiring direct user
+	// interaction.
 	Method param.Field[VerificationNewParamsOptionsMethod] `json:"method"`
 	// The preferred channel to be used in priority for verification.
 	PreferredChannel param.Field[VerificationNewParamsOptionsPreferredChannel] `json:"preferred_channel"`
@@ -426,7 +429,9 @@ type VerificationNewParamsOptionsAppRealm struct {
 	// The platform the SMS will be sent to. We are currently only supporting
 	// "android".
 	Platform param.Field[VerificationNewParamsOptionsAppRealmPlatform] `json:"platform,required"`
-	// The Android SMS Retriever API hash code that identifies your app.
+	// The Android SMS Retriever API hash code that identifies your app. For more
+	// information, see
+	// [Google documentation](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string).
 	Value param.Field[string] `json:"value,required"`
 }
 
@@ -469,17 +474,21 @@ func (r VerificationNewParamsOptionsIntegration) IsKnown() bool {
 // The method used for verifying this phone number. The 'voice' option provides an
 // accessible alternative for visually impaired users by delivering the
 // verification code through a phone call rather than a text message. It also
-// allows verification of landline numbers that cannot receive SMS messages.
+// allows verification of landline numbers that cannot receive SMS messages. The
+// 'message' option explicitly requests message delivery (SMS, WhatsApp ...) and
+// skips silent verification, useful for scenarios requiring direct user
+// interaction.
 type VerificationNewParamsOptionsMethod string
 
 const (
-	VerificationNewParamsOptionsMethodAuto  VerificationNewParamsOptionsMethod = "auto"
-	VerificationNewParamsOptionsMethodVoice VerificationNewParamsOptionsMethod = "voice"
+	VerificationNewParamsOptionsMethodAuto    VerificationNewParamsOptionsMethod = "auto"
+	VerificationNewParamsOptionsMethodVoice   VerificationNewParamsOptionsMethod = "voice"
+	VerificationNewParamsOptionsMethodMessage VerificationNewParamsOptionsMethod = "message"
 )
 
 func (r VerificationNewParamsOptionsMethod) IsKnown() bool {
 	switch r {
-	case VerificationNewParamsOptionsMethodAuto, VerificationNewParamsOptionsMethodVoice:
+	case VerificationNewParamsOptionsMethodAuto, VerificationNewParamsOptionsMethodVoice, VerificationNewParamsOptionsMethodMessage:
 		return true
 	}
 	return false

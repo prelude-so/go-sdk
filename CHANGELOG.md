@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.9.0 (2025-11-17)
+
+Full Changelog: [v0.8.0...v0.9.0](https://github.com/prelude-so/go-sdk/compare/v0.8.0...v0.9.0)
+
+### Features
+
+* **api:** api update ([2a464ed](https://github.com/prelude-so/go-sdk/commit/2a464ed2c8c0a98c0507ce3aed9a111e38053493))
+* **api:** api update ([db62c87](https://github.com/prelude-so/go-sdk/commit/db62c879b223b0c306eb3af8c5e8170c4b3b0246))
+* **api:** api update ([d178ee0](https://github.com/prelude-so/go-sdk/commit/d178ee0da7f1d4b7035803728cba9580f72a2fb5))
+* **api:** api update ([7d03714](https://github.com/prelude-so/go-sdk/commit/7d03714a9b6d9e1b0bb763f6feca1a783e45fe78))
+* **api:** api update ([ab44c73](https://github.com/prelude-so/go-sdk/commit/ab44c732d54e56ce52d2b9310fd8c53781084394))
+* **api:** api update ([ae74d88](https://github.com/prelude-so/go-sdk/commit/ae74d88df68cccf5c6303db498834278de15f011))
+* **api:** expose phone numbers management methods ([780308c](https://github.com/prelude-so/go-sdk/commit/780308c11dda1bdf7a4dc46929837d4ce38f140f))
+* **api:** expose verification management methods ([852ff3b](https://github.com/prelude-so/go-sdk/commit/852ff3b4b849dab157bca92a08494e9190f3eaab))
+
 ## 0.8.0 (2025-09-25)
 
 Full Changelog: [v0.7.0...v0.8.0](https://github.com/prelude-so/go-sdk/compare/v0.7.0...v0.8.0)

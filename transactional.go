@@ -33,7 +33,10 @@ func NewTransactionalService(opts ...option.RequestOption) (r *TransactionalServ
 	return
 }
 
-// Send a transactional message to your user.
+// Legacy route maintained for backward compatibility. Migrate to `/v2/notify`
+// instead.
+//
+// Deprecated: deprecated
 func (r *TransactionalService) Send(ctx context.Context, body TransactionalSendParams, opts ...option.RequestOption) (res *TransactionalSendResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/transactional"
@@ -109,10 +112,45 @@ type TransactionalSendParams struct {
 	// code of the phone number. If the language specified doesn't exist, the default
 	// set on the template will be used.
 	Locale param.Field[string] `json:"locale"`
+	// The preferred delivery channel for the message. When specified, the system will
+	// prioritize sending via the requested channel if the template is configured for
+	// it.
+	//
+	// If not specified and the template is configured for WhatsApp, the message will
+	// be sent via WhatsApp first, with automatic fallback to SMS if WhatsApp delivery
+	// is unavailable.
+	//
+	// Supported channels: `sms`, `rcs`, `whatsapp`.
+	PreferredChannel param.Field[TransactionalSendParamsPreferredChannel] `json:"preferred_channel"`
 	// The variables to be replaced in the template.
 	Variables param.Field[map[string]string] `json:"variables"`
 }
 
 func (r TransactionalSendParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
+}
+
+// The preferred delivery channel for the message. When specified, the system will
+// prioritize sending via the requested channel if the template is configured for
+// it.
+//
+// If not specified and the template is configured for WhatsApp, the message will
+// be sent via WhatsApp first, with automatic fallback to SMS if WhatsApp delivery
+// is unavailable.
+//
+// Supported channels: `sms`, `rcs`, `whatsapp`.
+type TransactionalSendParamsPreferredChannel string
+
+const (
+	TransactionalSendParamsPreferredChannelSMS      TransactionalSendParamsPreferredChannel = "sms"
+	TransactionalSendParamsPreferredChannelRcs      TransactionalSendParamsPreferredChannel = "rcs"
+	TransactionalSendParamsPreferredChannelWhatsapp TransactionalSendParamsPreferredChannel = "whatsapp"
+)
+
+func (r TransactionalSendParamsPreferredChannel) IsKnown() bool {
+	switch r {
+	case TransactionalSendParamsPreferredChannelSMS, TransactionalSendParamsPreferredChannelRcs, TransactionalSendParamsPreferredChannelWhatsapp:
+		return true
+	}
+	return false
 }
