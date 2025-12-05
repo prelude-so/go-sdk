@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.10.1 (2025-12-05)
+
+Full Changelog: [v0.10.0...v0.10.1](https://github.com/prelude-so/go-sdk/compare/v0.10.0...v0.10.1)
+
+### Bug Fixes
+
+* **mcp:** correct code tool API endpoint ([398430f](https://github.com/prelude-so/go-sdk/commit/398430faae2f7e1c8d14bacaef4680eb96d4ef49))
+* rename param to avoid collision ([8c9b1c5](https://github.com/prelude-so/go-sdk/commit/8c9b1c50519fa0484ec368f3b9a3e619eae09e96))
+
+
+### Chores
+
+* elide duplicate aliases ([afd20b9](https://github.com/prelude-so/go-sdk/commit/afd20b9caa24f94b27421f0e5247cf526ce0848f))
+* **internal:** codegen related update ([7a807da](https://github.com/prelude-so/go-sdk/commit/7a807da3d84166c83d7dc12675db3e2f732cd796))
+
 ## 0.10.0 (2025-12-05)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/prelude-so/go-sdk/compare/v0.9.0...v0.10.0)
