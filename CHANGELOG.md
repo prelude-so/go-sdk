@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.0 (2025-12-05)
+
+Full Changelog: [v0.9.0...v0.10.0](https://github.com/prelude-so/go-sdk/compare/v0.9.0...v0.10.0)
+
+### Features
+
+* **api:** add Notify API methods ([cb029f5](https://github.com/prelude-so/go-sdk/commit/cb029f5e07ebaab61a8b9bbac992ec2de3e5016d))
+
 ## 0.9.0 (2025-11-17)
 
 Full Changelog: [v0.8.0...v0.9.0](https://github.com/prelude-so/go-sdk/compare/v0.8.0...v0.9.0)

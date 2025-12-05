@@ -18,6 +18,7 @@ import (
 type Client struct {
 	Options                []option.RequestOption
 	Lookup                 *LookupService
+	Notify                 *NotifyService
 	Transactional          *TransactionalService
 	Verification           *VerificationService
 	VerificationManagement *VerificationManagementService
@@ -47,6 +48,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r = &Client{Options: opts}
 
 	r.Lookup = NewLookupService(opts...)
+	r.Notify = NewNotifyService(opts...)
 	r.Transactional = NewTransactionalService(opts...)
 	r.Verification = NewVerificationService(opts...)
 	r.VerificationManagement = NewVerificationManagementService(opts...)
