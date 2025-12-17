@@ -24,6 +24,7 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIToken("My API Token"),
 	)
+	t.Skip("Prism doesn't support callbacks yet")
 	verification, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
 		Target: prelude.F(prelude.VerificationNewParamsTarget{
 			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
