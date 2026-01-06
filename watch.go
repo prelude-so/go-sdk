@@ -65,8 +65,33 @@ type WatchPredictResponse struct {
 	Prediction WatchPredictResponsePrediction `json:"prediction,required"`
 	// A string that identifies this specific request. Report it back to us to help us
 	// diagnose your issues.
-	RequestID string                   `json:"request_id,required"`
-	JSON      watchPredictResponseJSON `json:"-"`
+	RequestID string `json:"request_id,required"`
+	// The risk factors that contributed to the suspicious prediction. Only present
+	// when prediction is "suspicious" and the anti-fraud system detected specific risk
+	// signals.
+	//
+	//   - `behavioral_pattern` - The phone number past behavior during verification
+	//     flows exhibits suspicious patterns.
+	//   - `device_attribute` - The device exhibits characteristics associated with
+	//     suspicious activity patterns.
+	//   - `fraud_database` - The phone number has been flagged as suspicious in one or
+	//     more of our fraud databases.
+	//   - `location_discrepancy` - The phone number prefix and IP address discrepancy
+	//     indicates potential fraud.
+	//   - `network_fingerprint` - The network connection exhibits characteristics
+	//     associated with suspicious activity patterns.
+	//   - `poor_conversion_history` - The phone number has a history of poorly
+	//     converting to a verified phone number.
+	//   - `prefix_concentration` - The phone number is part of a range known to be
+	//     associated with suspicious activity patterns.
+	//   - `suspected_request_tampering` - The SDK signature is invalid and the request
+	//     is considered to be tampered with.
+	//   - `suspicious_ip_address` - The IP address is deemed to be associated with
+	//     suspicious activity patterns.
+	//   - `temporary_phone_number` - The phone number is known to be a temporary or
+	//     disposable number.
+	RiskFactors []WatchPredictResponseRiskFactor `json:"risk_factors"`
+	JSON        watchPredictResponseJSON         `json:"-"`
 }
 
 // watchPredictResponseJSON contains the JSON metadata for the struct
@@ -75,6 +100,7 @@ type watchPredictResponseJSON struct {
 	ID          apijson.Field
 	Prediction  apijson.Field
 	RequestID   apijson.Field
+	RiskFactors apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -98,6 +124,29 @@ const (
 func (r WatchPredictResponsePrediction) IsKnown() bool {
 	switch r {
 	case WatchPredictResponsePredictionLegitimate, WatchPredictResponsePredictionSuspicious:
+		return true
+	}
+	return false
+}
+
+type WatchPredictResponseRiskFactor string
+
+const (
+	WatchPredictResponseRiskFactorBehavioralPattern         WatchPredictResponseRiskFactor = "behavioral_pattern"
+	WatchPredictResponseRiskFactorDeviceAttribute           WatchPredictResponseRiskFactor = "device_attribute"
+	WatchPredictResponseRiskFactorFraudDatabase             WatchPredictResponseRiskFactor = "fraud_database"
+	WatchPredictResponseRiskFactorLocationDiscrepancy       WatchPredictResponseRiskFactor = "location_discrepancy"
+	WatchPredictResponseRiskFactorNetworkFingerprint        WatchPredictResponseRiskFactor = "network_fingerprint"
+	WatchPredictResponseRiskFactorPoorConversionHistory     WatchPredictResponseRiskFactor = "poor_conversion_history"
+	WatchPredictResponseRiskFactorPrefixConcentration       WatchPredictResponseRiskFactor = "prefix_concentration"
+	WatchPredictResponseRiskFactorSuspectedRequestTampering WatchPredictResponseRiskFactor = "suspected_request_tampering"
+	WatchPredictResponseRiskFactorSuspiciousIPAddress       WatchPredictResponseRiskFactor = "suspicious_ip_address"
+	WatchPredictResponseRiskFactorTemporaryPhoneNumber      WatchPredictResponseRiskFactor = "temporary_phone_number"
+)
+
+func (r WatchPredictResponseRiskFactor) IsKnown() bool {
+	switch r {
+	case WatchPredictResponseRiskFactorBehavioralPattern, WatchPredictResponseRiskFactorDeviceAttribute, WatchPredictResponseRiskFactorFraudDatabase, WatchPredictResponseRiskFactorLocationDiscrepancy, WatchPredictResponseRiskFactorNetworkFingerprint, WatchPredictResponseRiskFactorPoorConversionHistory, WatchPredictResponseRiskFactorPrefixConcentration, WatchPredictResponseRiskFactorSuspectedRequestTampering, WatchPredictResponseRiskFactorSuspiciousIPAddress, WatchPredictResponseRiskFactorTemporaryPhoneNumber:
 		return true
 	}
 	return false
