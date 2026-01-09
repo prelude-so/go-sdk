@@ -378,8 +378,8 @@ func (r VerificationNewParamsMetadata) MarshalJSON() (data []byte, err error) {
 
 // Verification options
 type VerificationNewParamsOptions struct {
-	// This allows you to automatically retrieve and fill the OTP code on mobile apps.
-	// Currently only Android devices are supported.
+	// This allows automatic OTP retrieval on mobile apps and web browsers. Supported
+	// platforms are Android (SMS Retriever API) and Web (WebOTP API).
 	AppRealm param.Field[VerificationNewParamsOptionsAppRealm] `json:"app_realm"`
 	// The URL where webhooks will be sent when verification events occur, including
 	// verification creation, attempt creation, and delivery status changes. For more
@@ -423,15 +423,18 @@ func (r VerificationNewParamsOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// This allows you to automatically retrieve and fill the OTP code on mobile apps.
-// Currently only Android devices are supported.
+// This allows automatic OTP retrieval on mobile apps and web browsers. Supported
+// platforms are Android (SMS Retriever API) and Web (WebOTP API).
 type VerificationNewParamsOptionsAppRealm struct {
-	// The platform the SMS will be sent to. We are currently only supporting
-	// "android".
+	// The platform for automatic OTP retrieval. Use "android" for the SMS Retriever
+	// API or "web" for the WebOTP API.
 	Platform param.Field[VerificationNewParamsOptionsAppRealmPlatform] `json:"platform,required"`
-	// The Android SMS Retriever API hash code that identifies your app. For more
-	// information, see
-	// [Google documentation](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string).
+	// The value depends on the platform:
+	//
+	//   - For Android: The SMS Retriever API hash code (11 characters). See
+	//     [Google documentation](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string).
+	//   - For Web: The origin domain (e.g., "example.com" or "www.example.com"). See
+	//     [WebOTP API documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebOTP_API).
 	Value param.Field[string] `json:"value,required"`
 }
 
@@ -439,17 +442,18 @@ func (r VerificationNewParamsOptionsAppRealm) MarshalJSON() (data []byte, err er
 	return apijson.MarshalRoot(r)
 }
 
-// The platform the SMS will be sent to. We are currently only supporting
-// "android".
+// The platform for automatic OTP retrieval. Use "android" for the SMS Retriever
+// API or "web" for the WebOTP API.
 type VerificationNewParamsOptionsAppRealmPlatform string
 
 const (
 	VerificationNewParamsOptionsAppRealmPlatformAndroid VerificationNewParamsOptionsAppRealmPlatform = "android"
+	VerificationNewParamsOptionsAppRealmPlatformWeb     VerificationNewParamsOptionsAppRealmPlatform = "web"
 )
 
 func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
 	switch r {
-	case VerificationNewParamsOptionsAppRealmPlatformAndroid:
+	case VerificationNewParamsOptionsAppRealmPlatformAndroid, VerificationNewParamsOptionsAppRealmPlatformWeb:
 		return true
 	}
 	return false
