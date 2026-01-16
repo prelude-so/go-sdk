@@ -58,7 +58,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			DeviceID:       prelude.F("8F0B8FDD-C2CB-4387-B20A-56E9B2E5A0D2"),
 			DeviceModel:    prelude.F("iPhone17,2"),
 			DevicePlatform: prelude.F(prelude.VerificationNewParamsSignalsDevicePlatformIos),
-			IP:             prelude.F("192.0.2.1"),
+			IP:             prelude.F("203.0.113.123"),
 			IsTrustedUser:  prelude.F(false),
 			Ja4Fingerprint: prelude.F("t13d1516h2_8daaf6152771_e5627efa2ab1"),
 			OsVersion:      prelude.F("18.0.1"),
