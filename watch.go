@@ -429,13 +429,8 @@ type WatchSendFeedbacksParamsFeedback struct {
 	Target param.Field[WatchSendFeedbacksParamsFeedbacksTarget] `json:"target,required"`
 	// The type of feedback.
 	Type param.Field[WatchSendFeedbacksParamsFeedbacksType] `json:"type,required"`
-	// The identifier of the dispatch that came from the front-end SDK.
-	DispatchID param.Field[string] `json:"dispatch_id"`
 	// The metadata for this feedback.
 	Metadata param.Field[WatchSendFeedbacksParamsFeedbacksMetadata] `json:"metadata"`
-	// The signals used for anti-fraud. For more details, refer to
-	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
-	Signals param.Field[WatchSendFeedbacksParamsFeedbacksSignals] `json:"signals"`
 }
 
 func (r WatchSendFeedbacksParamsFeedback) MarshalJSON() (data []byte, err error) {
@@ -495,61 +490,4 @@ type WatchSendFeedbacksParamsFeedbacksMetadata struct {
 
 func (r WatchSendFeedbacksParamsFeedbacksMetadata) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// The signals used for anti-fraud. For more details, refer to
-// [Signals](/verify/v2/documentation/prevent-fraud#signals).
-type WatchSendFeedbacksParamsFeedbacksSignals struct {
-	// The version of your application.
-	AppVersion param.Field[string] `json:"app_version"`
-	// A unique ID for the user's device. You should ensure that each user device has a
-	// unique `device_id` value. Ideally, for Android, this corresponds to the
-	// `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
-	DeviceID param.Field[string] `json:"device_id"`
-	// The model of the user's device.
-	DeviceModel param.Field[string] `json:"device_model"`
-	// The type of the user's device.
-	DevicePlatform param.Field[WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform] `json:"device_platform"`
-	// The public IP v4 or v6 address of the end-user's device. You should collect this
-	// from your backend. If your backend is behind a proxy, use the `X-Forwarded-For`,
-	// `Forwarded`, `True-Client-IP`, `CF-Connecting-IP` or an equivalent header to get
-	// the actual public IP of the end-user's device.
-	IP param.Field[string] `json:"ip" format:"ipv4"`
-	// This signal should indicate a higher level of trust, explicitly stating that the
-	// user is genuine. Contact us to discuss your use case. For more details, refer to
-	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
-	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
-	// The JA4 fingerprint observed for the end-user's connection. Prelude will infer
-	// it automatically when you use our Frontend SDKs (which use Prelude's edge
-	// network), but you can also forward the value if you terminate TLS yourself.
-	Ja4Fingerprint param.Field[string] `json:"ja4_fingerprint"`
-	// The version of the user's device operating system.
-	OsVersion param.Field[string] `json:"os_version"`
-	// The user agent of the user's device. If the individual fields (os_version,
-	// device_platform, device_model) are provided, we will prioritize those values
-	// instead of parsing them from the user agent string.
-	UserAgent param.Field[string] `json:"user_agent"`
-}
-
-func (r WatchSendFeedbacksParamsFeedbacksSignals) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The type of the user's device.
-type WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform string
-
-const (
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformAndroid WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "android"
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIos     WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "ios"
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIpados  WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "ipados"
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformTvos    WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "tvos"
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformWeb     WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "web"
-)
-
-func (r WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform) IsKnown() bool {
-	switch r {
-	case WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformAndroid, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIos, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIpados, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformTvos, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformWeb:
-		return true
-	}
-	return false
 }
