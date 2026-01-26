@@ -676,6 +676,14 @@ type NotifySendResponse struct {
 	CallbackURL string `json:"callback_url"`
 	// A user-defined identifier to correlate this message with your internal systems.
 	CorrelationID string `json:"correlation_id"`
+	// The SMS encoding type based on message content. GSM-7 supports standard
+	// characters (up to 160 chars per segment), while UCS-2 supports Unicode including
+	// emoji (up to 70 chars per segment). Only present for SMS messages.
+	Encoding NotifySendResponseEncoding `json:"encoding"`
+	// The estimated number of SMS segments for this message. This value is not
+	// contractual; the actual segment count will be determined after the SMS is sent
+	// by the provider. Only present for SMS messages.
+	EstimatedSegmentCount int64 `json:"estimated_segment_count"`
 	// The Sender ID used for this message.
 	From string `json:"from"`
 	// When the message will actually be sent in RFC3339 format with timezone offset.
@@ -688,18 +696,20 @@ type NotifySendResponse struct {
 // notifySendResponseJSON contains the JSON metadata for the struct
 // [NotifySendResponse]
 type notifySendResponseJSON struct {
-	ID            apijson.Field
-	CreatedAt     apijson.Field
-	ExpiresAt     apijson.Field
-	TemplateID    apijson.Field
-	To            apijson.Field
-	Variables     apijson.Field
-	CallbackURL   apijson.Field
-	CorrelationID apijson.Field
-	From          apijson.Field
-	ScheduleAt    apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	ID                    apijson.Field
+	CreatedAt             apijson.Field
+	ExpiresAt             apijson.Field
+	TemplateID            apijson.Field
+	To                    apijson.Field
+	Variables             apijson.Field
+	CallbackURL           apijson.Field
+	CorrelationID         apijson.Field
+	Encoding              apijson.Field
+	EstimatedSegmentCount apijson.Field
+	From                  apijson.Field
+	ScheduleAt            apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *NotifySendResponse) UnmarshalJSON(data []byte) (err error) {
@@ -708,6 +718,24 @@ func (r *NotifySendResponse) UnmarshalJSON(data []byte) (err error) {
 
 func (r notifySendResponseJSON) RawJSON() string {
 	return r.raw
+}
+
+// The SMS encoding type based on message content. GSM-7 supports standard
+// characters (up to 160 chars per segment), while UCS-2 supports Unicode including
+// emoji (up to 70 chars per segment). Only present for SMS messages.
+type NotifySendResponseEncoding string
+
+const (
+	NotifySendResponseEncodingGsm7 NotifySendResponseEncoding = "GSM-7"
+	NotifySendResponseEncodingUcs2 NotifySendResponseEncoding = "UCS-2"
+)
+
+func (r NotifySendResponseEncoding) IsKnown() bool {
+	switch r {
+	case NotifySendResponseEncodingGsm7, NotifySendResponseEncodingUcs2:
+		return true
+	}
+	return false
 }
 
 type NotifySendBatchResponse struct {
@@ -818,6 +846,14 @@ type NotifySendBatchResponseResultsMessage struct {
 	CorrelationID string `json:"correlation_id"`
 	// The message creation date in RFC3339 format.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// The SMS encoding type based on message content. GSM-7 supports standard
+	// characters (up to 160 chars per segment), while UCS-2 supports Unicode including
+	// emoji (up to 70 chars per segment). Only present for SMS messages.
+	Encoding NotifySendBatchResponseResultsMessageEncoding `json:"encoding"`
+	// The estimated number of SMS segments for this message. This value is not
+	// contractual; the actual segment count will be determined after the SMS is sent
+	// by the provider. Only present for SMS messages.
+	EstimatedSegmentCount int64 `json:"estimated_segment_count"`
 	// The message expiration date in RFC3339 format.
 	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
 	// The Sender ID used for this message.
@@ -834,16 +870,18 @@ type NotifySendBatchResponseResultsMessage struct {
 // notifySendBatchResponseResultsMessageJSON contains the JSON metadata for the
 // struct [NotifySendBatchResponseResultsMessage]
 type notifySendBatchResponseResultsMessageJSON struct {
-	ID            apijson.Field
-	CorrelationID apijson.Field
-	CreatedAt     apijson.Field
-	ExpiresAt     apijson.Field
-	From          apijson.Field
-	Locale        apijson.Field
-	ScheduleAt    apijson.Field
-	To            apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	ID                    apijson.Field
+	CorrelationID         apijson.Field
+	CreatedAt             apijson.Field
+	Encoding              apijson.Field
+	EstimatedSegmentCount apijson.Field
+	ExpiresAt             apijson.Field
+	From                  apijson.Field
+	Locale                apijson.Field
+	ScheduleAt            apijson.Field
+	To                    apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *NotifySendBatchResponseResultsMessage) UnmarshalJSON(data []byte) (err error) {
@@ -852,6 +890,24 @@ func (r *NotifySendBatchResponseResultsMessage) UnmarshalJSON(data []byte) (err 
 
 func (r notifySendBatchResponseResultsMessageJSON) RawJSON() string {
 	return r.raw
+}
+
+// The SMS encoding type based on message content. GSM-7 supports standard
+// characters (up to 160 chars per segment), while UCS-2 supports Unicode including
+// emoji (up to 70 chars per segment). Only present for SMS messages.
+type NotifySendBatchResponseResultsMessageEncoding string
+
+const (
+	NotifySendBatchResponseResultsMessageEncodingGsm7 NotifySendBatchResponseResultsMessageEncoding = "GSM-7"
+	NotifySendBatchResponseResultsMessageEncodingUcs2 NotifySendBatchResponseResultsMessageEncoding = "UCS-2"
+)
+
+func (r NotifySendBatchResponseResultsMessageEncoding) IsKnown() bool {
+	switch r {
+	case NotifySendBatchResponseResultsMessageEncodingGsm7, NotifySendBatchResponseResultsMessageEncodingUcs2:
+		return true
+	}
+	return false
 }
 
 type NotifyListSubscriptionConfigsParams struct {
