@@ -103,6 +103,9 @@ type TransactionalSendParams struct {
 	// returned in the response and any webhook events that refer to this
 	// transactionalmessage.
 	CorrelationID param.Field[string] `json:"correlation_id"`
+	// A document to attach to the message. Only supported on WhatsApp templates that
+	// have a document header.
+	Document param.Field[TransactionalSendParamsDocument] `json:"document"`
 	// The message expiration date.
 	ExpiresAt param.Field[string] `json:"expires_at"`
 	// The Sender ID.
@@ -127,6 +130,19 @@ type TransactionalSendParams struct {
 }
 
 func (r TransactionalSendParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// A document to attach to the message. Only supported on WhatsApp templates that
+// have a document header.
+type TransactionalSendParamsDocument struct {
+	// The filename to display for the document.
+	Filename param.Field[string] `json:"filename,required"`
+	// The URL of the document to attach. Must be a valid HTTP or HTTPS URL.
+	URL param.Field[string] `json:"url,required"`
+}
+
+func (r TransactionalSendParamsDocument) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
