@@ -987,6 +987,9 @@ type NotifySendParams struct {
 	// It is returned in the response and any webhook events that refer to this
 	// message.
 	CorrelationID param.Field[string] `json:"correlation_id"`
+	// A document to attach to the message. Only supported on WhatsApp templates that
+	// have a document header.
+	Document param.Field[NotifySendParamsDocument] `json:"document"`
 	// The message expiration date in RFC3339 format. The message will not be sent if
 	// this time is reached.
 	ExpiresAt param.Field[time.Time] `json:"expires_at" format:"date-time"`
@@ -1009,6 +1012,19 @@ type NotifySendParams struct {
 }
 
 func (r NotifySendParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// A document to attach to the message. Only supported on WhatsApp templates that
+// have a document header.
+type NotifySendParamsDocument struct {
+	// The filename to display for the document.
+	Filename param.Field[string] `json:"filename,required"`
+	// The URL of the document to attach. Must be a valid HTTP or HTTPS URL.
+	URL param.Field[string] `json:"url,required"`
+}
+
+func (r NotifySendParamsDocument) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
@@ -1038,6 +1054,9 @@ type NotifySendBatchParams struct {
 	CallbackURL param.Field[string] `json:"callback_url"`
 	// A user-defined identifier to correlate this request with your internal systems.
 	CorrelationID param.Field[string] `json:"correlation_id"`
+	// A document to attach to the message. Only supported on WhatsApp templates that
+	// have a document header.
+	Document param.Field[NotifySendBatchParamsDocument] `json:"document"`
 	// The message expiration date in RFC3339 format. Messages will not be sent after
 	// this time.
 	ExpiresAt param.Field[time.Time] `json:"expires_at" format:"date-time"`
@@ -1055,6 +1074,19 @@ type NotifySendBatchParams struct {
 }
 
 func (r NotifySendBatchParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// A document to attach to the message. Only supported on WhatsApp templates that
+// have a document header.
+type NotifySendBatchParamsDocument struct {
+	// The filename to display for the document.
+	Filename param.Field[string] `json:"filename,required"`
+	// The URL of the document to attach. Must be a valid HTTP or HTTPS URL.
+	URL param.Field[string] `json:"url,required"`
+}
+
+func (r NotifySendBatchParamsDocument) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 

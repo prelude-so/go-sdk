@@ -27,10 +27,14 @@ func TestTransactionalSendWithOptionalParams(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	_, err := client.Transactional.Send(context.TODO(), prelude.TransactionalSendParams{
-		TemplateID:       prelude.F("template_01hynf45qvevj844m9az2x2f3c"),
-		To:               prelude.F("+30123456789"),
-		CallbackURL:      prelude.F("callback_url"),
-		CorrelationID:    prelude.F("correlation_id"),
+		TemplateID:    prelude.F("template_01hynf45qvevj844m9az2x2f3c"),
+		To:            prelude.F("+30123456789"),
+		CallbackURL:   prelude.F("callback_url"),
+		CorrelationID: prelude.F("correlation_id"),
+		Document: prelude.F(prelude.TransactionalSendParamsDocument{
+			Filename: prelude.F("invoice.pdf"),
+			URL:      prelude.F("https://example.com/invoice.pdf"),
+		}),
 		ExpiresAt:        prelude.F("expires_at"),
 		From:             prelude.F("from"),
 		Locale:           prelude.F("el-GR"),
