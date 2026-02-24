@@ -60,12 +60,12 @@ func (r *WatchService) SendFeedbacks(ctx context.Context, body WatchSendFeedback
 
 type WatchPredictResponse struct {
 	// The prediction identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The prediction outcome.
-	Prediction WatchPredictResponsePrediction `json:"prediction,required"`
+	Prediction WatchPredictResponsePrediction `json:"prediction" api:"required"`
 	// A string that identifies this specific request. Report it back to us to help us
 	// diagnose your issues.
-	RequestID string `json:"request_id,required"`
+	RequestID string `json:"request_id" api:"required"`
 	// The risk factors that contributed to the suspicious prediction. Only present
 	// when prediction is "suspicious" and the anti-fraud system detected specific risk
 	// signals.
@@ -155,9 +155,9 @@ func (r WatchPredictResponseRiskFactor) IsKnown() bool {
 type WatchSendEventsResponse struct {
 	// A string that identifies this specific request. Report it back to us to help us
 	// diagnose your issues.
-	RequestID string `json:"request_id,required"`
+	RequestID string `json:"request_id" api:"required"`
 	// The status of the events dispatch.
-	Status WatchSendEventsResponseStatus `json:"status,required"`
+	Status WatchSendEventsResponseStatus `json:"status" api:"required"`
 	JSON   watchSendEventsResponseJSON   `json:"-"`
 }
 
@@ -196,9 +196,9 @@ func (r WatchSendEventsResponseStatus) IsKnown() bool {
 type WatchSendFeedbacksResponse struct {
 	// A string that identifies this specific request. Report it back to us to help us
 	// diagnose your issues.
-	RequestID string `json:"request_id,required"`
+	RequestID string `json:"request_id" api:"required"`
 	// The status of the feedbacks sending.
-	Status WatchSendFeedbacksResponseStatus `json:"status,required"`
+	Status WatchSendFeedbacksResponseStatus `json:"status" api:"required"`
 	JSON   watchSendFeedbacksResponseJSON   `json:"-"`
 }
 
@@ -236,7 +236,7 @@ func (r WatchSendFeedbacksResponseStatus) IsKnown() bool {
 
 type WatchPredictParams struct {
 	// The prediction target. Only supports phone numbers for now.
-	Target param.Field[WatchPredictParamsTarget] `json:"target,required"`
+	Target param.Field[WatchPredictParamsTarget] `json:"target" api:"required"`
 	// The identifier of the dispatch that came from the front-end SDK.
 	DispatchID param.Field[string] `json:"dispatch_id"`
 	// The metadata for this prediction.
@@ -253,9 +253,9 @@ func (r WatchPredictParams) MarshalJSON() (data []byte, err error) {
 // The prediction target. Only supports phone numbers for now.
 type WatchPredictParamsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[WatchPredictParamsTargetType] `json:"type,required"`
+	Type param.Field[WatchPredictParamsTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r WatchPredictParamsTarget) MarshalJSON() (data []byte, err error) {
@@ -348,7 +348,7 @@ func (r WatchPredictParamsSignalsDevicePlatform) IsKnown() bool {
 
 type WatchSendEventsParams struct {
 	// A list of events to dispatch.
-	Events param.Field[[]WatchSendEventsParamsEvent] `json:"events,required"`
+	Events param.Field[[]WatchSendEventsParamsEvent] `json:"events" api:"required"`
 }
 
 func (r WatchSendEventsParams) MarshalJSON() (data []byte, err error) {
@@ -357,11 +357,11 @@ func (r WatchSendEventsParams) MarshalJSON() (data []byte, err error) {
 
 type WatchSendEventsParamsEvent struct {
 	// A confidence level you want to assign to the event.
-	Confidence param.Field[WatchSendEventsParamsEventsConfidence] `json:"confidence,required"`
+	Confidence param.Field[WatchSendEventsParamsEventsConfidence] `json:"confidence" api:"required"`
 	// A label to describe what the event refers to.
-	Label param.Field[string] `json:"label,required"`
+	Label param.Field[string] `json:"label" api:"required"`
 	// The event target. Only supports phone numbers for now.
-	Target param.Field[WatchSendEventsParamsEventsTarget] `json:"target,required"`
+	Target param.Field[WatchSendEventsParamsEventsTarget] `json:"target" api:"required"`
 }
 
 func (r WatchSendEventsParamsEvent) MarshalJSON() (data []byte, err error) {
@@ -390,9 +390,9 @@ func (r WatchSendEventsParamsEventsConfidence) IsKnown() bool {
 // The event target. Only supports phone numbers for now.
 type WatchSendEventsParamsEventsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[WatchSendEventsParamsEventsTargetType] `json:"type,required"`
+	Type param.Field[WatchSendEventsParamsEventsTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r WatchSendEventsParamsEventsTarget) MarshalJSON() (data []byte, err error) {
@@ -417,7 +417,7 @@ func (r WatchSendEventsParamsEventsTargetType) IsKnown() bool {
 
 type WatchSendFeedbacksParams struct {
 	// A list of feedbacks to send.
-	Feedbacks param.Field[[]WatchSendFeedbacksParamsFeedback] `json:"feedbacks,required"`
+	Feedbacks param.Field[[]WatchSendFeedbacksParamsFeedback] `json:"feedbacks" api:"required"`
 }
 
 func (r WatchSendFeedbacksParams) MarshalJSON() (data []byte, err error) {
@@ -426,9 +426,9 @@ func (r WatchSendFeedbacksParams) MarshalJSON() (data []byte, err error) {
 
 type WatchSendFeedbacksParamsFeedback struct {
 	// The feedback target. Only supports phone numbers for now.
-	Target param.Field[WatchSendFeedbacksParamsFeedbacksTarget] `json:"target,required"`
+	Target param.Field[WatchSendFeedbacksParamsFeedbacksTarget] `json:"target" api:"required"`
 	// The type of feedback.
-	Type param.Field[WatchSendFeedbacksParamsFeedbacksType] `json:"type,required"`
+	Type param.Field[WatchSendFeedbacksParamsFeedbacksType] `json:"type" api:"required"`
 	// The metadata for this feedback.
 	Metadata param.Field[WatchSendFeedbacksParamsFeedbacksMetadata] `json:"metadata"`
 }
@@ -440,9 +440,9 @@ func (r WatchSendFeedbacksParamsFeedback) MarshalJSON() (data []byte, err error)
 // The feedback target. Only supports phone numbers for now.
 type WatchSendFeedbacksParamsFeedbacksTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[WatchSendFeedbacksParamsFeedbacksTargetType] `json:"type,required"`
+	Type param.Field[WatchSendFeedbacksParamsFeedbacksTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r WatchSendFeedbacksParamsFeedbacksTarget) MarshalJSON() (data []byte, err error) {

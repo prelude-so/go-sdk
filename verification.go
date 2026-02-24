@@ -52,11 +52,11 @@ func (r *VerificationService) Check(ctx context.Context, body VerificationCheckP
 
 type VerificationNewResponse struct {
 	// The verification identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The method used for verifying this phone number.
-	Method VerificationNewResponseMethod `json:"method,required"`
+	Method VerificationNewResponseMethod `json:"method" api:"required"`
 	// The status of the verification.
-	Status VerificationNewResponseStatus `json:"status,required"`
+	Status VerificationNewResponseStatus `json:"status" api:"required"`
 	// The ordered sequence of channels to be used for verification
 	Channels []VerificationNewResponseChannel `json:"channels"`
 	// The metadata for this verification.
@@ -224,7 +224,7 @@ func (r VerificationNewResponseReason) IsKnown() bool {
 // The silent verification specific properties.
 type VerificationNewResponseSilent struct {
 	// The URL to start the silent verification towards.
-	RequestURL string                            `json:"request_url,required"`
+	RequestURL string                            `json:"request_url" api:"required"`
 	JSON       verificationNewResponseSilentJSON `json:"-"`
 }
 
@@ -246,7 +246,7 @@ func (r verificationNewResponseSilentJSON) RawJSON() string {
 
 type VerificationCheckResponse struct {
 	// The status of the check.
-	Status VerificationCheckResponseStatus `json:"status,required"`
+	Status VerificationCheckResponseStatus `json:"status" api:"required"`
 	// The verification identifier.
 	ID string `json:"id"`
 	// The metadata for this verification.
@@ -318,7 +318,7 @@ func (r verificationCheckResponseMetadataJSON) RawJSON() string {
 type VerificationNewParams struct {
 	// The verification target. Either a phone number or an email address. To use the
 	// email verification feature contact us to discuss your use case.
-	Target param.Field[VerificationNewParamsTarget] `json:"target,required"`
+	Target param.Field[VerificationNewParamsTarget] `json:"target" api:"required"`
 	// The identifier of the dispatch that came from the front-end SDK.
 	DispatchID param.Field[string] `json:"dispatch_id"`
 	// The metadata for this verification. This object will be returned with every
@@ -339,9 +339,9 @@ func (r VerificationNewParams) MarshalJSON() (data []byte, err error) {
 // email verification feature contact us to discuss your use case.
 type VerificationNewParamsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[VerificationNewParamsTargetType] `json:"type,required"`
+	Type param.Field[VerificationNewParamsTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r VerificationNewParamsTarget) MarshalJSON() (data []byte, err error) {
@@ -426,14 +426,14 @@ func (r VerificationNewParamsOptions) MarshalJSON() (data []byte, err error) {
 type VerificationNewParamsOptionsAppRealm struct {
 	// The platform for automatic OTP retrieval. Use "android" for the SMS Retriever
 	// API or "web" for the WebOTP API.
-	Platform param.Field[VerificationNewParamsOptionsAppRealmPlatform] `json:"platform,required"`
+	Platform param.Field[VerificationNewParamsOptionsAppRealmPlatform] `json:"platform" api:"required"`
 	// The value depends on the platform:
 	//
 	//   - For Android: The SMS Retriever API hash code (11 characters). See
 	//     [Google documentation](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string).
 	//   - For Web: The origin domain (e.g., "example.com" or "www.example.com"). See
 	//     [WebOTP API documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebOTP_API).
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r VerificationNewParamsOptionsAppRealm) MarshalJSON() (data []byte, err error) {
@@ -559,10 +559,10 @@ func (r VerificationNewParamsSignalsDevicePlatform) IsKnown() bool {
 
 type VerificationCheckParams struct {
 	// The OTP code to validate.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The verification target. Either a phone number or an email address. To use the
 	// email verification feature contact us to discuss your use case.
-	Target param.Field[VerificationCheckParamsTarget] `json:"target,required"`
+	Target param.Field[VerificationCheckParamsTarget] `json:"target" api:"required"`
 }
 
 func (r VerificationCheckParams) MarshalJSON() (data []byte, err error) {
@@ -573,9 +573,9 @@ func (r VerificationCheckParams) MarshalJSON() (data []byte, err error) {
 // email verification feature contact us to discuss your use case.
 type VerificationCheckParamsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[VerificationCheckParamsTargetType] `json:"type,required"`
+	Type param.Field[VerificationCheckParamsTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r VerificationCheckParamsTarget) MarshalJSON() (data []byte, err error) {

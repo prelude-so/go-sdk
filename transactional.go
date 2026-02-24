@@ -46,17 +46,17 @@ func (r *TransactionalService) Send(ctx context.Context, body TransactionalSendP
 
 type TransactionalSendResponse struct {
 	// The message identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The message creation date.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// The message expiration date.
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// The template identifier.
-	TemplateID string `json:"template_id,required"`
+	TemplateID string `json:"template_id" api:"required"`
 	// The recipient's phone number.
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// The variables to be replaced in the template.
-	Variables map[string]string `json:"variables,required"`
+	Variables map[string]string `json:"variables" api:"required"`
 	// The callback URL.
 	CallbackURL string `json:"callback_url"`
 	// A user-defined identifier to correlate this transactional message with. It is
@@ -94,9 +94,9 @@ func (r transactionalSendResponseJSON) RawJSON() string {
 
 type TransactionalSendParams struct {
 	// The template identifier.
-	TemplateID param.Field[string] `json:"template_id,required"`
+	TemplateID param.Field[string] `json:"template_id" api:"required"`
 	// The recipient's phone number.
-	To param.Field[string] `json:"to,required"`
+	To param.Field[string] `json:"to" api:"required"`
 	// The callback URL.
 	CallbackURL param.Field[string] `json:"callback_url"`
 	// A user-defined identifier to correlate this transactional message with. It is
@@ -137,9 +137,9 @@ func (r TransactionalSendParams) MarshalJSON() (data []byte, err error) {
 // have a document header.
 type TransactionalSendParamsDocument struct {
 	// The filename to display for the document.
-	Filename param.Field[string] `json:"filename,required"`
+	Filename param.Field[string] `json:"filename" api:"required"`
 	// The URL of the document to attach. Must be a valid HTTP or HTTPS URL.
-	URL param.Field[string] `json:"url,required"`
+	URL param.Field[string] `json:"url" api:"required"`
 }
 
 func (r TransactionalSendParamsDocument) MarshalJSON() (data []byte, err error) {
