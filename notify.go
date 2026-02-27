@@ -18,6 +18,8 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
+// Send transactional and marketing messages with compliance enforcement.
+//
 // NotifyService contains methods and other services that help with interacting
 // with the Prelude API.
 //

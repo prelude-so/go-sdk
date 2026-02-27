@@ -13,6 +13,8 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
+// Verify phone numbers.
+//
 // VerificationService contains methods and other services that help with
 // interacting with the Prelude API.
 //

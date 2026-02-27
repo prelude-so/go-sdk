@@ -13,6 +13,8 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
+// Evaluate email addresses and phone numbers for trustworthiness.
+//
 // WatchService contains methods and other services that help with interacting with
 // the Prelude API.
 //

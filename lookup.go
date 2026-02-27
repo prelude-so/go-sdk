@@ -17,6 +17,9 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
+// Retrieve detailed information about a phone number including carrier data, line
+// type, and portability status.
+//
 // LookupService contains methods and other services that help with interacting
 // with the Prelude API.
 //

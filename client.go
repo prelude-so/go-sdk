@@ -16,13 +16,20 @@ import (
 // interacting with the Prelude API. You should not instantiate this client
 // directly, and instead use the [NewClient] method instead.
 type Client struct {
-	Options                []option.RequestOption
-	Lookup                 *LookupService
-	Notify                 *NotifyService
-	Transactional          *TransactionalService
-	Verification           *VerificationService
+	Options []option.RequestOption
+	// Retrieve detailed information about a phone number including carrier data, line
+	// type, and portability status.
+	Lookup *LookupService
+	// Send transactional and marketing messages with compliance enforcement.
+	Notify *NotifyService
+	// Send transactional messages (deprecated - use Notify API instead).
+	Transactional *TransactionalService
+	// Verify phone numbers.
+	Verification *VerificationService
+	// Verify phone numbers.
 	VerificationManagement *VerificationManagementService
-	Watch                  *WatchService
+	// Evaluate email addresses and phone numbers for trustworthiness.
+	Watch *WatchService
 }
 
 // DefaultClientOptions read from the environment (API_TOKEN, PRELUDE_BASE_URL).
