@@ -58,6 +58,13 @@ type VerificationNewResponse struct {
 	// The method used for verifying this phone number.
 	Method VerificationNewResponseMethod `json:"method" api:"required"`
 	// The status of the verification.
+	//
+	//   - `success` - A new verification window was created.
+	//   - `retry` - A new attempt was created for an existing verification window.
+	//   - `challenged` - The verification is suspicious and is restricted to non-SMS and
+	//     non-voice channels only. This mode must be enabled for your customer account
+	//     by Prelude support.
+	//   - `blocked` - The verification was blocked.
 	Status VerificationNewResponseStatus `json:"status" api:"required"`
 	// The ordered sequence of channels to be used for verification
 	Channels []VerificationNewResponseChannel `json:"channels"`
@@ -127,17 +134,25 @@ func (r VerificationNewResponseMethod) IsKnown() bool {
 }
 
 // The status of the verification.
+//
+//   - `success` - A new verification window was created.
+//   - `retry` - A new attempt was created for an existing verification window.
+//   - `challenged` - The verification is suspicious and is restricted to non-SMS and
+//     non-voice channels only. This mode must be enabled for your customer account
+//     by Prelude support.
+//   - `blocked` - The verification was blocked.
 type VerificationNewResponseStatus string
 
 const (
-	VerificationNewResponseStatusSuccess VerificationNewResponseStatus = "success"
-	VerificationNewResponseStatusRetry   VerificationNewResponseStatus = "retry"
-	VerificationNewResponseStatusBlocked VerificationNewResponseStatus = "blocked"
+	VerificationNewResponseStatusSuccess    VerificationNewResponseStatus = "success"
+	VerificationNewResponseStatusRetry      VerificationNewResponseStatus = "retry"
+	VerificationNewResponseStatusChallenged VerificationNewResponseStatus = "challenged"
+	VerificationNewResponseStatusBlocked    VerificationNewResponseStatus = "blocked"
 )
 
 func (r VerificationNewResponseStatus) IsKnown() bool {
 	switch r {
-	case VerificationNewResponseStatusSuccess, VerificationNewResponseStatusRetry, VerificationNewResponseStatusBlocked:
+	case VerificationNewResponseStatusSuccess, VerificationNewResponseStatusRetry, VerificationNewResponseStatusChallenged, VerificationNewResponseStatusBlocked:
 		return true
 	}
 	return false
