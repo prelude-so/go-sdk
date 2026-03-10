@@ -41,7 +41,7 @@ func (r *VerificationService) New(ctx context.Context, body VerificationNewParam
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Check the validity of a verification code.
@@ -49,7 +49,7 @@ func (r *VerificationService) Check(ctx context.Context, body VerificationCheckP
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/check"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type VerificationNewResponse struct {

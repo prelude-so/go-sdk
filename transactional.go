@@ -43,7 +43,7 @@ func (r *TransactionalService) Send(ctx context.Context, body TransactionalSendP
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/transactional"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type TransactionalSendResponse struct {

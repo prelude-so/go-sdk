@@ -39,7 +39,7 @@ func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/predict"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send real-time event data from end-user interactions within your application.
@@ -48,7 +48,7 @@ func (r *WatchService) SendEvents(ctx context.Context, body WatchSendEventsParam
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/event"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send feedback regarding your end-users verification funnel. Events will be
@@ -57,7 +57,7 @@ func (r *WatchService) SendFeedbacks(ctx context.Context, body WatchSendFeedback
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/feedback"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type WatchPredictResponse struct {
