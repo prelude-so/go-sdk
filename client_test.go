@@ -38,7 +38,7 @@ func TestUserAgentHeader(t *testing.T) {
 			},
 		}),
 	)
-	client.Verification.New(context.Background(), prelude.VerificationNewParams{
+	_, _ = client.Verification.New(context.Background(), prelude.VerificationNewParams{
 		Target: prelude.F(prelude.VerificationNewParamsTarget{
 			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),

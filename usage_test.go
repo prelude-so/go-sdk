@@ -13,6 +13,7 @@ import (
 )
 
 func TestUsage(t *testing.T) {
+	t.Skip("Mock server doesn't support callbacks yet")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -24,7 +25,6 @@ func TestUsage(t *testing.T) {
 		option.WithBaseURL(baseURL),
 		option.WithAPIToken("My API Token"),
 	)
-	t.Skip("Mock server doesn't support callbacks yet")
 	verification, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
 		Target: prelude.F(prelude.VerificationNewParamsTarget{
 			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
