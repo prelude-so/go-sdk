@@ -44,11 +44,11 @@ func (r *NotifyService) GetSubscriptionConfig(ctx context.Context, configID stri
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/notify/management/subscriptions/%s", configID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the current subscription status for a specific phone number within a
@@ -57,15 +57,15 @@ func (r *NotifyService) GetSubscriptionPhoneNumber(ctx context.Context, configID
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/notify/management/subscriptions/%s/phone_numbers/%s", configID, phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a paginated list of subscription management configurations for your
@@ -77,7 +77,7 @@ func (r *NotifyService) ListSubscriptionConfigs(ctx context.Context, query Notif
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notify/management/subscriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a paginated list of subscription events (status changes) for a specific
@@ -88,15 +88,15 @@ func (r *NotifyService) ListSubscriptionPhoneNumberEvents(ctx context.Context, c
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/notify/management/subscriptions/%s/phone_numbers/%s/events", configID, phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a paginated list of phone numbers and their subscription statuses for a
@@ -107,11 +107,11 @@ func (r *NotifyService) ListSubscriptionPhoneNumbers(ctx context.Context, config
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/notify/management/subscriptions/%s/phone_numbers", configID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Send transactional and marketing messages to your users via SMS and WhatsApp
@@ -120,7 +120,7 @@ func (r *NotifyService) Send(ctx context.Context, body NotifySendParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notify"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send the same message to multiple recipients in a single request.
@@ -128,7 +128,7 @@ func (r *NotifyService) SendBatch(ctx context.Context, body NotifySendBatchParam
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notify/batch"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type NotifyGetSubscriptionConfigResponse struct {

@@ -47,7 +47,7 @@ func (r *VerificationManagementService) DeletePhoneNumber(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("v2/verification/management/phone-numbers/%v", action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the list of phone numbers in the allow or block list.
@@ -57,7 +57,7 @@ func (r *VerificationManagementService) ListPhoneNumbers(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("v2/verification/management/phone-numbers/%v", action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve sender IDs list.
@@ -67,7 +67,7 @@ func (r *VerificationManagementService) ListSenderIDs(ctx context.Context, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/management/sender-id"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Add a phone number to the allow or block list.
@@ -81,7 +81,7 @@ func (r *VerificationManagementService) SetPhoneNumber(ctx context.Context, acti
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("v2/verification/management/phone-numbers/%v", action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This endpoint allows you to submit a new sender ID for verification purposes.
@@ -91,7 +91,7 @@ func (r *VerificationManagementService) SubmitSenderID(ctx context.Context, body
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/management/sender-id"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type VerificationManagementDeletePhoneNumberResponse struct {
