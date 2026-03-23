@@ -17,6 +17,9 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
+// Retrieve detailed information about a phone number including carrier data, line
+// type, and portability status.
+//
 // LookupService contains methods and other services that help with interacting
 // with the Prelude API.
 //
@@ -42,11 +45,11 @@ func (r *LookupService) Lookup(ctx context.Context, phoneNumber string, query Lo
 	opts = slices.Concat(r.Options, opts)
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/lookup/%s", phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 type LookupLookupResponse struct {

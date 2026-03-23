@@ -18,6 +18,8 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
+// Send transactional and marketing messages with compliance enforcement.
+//
 // NotifyService contains methods and other services that help with interacting
 // with the Prelude API.
 //
@@ -42,11 +44,11 @@ func (r *NotifyService) GetSubscriptionConfig(ctx context.Context, configID stri
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/notify/management/subscriptions/%s", configID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the current subscription status for a specific phone number within a
@@ -55,15 +57,15 @@ func (r *NotifyService) GetSubscriptionPhoneNumber(ctx context.Context, configID
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/notify/management/subscriptions/%s/phone_numbers/%s", configID, phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a paginated list of subscription management configurations for your
@@ -75,7 +77,7 @@ func (r *NotifyService) ListSubscriptionConfigs(ctx context.Context, query Notif
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notify/management/subscriptions"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a paginated list of subscription events (status changes) for a specific
@@ -86,15 +88,15 @@ func (r *NotifyService) ListSubscriptionPhoneNumberEvents(ctx context.Context, c
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	if phoneNumber == "" {
 		err = errors.New("missing required phone_number parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/notify/management/subscriptions/%s/phone_numbers/%s/events", configID, phoneNumber)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve a paginated list of phone numbers and their subscription statuses for a
@@ -105,11 +107,11 @@ func (r *NotifyService) ListSubscriptionPhoneNumbers(ctx context.Context, config
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
 		err = errors.New("missing required config_id parameter")
-		return
+		return nil, err
 	}
 	path := fmt.Sprintf("v2/notify/management/subscriptions/%s/phone_numbers", configID)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, query, &res, opts...)
-	return
+	return res, err
 }
 
 // Send transactional and marketing messages to your users via SMS and WhatsApp
@@ -118,7 +120,7 @@ func (r *NotifyService) Send(ctx context.Context, body NotifySendParams, opts ..
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notify"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send the same message to multiple recipients in a single request.
@@ -126,22 +128,22 @@ func (r *NotifyService) SendBatch(ctx context.Context, body NotifySendBatchParam
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notify/batch"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type NotifyGetSubscriptionConfigResponse struct {
 	// The subscription configuration ID.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The URL to call when subscription status changes.
-	CallbackURL string `json:"callback_url,required" format:"uri"`
+	CallbackURL string `json:"callback_url" api:"required" format:"uri"`
 	// The date and time when the configuration was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// The subscription messages configuration.
-	Messages NotifyGetSubscriptionConfigResponseMessages `json:"messages,required"`
+	Messages NotifyGetSubscriptionConfigResponseMessages `json:"messages" api:"required"`
 	// The human-readable name for the subscription configuration.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The date and time when the configuration was last updated.
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// A list of phone numbers for receiving inbound messages.
 	MoPhoneNumbers []NotifyGetSubscriptionConfigResponseMoPhoneNumber `json:"mo_phone_numbers"`
 	JSON           notifyGetSubscriptionConfigResponseJSON            `json:"-"`
@@ -200,10 +202,10 @@ func (r notifyGetSubscriptionConfigResponseMessagesJSON) RawJSON() string {
 
 type NotifyGetSubscriptionConfigResponseMoPhoneNumber struct {
 	// The ISO 3166-1 alpha-2 country code.
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// The phone number in E.164 format for long codes, or short code format for short
 	// codes.
-	PhoneNumber string                                               `json:"phone_number,required"`
+	PhoneNumber string                                               `json:"phone_number" api:"required"`
 	JSON        notifyGetSubscriptionConfigResponseMoPhoneNumberJSON `json:"-"`
 }
 
@@ -226,23 +228,23 @@ func (r notifyGetSubscriptionConfigResponseMoPhoneNumberJSON) RawJSON() string {
 
 type NotifyGetSubscriptionPhoneNumberResponse struct {
 	// The subscription configuration ID.
-	ConfigID string `json:"config_id,required"`
+	ConfigID string `json:"config_id" api:"required"`
 	// The phone number in E.164 format.
-	PhoneNumber string `json:"phone_number,required" format:"phone_number"`
+	PhoneNumber string `json:"phone_number" api:"required" format:"phone_number"`
 	// How the subscription state was changed:
 	//
 	// - `MO_KEYWORD` - User sent a keyword (STOP/START)
 	// - `API` - Changed via API
 	// - `CSV_IMPORT` - Imported from CSV
 	// - `CARRIER_DISCONNECT` - Automatically unsubscribed due to carrier disconnect
-	Source NotifyGetSubscriptionPhoneNumberResponseSource `json:"source,required"`
+	Source NotifyGetSubscriptionPhoneNumberResponseSource `json:"source" api:"required"`
 	// The subscription state:
 	//
 	// - `SUB` - Subscribed (user can receive marketing messages)
 	// - `UNSUB` - Unsubscribed (user has opted out)
-	State NotifyGetSubscriptionPhoneNumberResponseState `json:"state,required"`
+	State NotifyGetSubscriptionPhoneNumberResponseState `json:"state" api:"required"`
 	// The date and time when the subscription status was last updated.
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Additional context about the state change (e.g., the keyword that was sent).
 	Reason string                                       `json:"reason"`
 	JSON   notifyGetSubscriptionPhoneNumberResponseJSON `json:"-"`
@@ -313,7 +315,7 @@ func (r NotifyGetSubscriptionPhoneNumberResponseState) IsKnown() bool {
 
 type NotifyListSubscriptionConfigsResponse struct {
 	// A list of subscription management configurations.
-	Configs []NotifyListSubscriptionConfigsResponseConfig `json:"configs,required"`
+	Configs []NotifyListSubscriptionConfigsResponseConfig `json:"configs" api:"required"`
 	// Pagination cursor for the next page of results. Omitted if there are no more
 	// pages.
 	NextCursor string                                    `json:"next_cursor"`
@@ -339,17 +341,17 @@ func (r notifyListSubscriptionConfigsResponseJSON) RawJSON() string {
 
 type NotifyListSubscriptionConfigsResponseConfig struct {
 	// The subscription configuration ID.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The URL to call when subscription status changes.
-	CallbackURL string `json:"callback_url,required" format:"uri"`
+	CallbackURL string `json:"callback_url" api:"required" format:"uri"`
 	// The date and time when the configuration was created.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// The subscription messages configuration.
-	Messages NotifyListSubscriptionConfigsResponseConfigsMessages `json:"messages,required"`
+	Messages NotifyListSubscriptionConfigsResponseConfigsMessages `json:"messages" api:"required"`
 	// The human-readable name for the subscription configuration.
-	Name string `json:"name,required"`
+	Name string `json:"name" api:"required"`
 	// The date and time when the configuration was last updated.
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// A list of phone numbers for receiving inbound messages.
 	MoPhoneNumbers []NotifyListSubscriptionConfigsResponseConfigsMoPhoneNumber `json:"mo_phone_numbers"`
 	JSON           notifyListSubscriptionConfigsResponseConfigJSON             `json:"-"`
@@ -408,10 +410,10 @@ func (r notifyListSubscriptionConfigsResponseConfigsMessagesJSON) RawJSON() stri
 
 type NotifyListSubscriptionConfigsResponseConfigsMoPhoneNumber struct {
 	// The ISO 3166-1 alpha-2 country code.
-	CountryCode string `json:"country_code,required"`
+	CountryCode string `json:"country_code" api:"required"`
 	// The phone number in E.164 format for long codes, or short code format for short
 	// codes.
-	PhoneNumber string                                                        `json:"phone_number,required"`
+	PhoneNumber string                                                        `json:"phone_number" api:"required"`
 	JSON        notifyListSubscriptionConfigsResponseConfigsMoPhoneNumberJSON `json:"-"`
 }
 
@@ -435,7 +437,7 @@ func (r notifyListSubscriptionConfigsResponseConfigsMoPhoneNumberJSON) RawJSON()
 
 type NotifyListSubscriptionPhoneNumberEventsResponse struct {
 	// A list of subscription events (status changes) ordered by timestamp descending.
-	Events []NotifyListSubscriptionPhoneNumberEventsResponseEvent `json:"events,required"`
+	Events []NotifyListSubscriptionPhoneNumberEventsResponseEvent `json:"events" api:"required"`
 	// Pagination cursor for the next page of results. Omitted if there are no more
 	// pages.
 	NextCursor string                                              `json:"next_cursor"`
@@ -461,23 +463,23 @@ func (r notifyListSubscriptionPhoneNumberEventsResponseJSON) RawJSON() string {
 
 type NotifyListSubscriptionPhoneNumberEventsResponseEvent struct {
 	// The subscription configuration ID.
-	ConfigID string `json:"config_id,required"`
+	ConfigID string `json:"config_id" api:"required"`
 	// The phone number in E.164 format.
-	PhoneNumber string `json:"phone_number,required" format:"phone_number"`
+	PhoneNumber string `json:"phone_number" api:"required" format:"phone_number"`
 	// How the subscription state was changed:
 	//
 	// - `MO_KEYWORD` - User sent a keyword (STOP/START)
 	// - `API` - Changed via API
 	// - `CSV_IMPORT` - Imported from CSV
 	// - `CARRIER_DISCONNECT` - Automatically unsubscribed due to carrier disconnect
-	Source NotifyListSubscriptionPhoneNumberEventsResponseEventsSource `json:"source,required"`
+	Source NotifyListSubscriptionPhoneNumberEventsResponseEventsSource `json:"source" api:"required"`
 	// The subscription state after this event:
 	//
 	// - `SUB` - Subscribed (user can receive marketing messages)
 	// - `UNSUB` - Unsubscribed (user has opted out)
-	State NotifyListSubscriptionPhoneNumberEventsResponseEventsState `json:"state,required"`
+	State NotifyListSubscriptionPhoneNumberEventsResponseEventsState `json:"state" api:"required"`
 	// The date and time when the event occurred.
-	Timestamp time.Time `json:"timestamp,required" format:"date-time"`
+	Timestamp time.Time `json:"timestamp" api:"required" format:"date-time"`
 	// Additional context about the state change (e.g., the keyword that was sent).
 	Reason string                                                   `json:"reason"`
 	JSON   notifyListSubscriptionPhoneNumberEventsResponseEventJSON `json:"-"`
@@ -548,7 +550,7 @@ func (r NotifyListSubscriptionPhoneNumberEventsResponseEventsState) IsKnown() bo
 
 type NotifyListSubscriptionPhoneNumbersResponse struct {
 	// A list of phone numbers and their subscription statuses.
-	PhoneNumbers []NotifyListSubscriptionPhoneNumbersResponsePhoneNumber `json:"phone_numbers,required"`
+	PhoneNumbers []NotifyListSubscriptionPhoneNumbersResponsePhoneNumber `json:"phone_numbers" api:"required"`
 	// Pagination cursor for the next page of results. Omitted if there are no more
 	// pages.
 	NextCursor string                                         `json:"next_cursor"`
@@ -574,23 +576,23 @@ func (r notifyListSubscriptionPhoneNumbersResponseJSON) RawJSON() string {
 
 type NotifyListSubscriptionPhoneNumbersResponsePhoneNumber struct {
 	// The subscription configuration ID.
-	ConfigID string `json:"config_id,required"`
+	ConfigID string `json:"config_id" api:"required"`
 	// The phone number in E.164 format.
-	PhoneNumber string `json:"phone_number,required" format:"phone_number"`
+	PhoneNumber string `json:"phone_number" api:"required" format:"phone_number"`
 	// How the subscription state was changed:
 	//
 	// - `MO_KEYWORD` - User sent a keyword (STOP/START)
 	// - `API` - Changed via API
 	// - `CSV_IMPORT` - Imported from CSV
 	// - `CARRIER_DISCONNECT` - Automatically unsubscribed due to carrier disconnect
-	Source NotifyListSubscriptionPhoneNumbersResponsePhoneNumbersSource `json:"source,required"`
+	Source NotifyListSubscriptionPhoneNumbersResponsePhoneNumbersSource `json:"source" api:"required"`
 	// The subscription state:
 	//
 	// - `SUB` - Subscribed (user can receive marketing messages)
 	// - `UNSUB` - Unsubscribed (user has opted out)
-	State NotifyListSubscriptionPhoneNumbersResponsePhoneNumbersState `json:"state,required"`
+	State NotifyListSubscriptionPhoneNumbersResponsePhoneNumbersState `json:"state" api:"required"`
 	// The date and time when the subscription status was last updated.
-	UpdatedAt time.Time `json:"updated_at,required" format:"date-time"`
+	UpdatedAt time.Time `json:"updated_at" api:"required" format:"date-time"`
 	// Additional context about the state change (e.g., the keyword that was sent).
 	Reason string                                                    `json:"reason"`
 	JSON   notifyListSubscriptionPhoneNumbersResponsePhoneNumberJSON `json:"-"`
@@ -661,21 +663,29 @@ func (r NotifyListSubscriptionPhoneNumbersResponsePhoneNumbersState) IsKnown() b
 
 type NotifySendResponse struct {
 	// The message identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The message creation date in RFC3339 format.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// The message expiration date in RFC3339 format.
-	ExpiresAt time.Time `json:"expires_at,required" format:"date-time"`
+	ExpiresAt time.Time `json:"expires_at" api:"required" format:"date-time"`
 	// The template identifier.
-	TemplateID string `json:"template_id,required"`
+	TemplateID string `json:"template_id" api:"required"`
 	// The recipient's phone number in E.164 format.
-	To string `json:"to,required"`
+	To string `json:"to" api:"required"`
 	// The variables to be replaced in the template.
-	Variables map[string]string `json:"variables,required"`
+	Variables map[string]string `json:"variables" api:"required"`
 	// The callback URL where webhooks will be sent.
 	CallbackURL string `json:"callback_url"`
 	// A user-defined identifier to correlate this message with your internal systems.
 	CorrelationID string `json:"correlation_id"`
+	// The SMS encoding type based on message content. GSM-7 supports standard
+	// characters (up to 160 chars per segment), while UCS-2 supports Unicode including
+	// emoji (up to 70 chars per segment). Only present for SMS messages.
+	Encoding NotifySendResponseEncoding `json:"encoding"`
+	// The estimated number of SMS segments for this message. This value is not
+	// contractual; the actual segment count will be determined after the SMS is sent
+	// by the provider. Only present for SMS messages.
+	EstimatedSegmentCount int64 `json:"estimated_segment_count"`
 	// The Sender ID used for this message.
 	From string `json:"from"`
 	// When the message will actually be sent in RFC3339 format with timezone offset.
@@ -688,18 +698,20 @@ type NotifySendResponse struct {
 // notifySendResponseJSON contains the JSON metadata for the struct
 // [NotifySendResponse]
 type notifySendResponseJSON struct {
-	ID            apijson.Field
-	CreatedAt     apijson.Field
-	ExpiresAt     apijson.Field
-	TemplateID    apijson.Field
-	To            apijson.Field
-	Variables     apijson.Field
-	CallbackURL   apijson.Field
-	CorrelationID apijson.Field
-	From          apijson.Field
-	ScheduleAt    apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	ID                    apijson.Field
+	CreatedAt             apijson.Field
+	ExpiresAt             apijson.Field
+	TemplateID            apijson.Field
+	To                    apijson.Field
+	Variables             apijson.Field
+	CallbackURL           apijson.Field
+	CorrelationID         apijson.Field
+	Encoding              apijson.Field
+	EstimatedSegmentCount apijson.Field
+	From                  apijson.Field
+	ScheduleAt            apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *NotifySendResponse) UnmarshalJSON(data []byte) (err error) {
@@ -710,15 +722,33 @@ func (r notifySendResponseJSON) RawJSON() string {
 	return r.raw
 }
 
+// The SMS encoding type based on message content. GSM-7 supports standard
+// characters (up to 160 chars per segment), while UCS-2 supports Unicode including
+// emoji (up to 70 chars per segment). Only present for SMS messages.
+type NotifySendResponseEncoding string
+
+const (
+	NotifySendResponseEncodingGsm7 NotifySendResponseEncoding = "GSM-7"
+	NotifySendResponseEncodingUcs2 NotifySendResponseEncoding = "UCS-2"
+)
+
+func (r NotifySendResponseEncoding) IsKnown() bool {
+	switch r {
+	case NotifySendResponseEncodingGsm7, NotifySendResponseEncodingUcs2:
+		return true
+	}
+	return false
+}
+
 type NotifySendBatchResponse struct {
 	// Number of failed sends.
-	ErrorCount int64 `json:"error_count,required"`
+	ErrorCount int64 `json:"error_count" api:"required"`
 	// The per-recipient result of the bulk send.
-	Results []NotifySendBatchResponseResult `json:"results,required"`
+	Results []NotifySendBatchResponseResult `json:"results" api:"required"`
 	// Number of successful sends.
-	SuccessCount int64 `json:"success_count,required"`
+	SuccessCount int64 `json:"success_count" api:"required"`
 	// Total number of recipients.
-	TotalCount int64 `json:"total_count,required"`
+	TotalCount int64 `json:"total_count" api:"required"`
 	// The callback URL used for this bulk request, if any.
 	CallbackURL string `json:"callback_url"`
 	// A string that identifies this specific request.
@@ -755,9 +785,9 @@ func (r notifySendBatchResponseJSON) RawJSON() string {
 
 type NotifySendBatchResponseResult struct {
 	// The recipient's phone number in E.164 format.
-	PhoneNumber string `json:"phone_number,required"`
+	PhoneNumber string `json:"phone_number" api:"required"`
 	// Whether the message was accepted for delivery.
-	Success bool `json:"success,required"`
+	Success bool `json:"success" api:"required"`
 	// Present only if success is false.
 	Error NotifySendBatchResponseResultsError `json:"error"`
 	// Present only if success is true.
@@ -818,6 +848,14 @@ type NotifySendBatchResponseResultsMessage struct {
 	CorrelationID string `json:"correlation_id"`
 	// The message creation date in RFC3339 format.
 	CreatedAt time.Time `json:"created_at" format:"date-time"`
+	// The SMS encoding type based on message content. GSM-7 supports standard
+	// characters (up to 160 chars per segment), while UCS-2 supports Unicode including
+	// emoji (up to 70 chars per segment). Only present for SMS messages.
+	Encoding NotifySendBatchResponseResultsMessageEncoding `json:"encoding"`
+	// The estimated number of SMS segments for this message. This value is not
+	// contractual; the actual segment count will be determined after the SMS is sent
+	// by the provider. Only present for SMS messages.
+	EstimatedSegmentCount int64 `json:"estimated_segment_count"`
 	// The message expiration date in RFC3339 format.
 	ExpiresAt time.Time `json:"expires_at" format:"date-time"`
 	// The Sender ID used for this message.
@@ -834,16 +872,18 @@ type NotifySendBatchResponseResultsMessage struct {
 // notifySendBatchResponseResultsMessageJSON contains the JSON metadata for the
 // struct [NotifySendBatchResponseResultsMessage]
 type notifySendBatchResponseResultsMessageJSON struct {
-	ID            apijson.Field
-	CorrelationID apijson.Field
-	CreatedAt     apijson.Field
-	ExpiresAt     apijson.Field
-	From          apijson.Field
-	Locale        apijson.Field
-	ScheduleAt    apijson.Field
-	To            apijson.Field
-	raw           string
-	ExtraFields   map[string]apijson.Field
+	ID                    apijson.Field
+	CorrelationID         apijson.Field
+	CreatedAt             apijson.Field
+	Encoding              apijson.Field
+	EstimatedSegmentCount apijson.Field
+	ExpiresAt             apijson.Field
+	From                  apijson.Field
+	Locale                apijson.Field
+	ScheduleAt            apijson.Field
+	To                    apijson.Field
+	raw                   string
+	ExtraFields           map[string]apijson.Field
 }
 
 func (r *NotifySendBatchResponseResultsMessage) UnmarshalJSON(data []byte) (err error) {
@@ -852,6 +892,24 @@ func (r *NotifySendBatchResponseResultsMessage) UnmarshalJSON(data []byte) (err 
 
 func (r notifySendBatchResponseResultsMessageJSON) RawJSON() string {
 	return r.raw
+}
+
+// The SMS encoding type based on message content. GSM-7 supports standard
+// characters (up to 160 chars per segment), while UCS-2 supports Unicode including
+// emoji (up to 70 chars per segment). Only present for SMS messages.
+type NotifySendBatchResponseResultsMessageEncoding string
+
+const (
+	NotifySendBatchResponseResultsMessageEncodingGsm7 NotifySendBatchResponseResultsMessageEncoding = "GSM-7"
+	NotifySendBatchResponseResultsMessageEncodingUcs2 NotifySendBatchResponseResultsMessageEncoding = "UCS-2"
+)
+
+func (r NotifySendBatchResponseResultsMessageEncoding) IsKnown() bool {
+	switch r {
+	case NotifySendBatchResponseResultsMessageEncodingGsm7, NotifySendBatchResponseResultsMessageEncodingUcs2:
+		return true
+	}
+	return false
 }
 
 type NotifyListSubscriptionConfigsParams struct {
@@ -922,15 +980,18 @@ func (r NotifyListSubscriptionPhoneNumbersParamsState) IsKnown() bool {
 
 type NotifySendParams struct {
 	// The template identifier configured by your Customer Success team.
-	TemplateID param.Field[string] `json:"template_id,required"`
+	TemplateID param.Field[string] `json:"template_id" api:"required"`
 	// The recipient's phone number in E.164 format.
-	To param.Field[string] `json:"to,required"`
+	To param.Field[string] `json:"to" api:"required"`
 	// The URL where webhooks will be sent for message delivery events.
 	CallbackURL param.Field[string] `json:"callback_url"`
 	// A user-defined identifier to correlate this message with your internal systems.
 	// It is returned in the response and any webhook events that refer to this
 	// message.
 	CorrelationID param.Field[string] `json:"correlation_id"`
+	// A document to attach to the message. Only supported on WhatsApp templates that
+	// have a document header.
+	Document param.Field[NotifySendParamsDocument] `json:"document"`
 	// The message expiration date in RFC3339 format. The message will not be sent if
 	// this time is reached.
 	ExpiresAt param.Field[time.Time] `json:"expires_at" format:"date-time"`
@@ -956,6 +1017,19 @@ func (r NotifySendParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
+// A document to attach to the message. Only supported on WhatsApp templates that
+// have a document header.
+type NotifySendParamsDocument struct {
+	// The filename to display for the document.
+	Filename param.Field[string] `json:"filename" api:"required"`
+	// The URL of the document to attach. Must be a valid HTTP or HTTPS URL.
+	URL param.Field[string] `json:"url" api:"required"`
+}
+
+func (r NotifySendParamsDocument) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
 // The preferred channel to be used in priority for message delivery. If the
 // channel is unavailable, the system will fallback to other available channels.
 type NotifySendParamsPreferredChannel string
@@ -975,13 +1049,16 @@ func (r NotifySendParamsPreferredChannel) IsKnown() bool {
 
 type NotifySendBatchParams struct {
 	// The template identifier configured by your Customer Success team.
-	TemplateID param.Field[string] `json:"template_id,required"`
+	TemplateID param.Field[string] `json:"template_id" api:"required"`
 	// The list of recipients' phone numbers in E.164 format.
-	To param.Field[[]string] `json:"to,required" format:"phone_number"`
+	To param.Field[[]string] `json:"to" api:"required" format:"phone_number"`
 	// The URL where webhooks will be sent for delivery events.
 	CallbackURL param.Field[string] `json:"callback_url"`
 	// A user-defined identifier to correlate this request with your internal systems.
 	CorrelationID param.Field[string] `json:"correlation_id"`
+	// A document to attach to the message. Only supported on WhatsApp templates that
+	// have a document header.
+	Document param.Field[NotifySendBatchParamsDocument] `json:"document"`
 	// The message expiration date in RFC3339 format. Messages will not be sent after
 	// this time.
 	ExpiresAt param.Field[time.Time] `json:"expires_at" format:"date-time"`
@@ -999,6 +1076,19 @@ type NotifySendBatchParams struct {
 }
 
 func (r NotifySendBatchParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// A document to attach to the message. Only supported on WhatsApp templates that
+// have a document header.
+type NotifySendBatchParamsDocument struct {
+	// The filename to display for the document.
+	Filename param.Field[string] `json:"filename" api:"required"`
+	// The URL of the document to attach. Must be a valid HTTP or HTTPS URL.
+	URL param.Field[string] `json:"url" api:"required"`
+}
+
+func (r NotifySendBatchParamsDocument) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 

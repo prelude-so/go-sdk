@@ -148,7 +148,6 @@ func TestNotifyListSubscriptionPhoneNumbersWithOptionalParams(t *testing.T) {
 }
 
 func TestNotifySendWithOptionalParams(t *testing.T) {
-	t.Skip("Prism doesn't support callbacks yet")
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -161,10 +160,14 @@ func TestNotifySendWithOptionalParams(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	_, err := client.Notify.Send(context.TODO(), prelude.NotifySendParams{
-		TemplateID:       prelude.F("template_01k8ap1btqf5r9fq2c8ax5fhc9"),
-		To:               prelude.F("+33612345678"),
-		CallbackURL:      prelude.F("https://your-app.com/webhooks/notify"),
-		CorrelationID:    prelude.F("order-12345"),
+		TemplateID:    prelude.F("template_01k8ap1btqf5r9fq2c8ax5fhc9"),
+		To:            prelude.F("+33612345678"),
+		CallbackURL:   prelude.F("https://your-app.com/webhooks/notify"),
+		CorrelationID: prelude.F("order-12345"),
+		Document: prelude.F(prelude.NotifySendParamsDocument{
+			Filename: prelude.F("invoice.pdf"),
+			URL:      prelude.F("https://example.com/invoice.pdf"),
+		}),
 		ExpiresAt:        prelude.F(time.Now()),
 		From:             prelude.F("from"),
 		Locale:           prelude.F("el-GR"),
@@ -197,10 +200,14 @@ func TestNotifySendBatchWithOptionalParams(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	_, err := client.Notify.SendBatch(context.TODO(), prelude.NotifySendBatchParams{
-		TemplateID:       prelude.F("template_01k8ap1btqf5r9fq2c8ax5fhc9"),
-		To:               prelude.F([]string{"+33612345678", "+15551234567"}),
-		CallbackURL:      prelude.F("https://your-app.com/webhooks/notify"),
-		CorrelationID:    prelude.F("campaign-12345"),
+		TemplateID:    prelude.F("template_01k8ap1btqf5r9fq2c8ax5fhc9"),
+		To:            prelude.F([]string{"+33612345678", "+15551234567"}),
+		CallbackURL:   prelude.F("https://your-app.com/webhooks/notify"),
+		CorrelationID: prelude.F("campaign-12345"),
+		Document: prelude.F(prelude.NotifySendBatchParamsDocument{
+			Filename: prelude.F("invoice.pdf"),
+			URL:      prelude.F("https://example.com/invoice.pdf"),
+		}),
 		ExpiresAt:        prelude.F(time.Now()),
 		From:             prelude.F("from"),
 		Locale:           prelude.F("el-GR"),

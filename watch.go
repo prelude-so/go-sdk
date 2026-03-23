@@ -13,6 +13,8 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
+// Evaluate email addresses and phone numbers for trustworthiness.
+//
 // WatchService contains methods and other services that help with interacting with
 // the Prelude API.
 //
@@ -37,7 +39,7 @@ func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opt
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/predict"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send real-time event data from end-user interactions within your application.
@@ -46,7 +48,7 @@ func (r *WatchService) SendEvents(ctx context.Context, body WatchSendEventsParam
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/event"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Send feedback regarding your end-users verification funnel. Events will be
@@ -55,18 +57,43 @@ func (r *WatchService) SendFeedbacks(ctx context.Context, body WatchSendFeedback
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/feedback"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type WatchPredictResponse struct {
 	// The prediction identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The prediction outcome.
-	Prediction WatchPredictResponsePrediction `json:"prediction,required"`
+	Prediction WatchPredictResponsePrediction `json:"prediction" api:"required"`
 	// A string that identifies this specific request. Report it back to us to help us
 	// diagnose your issues.
-	RequestID string                   `json:"request_id,required"`
-	JSON      watchPredictResponseJSON `json:"-"`
+	RequestID string `json:"request_id" api:"required"`
+	// The risk factors that contributed to the suspicious prediction. Only present
+	// when prediction is "suspicious" and the anti-fraud system detected specific risk
+	// signals.
+	//
+	//   - `behavioral_pattern` - The phone number past behavior during verification
+	//     flows exhibits suspicious patterns.
+	//   - `device_attribute` - The device exhibits characteristics associated with
+	//     suspicious activity patterns.
+	//   - `fraud_database` - The phone number has been flagged as suspicious in one or
+	//     more of our fraud databases.
+	//   - `location_discrepancy` - The phone number prefix and IP address discrepancy
+	//     indicates potential fraud.
+	//   - `network_fingerprint` - The network connection exhibits characteristics
+	//     associated with suspicious activity patterns.
+	//   - `poor_conversion_history` - The phone number has a history of poorly
+	//     converting to a verified phone number.
+	//   - `prefix_concentration` - The phone number is part of a range known to be
+	//     associated with suspicious activity patterns.
+	//   - `suspected_request_tampering` - The SDK signature is invalid and the request
+	//     is considered to be tampered with.
+	//   - `suspicious_ip_address` - The IP address is deemed to be associated with
+	//     suspicious activity patterns.
+	//   - `temporary_phone_number` - The phone number is known to be a temporary or
+	//     disposable number.
+	RiskFactors []WatchPredictResponseRiskFactor `json:"risk_factors"`
+	JSON        watchPredictResponseJSON         `json:"-"`
 }
 
 // watchPredictResponseJSON contains the JSON metadata for the struct
@@ -75,6 +102,7 @@ type watchPredictResponseJSON struct {
 	ID          apijson.Field
 	Prediction  apijson.Field
 	RequestID   apijson.Field
+	RiskFactors apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -103,12 +131,35 @@ func (r WatchPredictResponsePrediction) IsKnown() bool {
 	return false
 }
 
+type WatchPredictResponseRiskFactor string
+
+const (
+	WatchPredictResponseRiskFactorBehavioralPattern         WatchPredictResponseRiskFactor = "behavioral_pattern"
+	WatchPredictResponseRiskFactorDeviceAttribute           WatchPredictResponseRiskFactor = "device_attribute"
+	WatchPredictResponseRiskFactorFraudDatabase             WatchPredictResponseRiskFactor = "fraud_database"
+	WatchPredictResponseRiskFactorLocationDiscrepancy       WatchPredictResponseRiskFactor = "location_discrepancy"
+	WatchPredictResponseRiskFactorNetworkFingerprint        WatchPredictResponseRiskFactor = "network_fingerprint"
+	WatchPredictResponseRiskFactorPoorConversionHistory     WatchPredictResponseRiskFactor = "poor_conversion_history"
+	WatchPredictResponseRiskFactorPrefixConcentration       WatchPredictResponseRiskFactor = "prefix_concentration"
+	WatchPredictResponseRiskFactorSuspectedRequestTampering WatchPredictResponseRiskFactor = "suspected_request_tampering"
+	WatchPredictResponseRiskFactorSuspiciousIPAddress       WatchPredictResponseRiskFactor = "suspicious_ip_address"
+	WatchPredictResponseRiskFactorTemporaryPhoneNumber      WatchPredictResponseRiskFactor = "temporary_phone_number"
+)
+
+func (r WatchPredictResponseRiskFactor) IsKnown() bool {
+	switch r {
+	case WatchPredictResponseRiskFactorBehavioralPattern, WatchPredictResponseRiskFactorDeviceAttribute, WatchPredictResponseRiskFactorFraudDatabase, WatchPredictResponseRiskFactorLocationDiscrepancy, WatchPredictResponseRiskFactorNetworkFingerprint, WatchPredictResponseRiskFactorPoorConversionHistory, WatchPredictResponseRiskFactorPrefixConcentration, WatchPredictResponseRiskFactorSuspectedRequestTampering, WatchPredictResponseRiskFactorSuspiciousIPAddress, WatchPredictResponseRiskFactorTemporaryPhoneNumber:
+		return true
+	}
+	return false
+}
+
 type WatchSendEventsResponse struct {
 	// A string that identifies this specific request. Report it back to us to help us
 	// diagnose your issues.
-	RequestID string `json:"request_id,required"`
+	RequestID string `json:"request_id" api:"required"`
 	// The status of the events dispatch.
-	Status WatchSendEventsResponseStatus `json:"status,required"`
+	Status WatchSendEventsResponseStatus `json:"status" api:"required"`
 	JSON   watchSendEventsResponseJSON   `json:"-"`
 }
 
@@ -147,9 +198,9 @@ func (r WatchSendEventsResponseStatus) IsKnown() bool {
 type WatchSendFeedbacksResponse struct {
 	// A string that identifies this specific request. Report it back to us to help us
 	// diagnose your issues.
-	RequestID string `json:"request_id,required"`
+	RequestID string `json:"request_id" api:"required"`
 	// The status of the feedbacks sending.
-	Status WatchSendFeedbacksResponseStatus `json:"status,required"`
+	Status WatchSendFeedbacksResponseStatus `json:"status" api:"required"`
 	JSON   watchSendFeedbacksResponseJSON   `json:"-"`
 }
 
@@ -187,7 +238,7 @@ func (r WatchSendFeedbacksResponseStatus) IsKnown() bool {
 
 type WatchPredictParams struct {
 	// The prediction target. Only supports phone numbers for now.
-	Target param.Field[WatchPredictParamsTarget] `json:"target,required"`
+	Target param.Field[WatchPredictParamsTarget] `json:"target" api:"required"`
 	// The identifier of the dispatch that came from the front-end SDK.
 	DispatchID param.Field[string] `json:"dispatch_id"`
 	// The metadata for this prediction.
@@ -204,9 +255,9 @@ func (r WatchPredictParams) MarshalJSON() (data []byte, err error) {
 // The prediction target. Only supports phone numbers for now.
 type WatchPredictParamsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[WatchPredictParamsTargetType] `json:"type,required"`
+	Type param.Field[WatchPredictParamsTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r WatchPredictParamsTarget) MarshalJSON() (data []byte, err error) {
@@ -245,22 +296,26 @@ func (r WatchPredictParamsMetadata) MarshalJSON() (data []byte, err error) {
 type WatchPredictParamsSignals struct {
 	// The version of your application.
 	AppVersion param.Field[string] `json:"app_version"`
-	// The unique identifier for the user's device. For Android, this corresponds to
-	// the `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
+	// A unique ID for the user's device. You should ensure that each user device has a
+	// unique `device_id` value. Ideally, for Android, this corresponds to the
+	// `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
 	DeviceID param.Field[string] `json:"device_id"`
 	// The model of the user's device.
 	DeviceModel param.Field[string] `json:"device_model"`
 	// The type of the user's device.
 	DevicePlatform param.Field[WatchPredictParamsSignalsDevicePlatform] `json:"device_platform"`
-	// The IP address of the user's device.
+	// The public IP v4 or v6 address of the end-user's device. You should collect this
+	// from your backend. If your backend is behind a proxy, use the `X-Forwarded-For`,
+	// `Forwarded`, `True-Client-IP`, `CF-Connecting-IP` or an equivalent header to get
+	// the actual public IP of the end-user's device.
 	IP param.Field[string] `json:"ip" format:"ipv4"`
-	// This signal should provide a higher level of trust, indicating that the user is
-	// genuine. Contact us to discuss your use case. For more details, refer to
+	// This signal should indicate a higher level of trust, explicitly stating that the
+	// user is genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
-	// The JA4 fingerprint observed for the connection. Prelude will infer it
-	// automatically when requests go through our client SDK (which uses Prelude's
-	// edge), but you can also provide it explicitly if you terminate TLS yourself.
+	// The JA4 fingerprint observed for the end-user's connection. Prelude will infer
+	// it automatically when you use our Frontend SDKs (which use Prelude's edge
+	// network), but you can also forward the value if you terminate TLS yourself.
 	Ja4Fingerprint param.Field[string] `json:"ja4_fingerprint"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
@@ -295,7 +350,7 @@ func (r WatchPredictParamsSignalsDevicePlatform) IsKnown() bool {
 
 type WatchSendEventsParams struct {
 	// A list of events to dispatch.
-	Events param.Field[[]WatchSendEventsParamsEvent] `json:"events,required"`
+	Events param.Field[[]WatchSendEventsParamsEvent] `json:"events" api:"required"`
 }
 
 func (r WatchSendEventsParams) MarshalJSON() (data []byte, err error) {
@@ -304,11 +359,11 @@ func (r WatchSendEventsParams) MarshalJSON() (data []byte, err error) {
 
 type WatchSendEventsParamsEvent struct {
 	// A confidence level you want to assign to the event.
-	Confidence param.Field[WatchSendEventsParamsEventsConfidence] `json:"confidence,required"`
+	Confidence param.Field[WatchSendEventsParamsEventsConfidence] `json:"confidence" api:"required"`
 	// A label to describe what the event refers to.
-	Label param.Field[string] `json:"label,required"`
+	Label param.Field[string] `json:"label" api:"required"`
 	// The event target. Only supports phone numbers for now.
-	Target param.Field[WatchSendEventsParamsEventsTarget] `json:"target,required"`
+	Target param.Field[WatchSendEventsParamsEventsTarget] `json:"target" api:"required"`
 }
 
 func (r WatchSendEventsParamsEvent) MarshalJSON() (data []byte, err error) {
@@ -337,9 +392,9 @@ func (r WatchSendEventsParamsEventsConfidence) IsKnown() bool {
 // The event target. Only supports phone numbers for now.
 type WatchSendEventsParamsEventsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[WatchSendEventsParamsEventsTargetType] `json:"type,required"`
+	Type param.Field[WatchSendEventsParamsEventsTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r WatchSendEventsParamsEventsTarget) MarshalJSON() (data []byte, err error) {
@@ -364,7 +419,7 @@ func (r WatchSendEventsParamsEventsTargetType) IsKnown() bool {
 
 type WatchSendFeedbacksParams struct {
 	// A list of feedbacks to send.
-	Feedbacks param.Field[[]WatchSendFeedbacksParamsFeedback] `json:"feedbacks,required"`
+	Feedbacks param.Field[[]WatchSendFeedbacksParamsFeedback] `json:"feedbacks" api:"required"`
 }
 
 func (r WatchSendFeedbacksParams) MarshalJSON() (data []byte, err error) {
@@ -373,16 +428,11 @@ func (r WatchSendFeedbacksParams) MarshalJSON() (data []byte, err error) {
 
 type WatchSendFeedbacksParamsFeedback struct {
 	// The feedback target. Only supports phone numbers for now.
-	Target param.Field[WatchSendFeedbacksParamsFeedbacksTarget] `json:"target,required"`
+	Target param.Field[WatchSendFeedbacksParamsFeedbacksTarget] `json:"target" api:"required"`
 	// The type of feedback.
-	Type param.Field[WatchSendFeedbacksParamsFeedbacksType] `json:"type,required"`
-	// The identifier of the dispatch that came from the front-end SDK.
-	DispatchID param.Field[string] `json:"dispatch_id"`
+	Type param.Field[WatchSendFeedbacksParamsFeedbacksType] `json:"type" api:"required"`
 	// The metadata for this feedback.
 	Metadata param.Field[WatchSendFeedbacksParamsFeedbacksMetadata] `json:"metadata"`
-	// The signals used for anti-fraud. For more details, refer to
-	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
-	Signals param.Field[WatchSendFeedbacksParamsFeedbacksSignals] `json:"signals"`
 }
 
 func (r WatchSendFeedbacksParamsFeedback) MarshalJSON() (data []byte, err error) {
@@ -392,9 +442,9 @@ func (r WatchSendFeedbacksParamsFeedback) MarshalJSON() (data []byte, err error)
 // The feedback target. Only supports phone numbers for now.
 type WatchSendFeedbacksParamsFeedbacksTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[WatchSendFeedbacksParamsFeedbacksTargetType] `json:"type,required"`
+	Type param.Field[WatchSendFeedbacksParamsFeedbacksTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r WatchSendFeedbacksParamsFeedbacksTarget) MarshalJSON() (data []byte, err error) {
@@ -442,57 +492,4 @@ type WatchSendFeedbacksParamsFeedbacksMetadata struct {
 
 func (r WatchSendFeedbacksParamsFeedbacksMetadata) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
-}
-
-// The signals used for anti-fraud. For more details, refer to
-// [Signals](/verify/v2/documentation/prevent-fraud#signals).
-type WatchSendFeedbacksParamsFeedbacksSignals struct {
-	// The version of your application.
-	AppVersion param.Field[string] `json:"app_version"`
-	// The unique identifier for the user's device. For Android, this corresponds to
-	// the `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
-	DeviceID param.Field[string] `json:"device_id"`
-	// The model of the user's device.
-	DeviceModel param.Field[string] `json:"device_model"`
-	// The type of the user's device.
-	DevicePlatform param.Field[WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform] `json:"device_platform"`
-	// The IP address of the user's device.
-	IP param.Field[string] `json:"ip" format:"ipv4"`
-	// This signal should provide a higher level of trust, indicating that the user is
-	// genuine. Contact us to discuss your use case. For more details, refer to
-	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
-	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
-	// The JA4 fingerprint observed for the connection. Prelude will infer it
-	// automatically when requests go through our client SDK (which uses Prelude's
-	// edge), but you can also provide it explicitly if you terminate TLS yourself.
-	Ja4Fingerprint param.Field[string] `json:"ja4_fingerprint"`
-	// The version of the user's device operating system.
-	OsVersion param.Field[string] `json:"os_version"`
-	// The user agent of the user's device. If the individual fields (os_version,
-	// device_platform, device_model) are provided, we will prioritize those values
-	// instead of parsing them from the user agent string.
-	UserAgent param.Field[string] `json:"user_agent"`
-}
-
-func (r WatchSendFeedbacksParamsFeedbacksSignals) MarshalJSON() (data []byte, err error) {
-	return apijson.MarshalRoot(r)
-}
-
-// The type of the user's device.
-type WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform string
-
-const (
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformAndroid WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "android"
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIos     WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "ios"
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIpados  WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "ipados"
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformTvos    WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "tvos"
-	WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformWeb     WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform = "web"
-)
-
-func (r WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatform) IsKnown() bool {
-	switch r {
-	case WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformAndroid, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIos, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformIpados, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformTvos, WatchSendFeedbacksParamsFeedbacksSignalsDevicePlatformWeb:
-		return true
-	}
-	return false
 }

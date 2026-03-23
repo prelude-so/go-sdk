@@ -13,6 +13,8 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
+// Verify phone numbers.
+//
 // VerificationService contains methods and other services that help with
 // interacting with the Prelude API.
 //
@@ -39,7 +41,7 @@ func (r *VerificationService) New(ctx context.Context, body VerificationNewParam
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Check the validity of a verification code.
@@ -47,16 +49,23 @@ func (r *VerificationService) Check(ctx context.Context, body VerificationCheckP
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/check"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type VerificationNewResponse struct {
 	// The verification identifier.
-	ID string `json:"id,required"`
+	ID string `json:"id" api:"required"`
 	// The method used for verifying this phone number.
-	Method VerificationNewResponseMethod `json:"method,required"`
+	Method VerificationNewResponseMethod `json:"method" api:"required"`
 	// The status of the verification.
-	Status VerificationNewResponseStatus `json:"status,required"`
+	//
+	//   - `success` - A new verification window was created.
+	//   - `retry` - A new attempt was created for an existing verification window.
+	//   - `challenged` - The verification is suspicious and is restricted to non-SMS and
+	//     non-voice channels only. This mode must be enabled for your customer account
+	//     by Prelude support.
+	//   - `blocked` - The verification was blocked.
+	Status VerificationNewResponseStatus `json:"status" api:"required"`
 	// The ordered sequence of channels to be used for verification
 	Channels []VerificationNewResponseChannel `json:"channels"`
 	// The metadata for this verification.
@@ -125,17 +134,25 @@ func (r VerificationNewResponseMethod) IsKnown() bool {
 }
 
 // The status of the verification.
+//
+//   - `success` - A new verification window was created.
+//   - `retry` - A new attempt was created for an existing verification window.
+//   - `challenged` - The verification is suspicious and is restricted to non-SMS and
+//     non-voice channels only. This mode must be enabled for your customer account
+//     by Prelude support.
+//   - `blocked` - The verification was blocked.
 type VerificationNewResponseStatus string
 
 const (
-	VerificationNewResponseStatusSuccess VerificationNewResponseStatus = "success"
-	VerificationNewResponseStatusRetry   VerificationNewResponseStatus = "retry"
-	VerificationNewResponseStatusBlocked VerificationNewResponseStatus = "blocked"
+	VerificationNewResponseStatusSuccess    VerificationNewResponseStatus = "success"
+	VerificationNewResponseStatusRetry      VerificationNewResponseStatus = "retry"
+	VerificationNewResponseStatusChallenged VerificationNewResponseStatus = "challenged"
+	VerificationNewResponseStatusBlocked    VerificationNewResponseStatus = "blocked"
 )
 
 func (r VerificationNewResponseStatus) IsKnown() bool {
 	switch r {
-	case VerificationNewResponseStatusSuccess, VerificationNewResponseStatusRetry, VerificationNewResponseStatusBlocked:
+	case VerificationNewResponseStatusSuccess, VerificationNewResponseStatusRetry, VerificationNewResponseStatusChallenged, VerificationNewResponseStatusBlocked:
 		return true
 	}
 	return false
@@ -224,7 +241,7 @@ func (r VerificationNewResponseReason) IsKnown() bool {
 // The silent verification specific properties.
 type VerificationNewResponseSilent struct {
 	// The URL to start the silent verification towards.
-	RequestURL string                            `json:"request_url,required"`
+	RequestURL string                            `json:"request_url" api:"required"`
 	JSON       verificationNewResponseSilentJSON `json:"-"`
 }
 
@@ -246,7 +263,7 @@ func (r verificationNewResponseSilentJSON) RawJSON() string {
 
 type VerificationCheckResponse struct {
 	// The status of the check.
-	Status VerificationCheckResponseStatus `json:"status,required"`
+	Status VerificationCheckResponseStatus `json:"status" api:"required"`
 	// The verification identifier.
 	ID string `json:"id"`
 	// The metadata for this verification.
@@ -318,7 +335,7 @@ func (r verificationCheckResponseMetadataJSON) RawJSON() string {
 type VerificationNewParams struct {
 	// The verification target. Either a phone number or an email address. To use the
 	// email verification feature contact us to discuss your use case.
-	Target param.Field[VerificationNewParamsTarget] `json:"target,required"`
+	Target param.Field[VerificationNewParamsTarget] `json:"target" api:"required"`
 	// The identifier of the dispatch that came from the front-end SDK.
 	DispatchID param.Field[string] `json:"dispatch_id"`
 	// The metadata for this verification. This object will be returned with every
@@ -339,9 +356,9 @@ func (r VerificationNewParams) MarshalJSON() (data []byte, err error) {
 // email verification feature contact us to discuss your use case.
 type VerificationNewParamsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[VerificationNewParamsTargetType] `json:"type,required"`
+	Type param.Field[VerificationNewParamsTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r VerificationNewParamsTarget) MarshalJSON() (data []byte, err error) {
@@ -378,8 +395,8 @@ func (r VerificationNewParamsMetadata) MarshalJSON() (data []byte, err error) {
 
 // Verification options
 type VerificationNewParamsOptions struct {
-	// This allows you to automatically retrieve and fill the OTP code on mobile apps.
-	// Currently only Android devices are supported.
+	// This allows automatic OTP retrieval on mobile apps and web browsers. Supported
+	// platforms are Android (SMS Retriever API) and Web (WebOTP API).
 	AppRealm param.Field[VerificationNewParamsOptionsAppRealm] `json:"app_realm"`
 	// The URL where webhooks will be sent when verification events occur, including
 	// verification creation, attempt creation, and delivery status changes. For more
@@ -392,8 +409,6 @@ type VerificationNewParamsOptions struct {
 	// contact us to enable it for your account. For more details, refer to
 	// [Custom Code](/verify/v2/documentation/custom-codes).
 	CustomCode param.Field[string] `json:"custom_code"`
-	// The integration that triggered the verification.
-	Integration param.Field[VerificationNewParamsOptionsIntegration] `json:"integration"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
 	// code of the phone number. If the language specified doesn't exist, it defaults
@@ -423,49 +438,37 @@ func (r VerificationNewParamsOptions) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// This allows you to automatically retrieve and fill the OTP code on mobile apps.
-// Currently only Android devices are supported.
+// This allows automatic OTP retrieval on mobile apps and web browsers. Supported
+// platforms are Android (SMS Retriever API) and Web (WebOTP API).
 type VerificationNewParamsOptionsAppRealm struct {
-	// The platform the SMS will be sent to. We are currently only supporting
-	// "android".
-	Platform param.Field[VerificationNewParamsOptionsAppRealmPlatform] `json:"platform,required"`
-	// The Android SMS Retriever API hash code that identifies your app. For more
-	// information, see
-	// [Google documentation](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string).
-	Value param.Field[string] `json:"value,required"`
+	// The platform for automatic OTP retrieval. Use "android" for the SMS Retriever
+	// API or "web" for the WebOTP API.
+	Platform param.Field[VerificationNewParamsOptionsAppRealmPlatform] `json:"platform" api:"required"`
+	// The value depends on the platform:
+	//
+	//   - For Android: The SMS Retriever API hash code (11 characters). See
+	//     [Google documentation](https://developers.google.com/identity/sms-retriever/verify#computing_your_apps_hash_string).
+	//   - For Web: The origin domain (e.g., "example.com" or "www.example.com"). See
+	//     [WebOTP API documentation](https://developer.mozilla.org/en-US/docs/Web/API/WebOTP_API).
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r VerificationNewParamsOptionsAppRealm) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The platform the SMS will be sent to. We are currently only supporting
-// "android".
+// The platform for automatic OTP retrieval. Use "android" for the SMS Retriever
+// API or "web" for the WebOTP API.
 type VerificationNewParamsOptionsAppRealmPlatform string
 
 const (
 	VerificationNewParamsOptionsAppRealmPlatformAndroid VerificationNewParamsOptionsAppRealmPlatform = "android"
+	VerificationNewParamsOptionsAppRealmPlatformWeb     VerificationNewParamsOptionsAppRealmPlatform = "web"
 )
 
 func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
 	switch r {
-	case VerificationNewParamsOptionsAppRealmPlatformAndroid:
-		return true
-	}
-	return false
-}
-
-// The integration that triggered the verification.
-type VerificationNewParamsOptionsIntegration string
-
-const (
-	VerificationNewParamsOptionsIntegrationAuth0    VerificationNewParamsOptionsIntegration = "auth0"
-	VerificationNewParamsOptionsIntegrationSupabase VerificationNewParamsOptionsIntegration = "supabase"
-)
-
-func (r VerificationNewParamsOptionsIntegration) IsKnown() bool {
-	switch r {
-	case VerificationNewParamsOptionsIntegrationAuth0, VerificationNewParamsOptionsIntegrationSupabase:
+	case VerificationNewParamsOptionsAppRealmPlatformAndroid, VerificationNewParamsOptionsAppRealmPlatformWeb:
 		return true
 	}
 	return false
@@ -519,22 +522,26 @@ func (r VerificationNewParamsOptionsPreferredChannel) IsKnown() bool {
 type VerificationNewParamsSignals struct {
 	// The version of your application.
 	AppVersion param.Field[string] `json:"app_version"`
-	// The unique identifier for the user's device. For Android, this corresponds to
-	// the `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
+	// A unique ID for the user's device. You should ensure that each user device has a
+	// unique `device_id` value. Ideally, for Android, this corresponds to the
+	// `ANDROID_ID` and for iOS, this corresponds to the `identifierForVendor`.
 	DeviceID param.Field[string] `json:"device_id"`
 	// The model of the user's device.
 	DeviceModel param.Field[string] `json:"device_model"`
 	// The type of the user's device.
 	DevicePlatform param.Field[VerificationNewParamsSignalsDevicePlatform] `json:"device_platform"`
-	// The IP address of the user's device.
+	// The public IP v4 or v6 address of the end-user's device. You should collect this
+	// from your backend. If your backend is behind a proxy, use the `X-Forwarded-For`,
+	// `Forwarded`, `True-Client-IP`, `CF-Connecting-IP` or an equivalent header to get
+	// the actual public IP of the end-user's device.
 	IP param.Field[string] `json:"ip" format:"ipv4"`
-	// This signal should provide a higher level of trust, indicating that the user is
-	// genuine. Contact us to discuss your use case. For more details, refer to
+	// This signal should indicate a higher level of trust, explicitly stating that the
+	// user is genuine. Contact us to discuss your use case. For more details, refer to
 	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
 	IsTrustedUser param.Field[bool] `json:"is_trusted_user"`
-	// The JA4 fingerprint observed for the connection. Prelude will infer it
-	// automatically when requests go through our client SDK (which uses Prelude's
-	// edge), but you can also provide it explicitly if you terminate TLS yourself.
+	// The JA4 fingerprint observed for the end-user's connection. Prelude will infer
+	// it automatically when you use our Frontend SDKs (which use Prelude's edge
+	// network), but you can also forward the value if you terminate TLS yourself.
 	Ja4Fingerprint param.Field[string] `json:"ja4_fingerprint"`
 	// The version of the user's device operating system.
 	OsVersion param.Field[string] `json:"os_version"`
@@ -569,10 +576,10 @@ func (r VerificationNewParamsSignalsDevicePlatform) IsKnown() bool {
 
 type VerificationCheckParams struct {
 	// The OTP code to validate.
-	Code param.Field[string] `json:"code,required"`
+	Code param.Field[string] `json:"code" api:"required"`
 	// The verification target. Either a phone number or an email address. To use the
 	// email verification feature contact us to discuss your use case.
-	Target param.Field[VerificationCheckParamsTarget] `json:"target,required"`
+	Target param.Field[VerificationCheckParamsTarget] `json:"target" api:"required"`
 }
 
 func (r VerificationCheckParams) MarshalJSON() (data []byte, err error) {
@@ -583,9 +590,9 @@ func (r VerificationCheckParams) MarshalJSON() (data []byte, err error) {
 // email verification feature contact us to discuss your use case.
 type VerificationCheckParamsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
-	Type param.Field[VerificationCheckParamsTargetType] `json:"type,required"`
+	Type param.Field[VerificationCheckParamsTargetType] `json:"type" api:"required"`
 	// An E.164 formatted phone number or an email address.
-	Value param.Field[string] `json:"value,required"`
+	Value param.Field[string] `json:"value" api:"required"`
 }
 
 func (r VerificationCheckParamsTarget) MarshalJSON() (data []byte, err error) {

@@ -15,6 +15,8 @@ import (
 	"github.com/prelude-so/go-sdk/option"
 )
 
+// Verify phone numbers.
+//
 // VerificationManagementService contains methods and other services that help with
 // interacting with the Prelude API.
 //
@@ -45,7 +47,7 @@ func (r *VerificationManagementService) DeletePhoneNumber(ctx context.Context, a
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("v2/verification/management/phone-numbers/%v", action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodDelete, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve the list of phone numbers in the allow or block list.
@@ -55,7 +57,7 @@ func (r *VerificationManagementService) ListPhoneNumbers(ctx context.Context, ac
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("v2/verification/management/phone-numbers/%v", action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Retrieve sender IDs list.
@@ -65,7 +67,7 @@ func (r *VerificationManagementService) ListSenderIDs(ctx context.Context, opts 
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/management/sender-id"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodGet, path, nil, &res, opts...)
-	return
+	return res, err
 }
 
 // Add a phone number to the allow or block list.
@@ -79,7 +81,7 @@ func (r *VerificationManagementService) SetPhoneNumber(ctx context.Context, acti
 	opts = slices.Concat(r.Options, opts)
 	path := fmt.Sprintf("v2/verification/management/phone-numbers/%v", action)
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 // This endpoint allows you to submit a new sender ID for verification purposes.
@@ -89,12 +91,12 @@ func (r *VerificationManagementService) SubmitSenderID(ctx context.Context, body
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/verification/management/sender-id"
 	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
-	return
+	return res, err
 }
 
 type VerificationManagementDeletePhoneNumberResponse struct {
 	// The E.164 formatted phone number that was removed from the list.
-	PhoneNumber string                                              `json:"phone_number,required" format:"phone_number"`
+	PhoneNumber string                                              `json:"phone_number" api:"required" format:"phone_number"`
 	JSON        verificationManagementDeletePhoneNumberResponseJSON `json:"-"`
 }
 
@@ -116,7 +118,7 @@ func (r verificationManagementDeletePhoneNumberResponseJSON) RawJSON() string {
 
 type VerificationManagementListPhoneNumbersResponse struct {
 	// A list of phone numbers in the allow or block list.
-	PhoneNumbers []VerificationManagementListPhoneNumbersResponsePhoneNumber `json:"phone_numbers,required"`
+	PhoneNumbers []VerificationManagementListPhoneNumbersResponsePhoneNumber `json:"phone_numbers" api:"required"`
 	JSON         verificationManagementListPhoneNumbersResponseJSON          `json:"-"`
 }
 
@@ -138,9 +140,9 @@ func (r verificationManagementListPhoneNumbersResponseJSON) RawJSON() string {
 
 type VerificationManagementListPhoneNumbersResponsePhoneNumber struct {
 	// The date and time when the phone number was added to the list.
-	CreatedAt time.Time `json:"created_at,required" format:"date-time"`
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
 	// An E.164 formatted phone number.
-	PhoneNumber string                                                        `json:"phone_number,required" format:"phone_number"`
+	PhoneNumber string                                                        `json:"phone_number" api:"required" format:"phone_number"`
 	JSON        verificationManagementListPhoneNumbersResponsePhoneNumberJSON `json:"-"`
 }
 
@@ -236,7 +238,7 @@ func (r VerificationManagementListSenderIDsResponseSenderIDsStatus) IsKnown() bo
 
 type VerificationManagementSetPhoneNumberResponse struct {
 	// The E.164 formatted phone number that was added to the list.
-	PhoneNumber string                                           `json:"phone_number,required" format:"phone_number"`
+	PhoneNumber string                                           `json:"phone_number" api:"required" format:"phone_number"`
 	JSON        verificationManagementSetPhoneNumberResponseJSON `json:"-"`
 }
 
@@ -258,13 +260,13 @@ func (r verificationManagementSetPhoneNumberResponseJSON) RawJSON() string {
 
 type VerificationManagementSubmitSenderIDResponse struct {
 	// The sender ID that was added.
-	SenderID string `json:"sender_id,required"`
+	SenderID string `json:"sender_id" api:"required"`
 	// It indicates the status of the sender ID. Possible values are:
 	//
 	// - `approved` - The sender ID is approved.
 	// - `pending` - The sender ID is pending.
 	// - `rejected` - The sender ID is rejected.
-	Status VerificationManagementSubmitSenderIDResponseStatus `json:"status,required"`
+	Status VerificationManagementSubmitSenderIDResponseStatus `json:"status" api:"required"`
 	// The reason why the sender ID was rejected.
 	Reason string                                           `json:"reason"`
 	JSON   verificationManagementSubmitSenderIDResponseJSON `json:"-"`
@@ -311,7 +313,7 @@ func (r VerificationManagementSubmitSenderIDResponseStatus) IsKnown() bool {
 
 type VerificationManagementDeletePhoneNumberParams struct {
 	// An E.164 formatted phone number to remove from the list.
-	PhoneNumber param.Field[string] `json:"phone_number,required" format:"phone_number"`
+	PhoneNumber param.Field[string] `json:"phone_number" api:"required" format:"phone_number"`
 }
 
 func (r VerificationManagementDeletePhoneNumberParams) MarshalJSON() (data []byte, err error) {
@@ -350,7 +352,7 @@ func (r VerificationManagementListPhoneNumbersParamsAction) IsKnown() bool {
 
 type VerificationManagementSetPhoneNumberParams struct {
 	// An E.164 formatted phone number to add to the list.
-	PhoneNumber param.Field[string] `json:"phone_number,required" format:"phone_number"`
+	PhoneNumber param.Field[string] `json:"phone_number" api:"required" format:"phone_number"`
 }
 
 func (r VerificationManagementSetPhoneNumberParams) MarshalJSON() (data []byte, err error) {
@@ -374,7 +376,7 @@ func (r VerificationManagementSetPhoneNumberParamsAction) IsKnown() bool {
 
 type VerificationManagementSubmitSenderIDParams struct {
 	// The sender ID to add.
-	SenderID param.Field[string] `json:"sender_id,required"`
+	SenderID param.Field[string] `json:"sender_id" api:"required"`
 }
 
 func (r VerificationManagementSubmitSenderIDParams) MarshalJSON() (data []byte, err error) {

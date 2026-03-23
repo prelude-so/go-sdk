@@ -1,5 +1,56 @@
 # Changelog
 
+## 0.11.0 (2026-03-23)
+
+Full Changelog: [v0.10.0...v0.11.0](https://github.com/prelude-so/go-sdk/compare/v0.10.0...v0.11.0)
+
+### Features
+
+* **api:** api update ([279a0e1](https://github.com/prelude-so/go-sdk/commit/279a0e1e8f2d28be802a7849d43244f584ff157a))
+* **api:** api update ([c8e8724](https://github.com/prelude-so/go-sdk/commit/c8e872480406eb4ac6cea8cca2ee12ee13712de2))
+* **api:** api update ([b49f7b3](https://github.com/prelude-so/go-sdk/commit/b49f7b38ce3895c435e4fd235bb049cc25679800))
+* **api:** api update ([bbef138](https://github.com/prelude-so/go-sdk/commit/bbef1382ec8ef57bd38415e6dc8c20a8ff40bfa1))
+* **api:** api update ([073ef8a](https://github.com/prelude-so/go-sdk/commit/073ef8afe12bbb5af4f486b675bb156bb67ea0b2))
+* **api:** api update ([e64ba8a](https://github.com/prelude-so/go-sdk/commit/e64ba8a46d56388f41e6c44eeca52f566814a217))
+* **api:** api update ([bd6ddf8](https://github.com/prelude-so/go-sdk/commit/bd6ddf8ce85df31f236bc6141224542d6a550736))
+* **api:** api update ([1991e31](https://github.com/prelude-so/go-sdk/commit/1991e31e5e2c51d3a70dbab8e5d8d5bdf50a61e1))
+
+
+### Bug Fixes
+
+* allow canceling a request while it is waiting to retry ([80ba5ab](https://github.com/prelude-so/go-sdk/commit/80ba5abad729fd74f1dd46176a58466e734d1c4f))
+* **docs:** add missing pointer prefix to api.md return types ([3a21fda](https://github.com/prelude-so/go-sdk/commit/3a21fdaf80af5e7a58ba64016dd3278fe2f4d460))
+* fix request delays for retrying to be more respectful of high requested delays ([92b0da0](https://github.com/prelude-so/go-sdk/commit/92b0da0e660650f78ddd95befb3fbb2a3b71c979))
+* **mcp:** correct code tool API endpoint ([398430f](https://github.com/prelude-so/go-sdk/commit/398430faae2f7e1c8d14bacaef4680eb96d4ef49))
+* rename param to avoid collision ([8c9b1c5](https://github.com/prelude-so/go-sdk/commit/8c9b1c50519fa0484ec368f3b9a3e619eae09e96))
+* skip usage tests that don't work with Prism ([1b0e2e4](https://github.com/prelude-so/go-sdk/commit/1b0e2e450db0a9381ea70c4a4d2a35df1f55e989))
+
+
+### Chores
+
+* **ci:** add build step ([79da442](https://github.com/prelude-so/go-sdk/commit/79da442ba43029b976c9aff41d74ebe99656926a))
+* **ci:** skip uploading artifacts on stainless-internal branches ([d285e3c](https://github.com/prelude-so/go-sdk/commit/d285e3c2f70c0c9eadd2a82731e67c3ef7af56a9))
+* **docs:** add missing descriptions ([3955dce](https://github.com/prelude-so/go-sdk/commit/3955dce2d4a478fe5b76d4f6be567da437b7fbc4))
+* elide duplicate aliases ([afd20b9](https://github.com/prelude-so/go-sdk/commit/afd20b9caa24f94b27421f0e5247cf526ce0848f))
+* **internal:** codegen related update ([8a3ff52](https://github.com/prelude-so/go-sdk/commit/8a3ff526fc9e712c7f493dc4aac1feffc0ba5f4e))
+* **internal:** codegen related update ([7a807da](https://github.com/prelude-so/go-sdk/commit/7a807da3d84166c83d7dc12675db3e2f732cd796))
+* **internal:** minor cleanup ([17dfaa1](https://github.com/prelude-so/go-sdk/commit/17dfaa1224bd69cf60f0f4394d88934732d24dfb))
+* **internal:** move custom custom `json` tags to `api` ([23d3987](https://github.com/prelude-so/go-sdk/commit/23d3987cee165fff5742a97fe40717e0802ad1e7))
+* **internal:** tweak CI branches ([18ee14b](https://github.com/prelude-so/go-sdk/commit/18ee14b632b2154eb81d17e520dacb409a72d252))
+* **internal:** update `actions/checkout` version ([3449b16](https://github.com/prelude-so/go-sdk/commit/3449b1648b8ce7677871c04323afbd91dccab63d))
+* **internal:** update gitignore ([e0c9c8d](https://github.com/prelude-so/go-sdk/commit/e0c9c8ddcafe2275c6c3c87147619e530ab8e9c9))
+* **internal:** use explicit returns ([aae93e9](https://github.com/prelude-so/go-sdk/commit/aae93e9e98ae4d8eb2d411e3a6a81fc0f2e5e099))
+* **internal:** use explicit returns in more places ([47486c3](https://github.com/prelude-so/go-sdk/commit/47486c3b31e2c6be9a38445aed0a034cbb007361))
+* **test:** do not count install time for mock server timeout ([f958f24](https://github.com/prelude-so/go-sdk/commit/f958f24ae1092c7ce9ea18a166915f620bc72923))
+* **tests:** bump steady to v0.19.4 ([4c1123b](https://github.com/prelude-so/go-sdk/commit/4c1123b9e6f25a1bcd52dba6a491736836e713cf))
+* **tests:** bump steady to v0.19.5 ([7cd2942](https://github.com/prelude-so/go-sdk/commit/7cd294298d851ee9123d91c2757c3249eb87a51c))
+* update mock server docs ([1ac4fa8](https://github.com/prelude-so/go-sdk/commit/1ac4fa810469d6f02915b31c72e701994d6a2910))
+
+
+### Refactors
+
+* **tests:** switch from prism to steady ([592846f](https://github.com/prelude-so/go-sdk/commit/592846f262f5287ee5172f2c2a6cbb41b61fbb6a))
+
 ## 0.10.0 (2025-12-05)
 
 Full Changelog: [v0.9.0...v0.10.0](https://github.com/prelude-so/go-sdk/compare/v0.9.0...v0.10.0)
