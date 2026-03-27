@@ -114,8 +114,8 @@ func (r *NotifyService) ListSubscriptionPhoneNumbers(ctx context.Context, config
 	return res, err
 }
 
-// Send transactional and marketing messages to your users via SMS and WhatsApp
-// with automatic compliance enforcement.
+// Send transactional and marketing messages to your users via SMS, RCS and
+// WhatsApp with automatic compliance enforcement.
 func (r *NotifyService) Send(ctx context.Context, body NotifySendParams, opts ...option.RequestOption) (res *NotifySendResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notify"
@@ -1036,12 +1036,13 @@ type NotifySendParamsPreferredChannel string
 
 const (
 	NotifySendParamsPreferredChannelSMS      NotifySendParamsPreferredChannel = "sms"
+	NotifySendParamsPreferredChannelRcs      NotifySendParamsPreferredChannel = "rcs"
 	NotifySendParamsPreferredChannelWhatsapp NotifySendParamsPreferredChannel = "whatsapp"
 )
 
 func (r NotifySendParamsPreferredChannel) IsKnown() bool {
 	switch r {
-	case NotifySendParamsPreferredChannelSMS, NotifySendParamsPreferredChannelWhatsapp:
+	case NotifySendParamsPreferredChannelSMS, NotifySendParamsPreferredChannelRcs, NotifySendParamsPreferredChannelWhatsapp:
 		return true
 	}
 	return false
@@ -1097,12 +1098,13 @@ type NotifySendBatchParamsPreferredChannel string
 
 const (
 	NotifySendBatchParamsPreferredChannelSMS      NotifySendBatchParamsPreferredChannel = "sms"
+	NotifySendBatchParamsPreferredChannelRcs      NotifySendBatchParamsPreferredChannel = "rcs"
 	NotifySendBatchParamsPreferredChannelWhatsapp NotifySendBatchParamsPreferredChannel = "whatsapp"
 )
 
 func (r NotifySendBatchParamsPreferredChannel) IsKnown() bool {
 	switch r {
-	case NotifySendBatchParamsPreferredChannelSMS, NotifySendBatchParamsPreferredChannelWhatsapp:
+	case NotifySendBatchParamsPreferredChannelSMS, NotifySendBatchParamsPreferredChannelRcs, NotifySendBatchParamsPreferredChannelWhatsapp:
 		return true
 	}
 	return false
