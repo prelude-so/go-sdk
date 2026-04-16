@@ -985,6 +985,9 @@ type NotifySendParams struct {
 	To param.Field[string] `json:"to" api:"required"`
 	// The URL where webhooks will be sent for message delivery events.
 	CallbackURL param.Field[string] `json:"callback_url"`
+	// Context for replying to an inbound message. When provided, the message is sent
+	// as a WhatsApp reply within the 24-hour conversation window.
+	Context param.Field[NotifySendParamsContext] `json:"context"`
 	// A user-defined identifier to correlate this message with your internal systems.
 	// It is returned in the response and any webhook events that refer to this
 	// message.
@@ -1009,11 +1012,27 @@ type NotifySendParams struct {
 	// can be scheduled up to 90 days in advance and will be automatically adjusted for
 	// compliance with local time window restrictions.
 	ScheduleAt param.Field[time.Time] `json:"schedule_at" format:"date-time"`
+	// The reply message body. Required when `context.reply_to` is provided. Used for
+	// 2-way WhatsApp messaging to send free-form text replies within a conversation
+	// window.
+	Text param.Field[string] `json:"text"`
 	// The variables to be replaced in the template.
 	Variables param.Field[map[string]string] `json:"variables"`
 }
 
 func (r NotifySendParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
+}
+
+// Context for replying to an inbound message. When provided, the message is sent
+// as a WhatsApp reply within the 24-hour conversation window.
+type NotifySendParamsContext struct {
+	// The inbound message ID (prefixed with `im_`) to reply to. This ID is provided in
+	// the `inbound.message.received` webhook event.
+	ReplyTo param.Field[string] `json:"reply_to" api:"required"`
+}
+
+func (r NotifySendParamsContext) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
