@@ -160,9 +160,12 @@ func TestNotifySendWithOptionalParams(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	_, err := client.Notify.Send(context.TODO(), prelude.NotifySendParams{
-		TemplateID:    prelude.F("template_01k8ap1btqf5r9fq2c8ax5fhc9"),
-		To:            prelude.F("+33612345678"),
-		CallbackURL:   prelude.F("https://your-app.com/webhooks/notify"),
+		TemplateID:  prelude.F("template_01k8ap1btqf5r9fq2c8ax5fhc9"),
+		To:          prelude.F("+33612345678"),
+		CallbackURL: prelude.F("https://your-app.com/webhooks/notify"),
+		Context: prelude.F(prelude.NotifySendParamsContext{
+			ReplyTo: prelude.F("im_01k8aq2zggeyssvt53zgvpx63a"),
+		}),
 		CorrelationID: prelude.F("order-12345"),
 		Document: prelude.F(prelude.NotifySendParamsDocument{
 			Filename: prelude.F("invoice.pdf"),
@@ -173,6 +176,7 @@ func TestNotifySendWithOptionalParams(t *testing.T) {
 		Locale:           prelude.F("el-GR"),
 		PreferredChannel: prelude.F(prelude.NotifySendParamsPreferredChannelWhatsapp),
 		ScheduleAt:       prelude.F(time.Now()),
+		Text:             prelude.F("Thanks for reaching out! We'll look into your request."),
 		Variables: prelude.F(map[string]string{
 			"order_id": "12345",
 			"amount":   "$49.99",
