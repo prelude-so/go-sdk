@@ -87,6 +87,31 @@ type VerificationNewResponse struct {
 	//     anti-fraud system.
 	Reason    VerificationNewResponseReason `json:"reason"`
 	RequestID string                        `json:"request_id"`
+	// The risk factors that contributed to the verification being blocked. Only
+	// present when status is "blocked" and the anti-fraud system detected specific
+	// risk signals.
+	//
+	//   - `behavioral_pattern` - The phone number past behavior during verification
+	//     flows exhibits suspicious patterns.
+	//   - `device_attribute` - The device exhibits characteristics associated with
+	//     suspicious activity patterns.
+	//   - `fraud_database` - The phone number has been flagged as suspicious in one or
+	//     more of our fraud databases.
+	//   - `location_discrepancy` - The phone number prefix and IP address discrepancy
+	//     indicates potential fraud.
+	//   - `network_fingerprint` - The network connection exhibits characteristics
+	//     associated with suspicious activity patterns.
+	//   - `poor_conversion_history` - The phone number has a history of poorly
+	//     converting to a verified phone number.
+	//   - `prefix_concentration` - The phone number is part of a range known to be
+	//     associated with suspicious activity patterns.
+	//   - `suspected_request_tampering` - The SDK signature is invalid and the request
+	//     is considered to be tampered with.
+	//   - `suspicious_ip_address` - The IP address is deemed to be associated with
+	//     suspicious activity patterns.
+	//   - `temporary_phone_number` - The phone number is known to be a temporary or
+	//     disposable number.
+	RiskFactors []VerificationNewResponseRiskFactor `json:"risk_factors"`
 	// The silent verification specific properties.
 	Silent VerificationNewResponseSilent `json:"silent"`
 	JSON   verificationNewResponseJSON   `json:"-"`
@@ -102,6 +127,7 @@ type verificationNewResponseJSON struct {
 	Metadata    apijson.Field
 	Reason      apijson.Field
 	RequestID   apijson.Field
+	RiskFactors apijson.Field
 	Silent      apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
@@ -233,6 +259,29 @@ const (
 func (r VerificationNewResponseReason) IsKnown() bool {
 	switch r {
 	case VerificationNewResponseReasonExpiredSignature, VerificationNewResponseReasonInBlockList, VerificationNewResponseReasonInvalidPhoneLine, VerificationNewResponseReasonInvalidPhoneNumber, VerificationNewResponseReasonInvalidSignature, VerificationNewResponseReasonRepeatedAttempts, VerificationNewResponseReasonSuspicious:
+		return true
+	}
+	return false
+}
+
+type VerificationNewResponseRiskFactor string
+
+const (
+	VerificationNewResponseRiskFactorBehavioralPattern         VerificationNewResponseRiskFactor = "behavioral_pattern"
+	VerificationNewResponseRiskFactorDeviceAttribute           VerificationNewResponseRiskFactor = "device_attribute"
+	VerificationNewResponseRiskFactorFraudDatabase             VerificationNewResponseRiskFactor = "fraud_database"
+	VerificationNewResponseRiskFactorLocationDiscrepancy       VerificationNewResponseRiskFactor = "location_discrepancy"
+	VerificationNewResponseRiskFactorNetworkFingerprint        VerificationNewResponseRiskFactor = "network_fingerprint"
+	VerificationNewResponseRiskFactorPoorConversionHistory     VerificationNewResponseRiskFactor = "poor_conversion_history"
+	VerificationNewResponseRiskFactorPrefixConcentration       VerificationNewResponseRiskFactor = "prefix_concentration"
+	VerificationNewResponseRiskFactorSuspectedRequestTampering VerificationNewResponseRiskFactor = "suspected_request_tampering"
+	VerificationNewResponseRiskFactorSuspiciousIPAddress       VerificationNewResponseRiskFactor = "suspicious_ip_address"
+	VerificationNewResponseRiskFactorTemporaryPhoneNumber      VerificationNewResponseRiskFactor = "temporary_phone_number"
+)
+
+func (r VerificationNewResponseRiskFactor) IsKnown() bool {
+	switch r {
+	case VerificationNewResponseRiskFactorBehavioralPattern, VerificationNewResponseRiskFactorDeviceAttribute, VerificationNewResponseRiskFactorFraudDatabase, VerificationNewResponseRiskFactorLocationDiscrepancy, VerificationNewResponseRiskFactorNetworkFingerprint, VerificationNewResponseRiskFactorPoorConversionHistory, VerificationNewResponseRiskFactorPrefixConcentration, VerificationNewResponseRiskFactorSuspectedRequestTampering, VerificationNewResponseRiskFactorSuspiciousIPAddress, VerificationNewResponseRiskFactorTemporaryPhoneNumber:
 		return true
 	}
 	return false
