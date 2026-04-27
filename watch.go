@@ -349,7 +349,8 @@ func (r WatchPredictParamsSignalsDevicePlatform) IsKnown() bool {
 }
 
 type WatchSendEventsParams struct {
-	// A list of events to dispatch.
+	// A list of events to dispatch. A maximum of 100 events can be sent in a single
+	// request.
 	Events param.Field[[]WatchSendEventsParamsEvent] `json:"events" api:"required"`
 }
 
@@ -418,7 +419,8 @@ func (r WatchSendEventsParamsEventsTargetType) IsKnown() bool {
 }
 
 type WatchSendFeedbacksParams struct {
-	// A list of feedbacks to send.
+	// A list of feedbacks to send. A maximum of 100 feedbacks can be sent in a single
+	// request.
 	Feedbacks param.Field[[]WatchSendFeedbacksParamsFeedback] `json:"feedbacks" api:"required"`
 }
 
