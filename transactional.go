@@ -105,8 +105,16 @@ type TransactionalSendParams struct {
 	// returned in the response and any webhook events that refer to this
 	// transactionalmessage.
 	CorrelationID param.Field[string] `json:"correlation_id"`
-	// A document to attach to the message. Only supported on WhatsApp templates that
-	// have a document header.
+	// A media attachment to include in the message header. Supported on WhatsApp
+	// templates registered with a `DOCUMENT`, `IMAGE`, or `VIDEO` header. The media
+	// type is determined by the template's registered header format; send the matching
+	// file type for each.
+	//
+	//   - `DOCUMENT` headers accept PDF and other document formats; `filename` is
+	//     required and displayed to the recipient.
+	//   - `IMAGE` headers accept `.png`, `.jpg`, `.jpeg`, and `.webp` URLs; `filename`
+	//     is ignored.
+	//   - `VIDEO` headers accept `.mp4` and `.3gp` URLs; `filename` is ignored.
 	Document param.Field[TransactionalSendParamsDocument] `json:"document"`
 	// The message expiration date.
 	ExpiresAt param.Field[string] `json:"expires_at"`
@@ -135,13 +143,24 @@ func (r TransactionalSendParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// A document to attach to the message. Only supported on WhatsApp templates that
-// have a document header.
+// A media attachment to include in the message header. Supported on WhatsApp
+// templates registered with a `DOCUMENT`, `IMAGE`, or `VIDEO` header. The media
+// type is determined by the template's registered header format; send the matching
+// file type for each.
+//
+//   - `DOCUMENT` headers accept PDF and other document formats; `filename` is
+//     required and displayed to the recipient.
+//   - `IMAGE` headers accept `.png`, `.jpg`, `.jpeg`, and `.webp` URLs; `filename`
+//     is ignored.
+//   - `VIDEO` headers accept `.mp4` and `.3gp` URLs; `filename` is ignored.
 type TransactionalSendParamsDocument struct {
-	// The filename to display for the document.
-	Filename param.Field[string] `json:"filename" api:"required"`
-	// The URL of the document to attach. Must be a valid HTTP or HTTPS URL.
+	// HTTPS URL of the media file. The file extension must match the template's
+	// registered header format (PDF for DOCUMENT; PNG/JPG/JPEG/WEBP for IMAGE; MP4/3GP
+	// for VIDEO).
 	URL param.Field[string] `json:"url" api:"required"`
+	// Filename displayed to the recipient. Required for templates with a `DOCUMENT`
+	// header; ignored for `IMAGE` and `VIDEO` headers.
+	Filename param.Field[string] `json:"filename"`
 }
 
 func (r TransactionalSendParamsDocument) MarshalJSON() (data []byte, err error) {
