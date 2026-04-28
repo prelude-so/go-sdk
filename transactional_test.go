@@ -31,8 +31,8 @@ func TestTransactionalSendWithOptionalParams(t *testing.T) {
 		CallbackURL:   prelude.F("callback_url"),
 		CorrelationID: prelude.F("correlation_id"),
 		Document: prelude.F(prelude.TransactionalSendParamsDocument{
-			Filename: prelude.F("invoice.pdf"),
 			URL:      prelude.F("https://example.com/invoice.pdf"),
+			Filename: prelude.F("invoice.pdf"),
 		}),
 		ExpiresAt:        prelude.F("expires_at"),
 		From:             prelude.F("from"),

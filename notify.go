@@ -992,8 +992,16 @@ type NotifySendParams struct {
 	// It is returned in the response and any webhook events that refer to this
 	// message.
 	CorrelationID param.Field[string] `json:"correlation_id"`
-	// A document to attach to the message. Only supported on WhatsApp templates that
-	// have a document header.
+	// A media attachment to include in the message header. Supported on WhatsApp
+	// templates registered with a `DOCUMENT`, `IMAGE`, or `VIDEO` header. The media
+	// type is determined by the template's registered header format; send the matching
+	// file type for each.
+	//
+	//   - `DOCUMENT` headers accept PDF and other document formats; `filename` is
+	//     required and displayed to the recipient.
+	//   - `IMAGE` headers accept `.png`, `.jpg`, `.jpeg`, and `.webp` URLs; `filename`
+	//     is ignored.
+	//   - `VIDEO` headers accept `.mp4` and `.3gp` URLs; `filename` is ignored.
 	Document param.Field[NotifySendParamsDocument] `json:"document"`
 	// The message expiration date in RFC3339 format. The message will not be sent if
 	// this time is reached.
@@ -1036,13 +1044,24 @@ func (r NotifySendParamsContext) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// A document to attach to the message. Only supported on WhatsApp templates that
-// have a document header.
+// A media attachment to include in the message header. Supported on WhatsApp
+// templates registered with a `DOCUMENT`, `IMAGE`, or `VIDEO` header. The media
+// type is determined by the template's registered header format; send the matching
+// file type for each.
+//
+//   - `DOCUMENT` headers accept PDF and other document formats; `filename` is
+//     required and displayed to the recipient.
+//   - `IMAGE` headers accept `.png`, `.jpg`, `.jpeg`, and `.webp` URLs; `filename`
+//     is ignored.
+//   - `VIDEO` headers accept `.mp4` and `.3gp` URLs; `filename` is ignored.
 type NotifySendParamsDocument struct {
-	// The filename to display for the document.
-	Filename param.Field[string] `json:"filename" api:"required"`
-	// The URL of the document to attach. Must be a valid HTTP or HTTPS URL.
+	// HTTPS URL of the media file. The file extension must match the template's
+	// registered header format (PDF for DOCUMENT; PNG/JPG/JPEG/WEBP for IMAGE; MP4/3GP
+	// for VIDEO).
 	URL param.Field[string] `json:"url" api:"required"`
+	// Filename displayed to the recipient. Required for templates with a `DOCUMENT`
+	// header; ignored for `IMAGE` and `VIDEO` headers.
+	Filename param.Field[string] `json:"filename"`
 }
 
 func (r NotifySendParamsDocument) MarshalJSON() (data []byte, err error) {
@@ -1076,8 +1095,16 @@ type NotifySendBatchParams struct {
 	CallbackURL param.Field[string] `json:"callback_url"`
 	// A user-defined identifier to correlate this request with your internal systems.
 	CorrelationID param.Field[string] `json:"correlation_id"`
-	// A document to attach to the message. Only supported on WhatsApp templates that
-	// have a document header.
+	// A media attachment to include in the message header. Supported on WhatsApp
+	// templates registered with a `DOCUMENT`, `IMAGE`, or `VIDEO` header. The media
+	// type is determined by the template's registered header format; send the matching
+	// file type for each.
+	//
+	//   - `DOCUMENT` headers accept PDF and other document formats; `filename` is
+	//     required and displayed to the recipient.
+	//   - `IMAGE` headers accept `.png`, `.jpg`, `.jpeg`, and `.webp` URLs; `filename`
+	//     is ignored.
+	//   - `VIDEO` headers accept `.mp4` and `.3gp` URLs; `filename` is ignored.
 	Document param.Field[NotifySendBatchParamsDocument] `json:"document"`
 	// The message expiration date in RFC3339 format. Messages will not be sent after
 	// this time.
@@ -1099,13 +1126,24 @@ func (r NotifySendBatchParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// A document to attach to the message. Only supported on WhatsApp templates that
-// have a document header.
+// A media attachment to include in the message header. Supported on WhatsApp
+// templates registered with a `DOCUMENT`, `IMAGE`, or `VIDEO` header. The media
+// type is determined by the template's registered header format; send the matching
+// file type for each.
+//
+//   - `DOCUMENT` headers accept PDF and other document formats; `filename` is
+//     required and displayed to the recipient.
+//   - `IMAGE` headers accept `.png`, `.jpg`, `.jpeg`, and `.webp` URLs; `filename`
+//     is ignored.
+//   - `VIDEO` headers accept `.mp4` and `.3gp` URLs; `filename` is ignored.
 type NotifySendBatchParamsDocument struct {
-	// The filename to display for the document.
-	Filename param.Field[string] `json:"filename" api:"required"`
-	// The URL of the document to attach. Must be a valid HTTP or HTTPS URL.
+	// HTTPS URL of the media file. The file extension must match the template's
+	// registered header format (PDF for DOCUMENT; PNG/JPG/JPEG/WEBP for IMAGE; MP4/3GP
+	// for VIDEO).
 	URL param.Field[string] `json:"url" api:"required"`
+	// Filename displayed to the recipient. Required for templates with a `DOCUMENT`
+	// header; ignored for `IMAGE` and `VIDEO` headers.
+	Filename param.Field[string] `json:"filename"`
 }
 
 func (r NotifySendBatchParamsDocument) MarshalJSON() (data []byte, err error) {
