@@ -1,5 +1,41 @@
 # Changelog
 
+## 0.12.0 (2026-05-07)
+
+Full Changelog: [v0.11.0...v0.12.0](https://github.com/prelude-so/go-sdk/compare/v0.11.0...v0.12.0)
+
+### Features
+
+* **api:** api update ([38ea2f9](https://github.com/prelude-so/go-sdk/commit/38ea2f9ec3f87f98e3d4a3f979daaa2ce14c8bce))
+* **api:** api update ([bded950](https://github.com/prelude-so/go-sdk/commit/bded95008bb42313fc1b17cadee8abdfcad6184e))
+* **api:** api update ([6a5a290](https://github.com/prelude-so/go-sdk/commit/6a5a290682f800bf2984a3110f325f5b1bf5e073))
+* **api:** api update ([b92e164](https://github.com/prelude-so/go-sdk/commit/b92e164cff63f94d7d28c41e65f129e214e1064c))
+* **api:** api update ([07ef577](https://github.com/prelude-so/go-sdk/commit/07ef5773c75408c5664688b936ce20652879ee88))
+* **api:** api update ([89f3e7b](https://github.com/prelude-so/go-sdk/commit/89f3e7bbb2b5e9e4ec4b14b9bbcedd46aa0faf7a))
+* **api:** api update ([5fcb192](https://github.com/prelude-so/go-sdk/commit/5fcb1921c9e4796e3064713c20e5382edb189089))
+* **go:** add default http client with timeout ([c128022](https://github.com/prelude-so/go-sdk/commit/c12802247c72a6150d8716fd9c78a6daed4004d8))
+* **internal:** support comma format in multipart form encoding ([17b3d4f](https://github.com/prelude-so/go-sdk/commit/17b3d4fe2df4a284fad0e153fd346ca26df07afc))
+* support setting headers via env ([8d7b878](https://github.com/prelude-so/go-sdk/commit/8d7b8783e456a32d3721ab80233efab8d5291e32))
+
+
+### Bug Fixes
+
+* prevent duplicate ? in query params ([3d7ec7c](https://github.com/prelude-so/go-sdk/commit/3d7ec7cbeeeb2eb278faa3cd311712c379857a06))
+
+
+### Chores
+
+* avoid embedding reflect.Type for dead code elimination ([8317544](https://github.com/prelude-so/go-sdk/commit/8317544004a608839ad363a1158b51bc0f25898a))
+* **ci:** skip lint on metadata-only changes ([25d23e6](https://github.com/prelude-so/go-sdk/commit/25d23e635ca329f1dd2d9dc8476e4eeda83355b3))
+* **ci:** support opting out of skipping builds on metadata-only commits ([edc443c](https://github.com/prelude-so/go-sdk/commit/edc443c000bde1eac192756fb4bbb103dad48847))
+* **internal:** more robust bootstrap script ([84aa58c](https://github.com/prelude-so/go-sdk/commit/84aa58c7006a44c244b67dd6ea60f1230f0fe5e4))
+* remove unnecessary error check for url parsing ([8e23ec3](https://github.com/prelude-so/go-sdk/commit/8e23ec37d2f5d269c4bc3842662f972959d90917))
+* **tests:** bump steady to v0.19.6 ([031ee47](https://github.com/prelude-so/go-sdk/commit/031ee471dc68bcc7e9e25971c1ae48f1261aa9d8))
+* **tests:** bump steady to v0.19.7 ([6566496](https://github.com/prelude-so/go-sdk/commit/6566496ff718e2d1fbc50b9ec8ecdd8c34819753))
+* **tests:** bump steady to v0.20.1 ([2af98ac](https://github.com/prelude-so/go-sdk/commit/2af98acfdd3ca5165bfe5770882abdbac8f3341e))
+* **tests:** bump steady to v0.20.2 ([12e4a63](https://github.com/prelude-so/go-sdk/commit/12e4a6394c78ca8b3997f1e1c4b4b56761395760))
+* **tests:** bump steady to v0.22.1 ([7ee8d5e](https://github.com/prelude-so/go-sdk/commit/7ee8d5e0352760fcacfbe92f35c976ae4b9e1c81))
+
 ## 0.11.0 (2026-03-23)
 
 Full Changelog: [v0.10.0...v0.11.0](https://github.com/prelude-so/go-sdk/compare/v0.10.0...v0.11.0)
