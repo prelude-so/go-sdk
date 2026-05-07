@@ -165,8 +165,8 @@ func TestNotifySendWithOptionalParams(t *testing.T) {
 		CallbackURL:   prelude.F("https://your-app.com/webhooks/notify"),
 		CorrelationID: prelude.F("order-12345"),
 		Document: prelude.F(prelude.NotifySendParamsDocument{
-			Filename: prelude.F("invoice.pdf"),
 			URL:      prelude.F("https://example.com/invoice.pdf"),
+			Filename: prelude.F("invoice.pdf"),
 		}),
 		ExpiresAt:        prelude.F(time.Now()),
 		From:             prelude.F("from"),
@@ -205,8 +205,8 @@ func TestNotifySendBatchWithOptionalParams(t *testing.T) {
 		CallbackURL:   prelude.F("https://your-app.com/webhooks/notify"),
 		CorrelationID: prelude.F("campaign-12345"),
 		Document: prelude.F(prelude.NotifySendBatchParamsDocument{
-			Filename: prelude.F("invoice.pdf"),
 			URL:      prelude.F("https://example.com/invoice.pdf"),
+			Filename: prelude.F("invoice.pdf"),
 		}),
 		ExpiresAt:        prelude.F(time.Now()),
 		From:             prelude.F("from"),

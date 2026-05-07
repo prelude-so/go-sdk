@@ -29,7 +29,7 @@ type encoderField struct {
 }
 
 type encoderEntry struct {
-	reflect.Type
+	typ        reflect.Type
 	dateFormat string
 	root       bool
 	settings   QuerySettings
@@ -42,7 +42,7 @@ type Pair struct {
 
 func (e *encoder) typeEncoder(t reflect.Type) encoderFunc {
 	entry := encoderEntry{
-		Type:       t,
+		typ:        t,
 		dateFormat: e.dateFormat,
 		root:       e.root,
 		settings:   e.settings,
@@ -232,7 +232,14 @@ func (e *encoder) newArrayTypeEncoder(t reflect.Type) encoderFunc {
 			return pairs
 		}
 	case ArrayQueryFormatIndices:
-		panic("The array indices format is not supported yet")
+		innerEncoder := e.typeEncoder(t.Elem())
+		return func(key string, value reflect.Value) []Pair {
+			pairs := make([]Pair, 0, value.Len())
+			for i := 0; i < value.Len(); i++ {
+				pairs = append(pairs, innerEncoder(fmt.Sprintf("%s[%d]", key, i), value.Index(i))...)
+			}
+			return pairs
+		}
 	case ArrayQueryFormatBrackets:
 		innerEncoder := e.typeEncoder(t.Elem())
 		return func(key string, value reflect.Value) []Pair {
