@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.12.1 (2026-05-07)
+
+Full Changelog: [v0.12.0...v0.12.1](https://github.com/prelude-so/go-sdk/compare/v0.12.0...v0.12.1)
+
+### Bug Fixes
+
+* **go:** avoid panic when http.DefaultTransport is wrapped ([4b5c5ea](https://github.com/prelude-so/go-sdk/commit/4b5c5ea548f01a636d31bbcb0783823a083edd4a))
+
+
+### Chores
+
+* redact api-key headers in debug logs ([b609c12](https://github.com/prelude-so/go-sdk/commit/b609c1280466af6f8cafe3784db1f10925bbde5d))
+
 ## 0.12.0 (2026-05-07)
 
 Full Changelog: [v0.11.0...v0.12.0](https://github.com/prelude-so/go-sdk/compare/v0.11.0...v0.12.0)
