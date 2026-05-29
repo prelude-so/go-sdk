@@ -34,7 +34,12 @@ func NewWatchService(opts ...option.RequestOption) (r *WatchService) {
 	return
 }
 
-// Predict the outcome of a verification based on Prelude’s anti-fraud system.
+// At signup, score the user's phone number or email address (target) as legitimate
+// or suspicious. Scoring-only — does not update counters by itself. When using
+// Feedback, call predict before verification.started on the same target (and
+// correlation_id when used) so feedback can warm Watch auth-start counters. Use
+// Events for product fraud labels; use Feedback only if you run your own phone
+// verification funnel outside Prelude Verify.
 func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opts ...option.RequestOption) (res *WatchPredictResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/predict"
@@ -42,8 +47,11 @@ func (r *WatchService) Predict(ctx context.Context, body WatchPredictParams, opt
 	return res, err
 }
 
-// Send real-time event data from end-user interactions within your application.
-// Events will be analyzed for proactive fraud prevention and risk scoring.
+// Send custom fraud signals from your application (labels and confidence levels).
+// Events capture product-specific risk patterns and are weighted when scoring
+// traffic. Use without Predict or Feedback if you only need to report product-side
+// abuse (for example account.banned). Feedback is a separate, optional endpoint
+// for self-hosted phone verification funnels.
 func (r *WatchService) SendEvents(ctx context.Context, body WatchSendEventsParams, opts ...option.RequestOption) (res *WatchSendEventsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/event"
@@ -51,8 +59,13 @@ func (r *WatchService) SendEvents(ctx context.Context, body WatchSendEventsParam
 	return res, err
 }
 
-// Send feedback regarding your end-users verification funnel. Events will be
-// analyzed for proactive fraud prevention and risk scoring.
+// Optional. Report verification-funnel steps (verification.started,
+// verification.completed) when you run phone verification outside Prelude Verify.
+// Feeds Watch abuse-rate counters for your own flow. Call Predict on the same
+// target before verification.started and reuse metadata.correlation_id so
+// auth-start counters receive predict signals; without a linked predict, only
+// attempt-rate counters update on started. Not required if you only use Events
+// and/or Predict, or if Verify already handles verification for that traffic.
 func (r *WatchService) SendFeedbacks(ctx context.Context, body WatchSendFeedbacksParams, opts ...option.RequestOption) (res *WatchSendFeedbacksResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/watch/feedback"
@@ -237,7 +250,7 @@ func (r WatchSendFeedbacksResponseStatus) IsKnown() bool {
 }
 
 type WatchPredictParams struct {
-	// The prediction target. Only supports phone numbers for now.
+	// The signup identifier to score — a phone number or email address.
 	Target param.Field[WatchPredictParamsTarget] `json:"target" api:"required"`
 	// The identifier of the dispatch that came from the front-end SDK.
 	DispatchID param.Field[string] `json:"dispatch_id"`
@@ -252,7 +265,7 @@ func (r WatchPredictParams) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The prediction target. Only supports phone numbers for now.
+// The signup identifier to score — a phone number or email address.
 type WatchPredictParamsTarget struct {
 	// The type of the target. Either "phone_number" or "email_address".
 	Type param.Field[WatchPredictParamsTargetType] `json:"type" api:"required"`
