@@ -318,7 +318,9 @@ func (r verificationNewResponseSilentJSON) RawJSON() string {
 }
 
 type VerificationCheckResponse struct {
-	// The status of the check.
+	// The status of the check. For `prelude:psd2` codes, `transaction_missing` is
+	// returned when the `psd2` block is omitted, and `transaction_mismatch` when the
+	// submitted variables differ from those provided at issuance.
 	Status VerificationCheckResponseStatus `json:"status" api:"required"`
 	// The verification identifier.
 	ID string `json:"id"`
@@ -347,18 +349,22 @@ func (r verificationCheckResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// The status of the check.
+// The status of the check. For `prelude:psd2` codes, `transaction_missing` is
+// returned when the `psd2` block is omitted, and `transaction_mismatch` when the
+// submitted variables differ from those provided at issuance.
 type VerificationCheckResponseStatus string
 
 const (
-	VerificationCheckResponseStatusSuccess           VerificationCheckResponseStatus = "success"
-	VerificationCheckResponseStatusFailure           VerificationCheckResponseStatus = "failure"
-	VerificationCheckResponseStatusExpiredOrNotFound VerificationCheckResponseStatus = "expired_or_not_found"
+	VerificationCheckResponseStatusSuccess             VerificationCheckResponseStatus = "success"
+	VerificationCheckResponseStatusFailure             VerificationCheckResponseStatus = "failure"
+	VerificationCheckResponseStatusExpiredOrNotFound   VerificationCheckResponseStatus = "expired_or_not_found"
+	VerificationCheckResponseStatusTransactionMissing  VerificationCheckResponseStatus = "transaction_missing"
+	VerificationCheckResponseStatusTransactionMismatch VerificationCheckResponseStatus = "transaction_mismatch"
 )
 
 func (r VerificationCheckResponseStatus) IsKnown() bool {
 	switch r {
-	case VerificationCheckResponseStatusSuccess, VerificationCheckResponseStatusFailure, VerificationCheckResponseStatusExpiredOrNotFound:
+	case VerificationCheckResponseStatusSuccess, VerificationCheckResponseStatusFailure, VerificationCheckResponseStatusExpiredOrNotFound, VerificationCheckResponseStatusTransactionMissing, VerificationCheckResponseStatusTransactionMismatch:
 		return true
 	}
 	return false
@@ -644,6 +650,11 @@ type VerificationCheckParams struct {
 	// The verification target. Either a phone number or an email address. To use the
 	// email verification feature contact us to discuss your use case.
 	Target param.Field[VerificationCheckParamsTarget] `json:"target" api:"required"`
+	// Required when checking a code issued under the `prelude:psd2` template. The
+	// submitted variables must match those provided at issuance; any mismatch
+	// invalidates the code (PSD2 SCA RTS Article 5 dynamic linking). Ignored on
+	// non-PSD2 verifications.
+	Psd2 param.Field[VerificationCheckParamsPsd2] `json:"psd2"`
 }
 
 func (r VerificationCheckParams) MarshalJSON() (data []byte, err error) {
@@ -677,4 +688,21 @@ func (r VerificationCheckParamsTargetType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Required when checking a code issued under the `prelude:psd2` template. The
+// submitted variables must match those provided at issuance; any mismatch
+// invalidates the code (PSD2 SCA RTS Article 5 dynamic linking). Ignored on
+// non-PSD2 verifications.
+type VerificationCheckParamsPsd2 struct {
+	// Decimal amount of the transaction.
+	Amount param.Field[string] `json:"amount" api:"required"`
+	// ISO 4217 currency code.
+	Currency param.Field[string] `json:"currency" api:"required"`
+	// Payee name displayed to the payer.
+	Recipient param.Field[string] `json:"recipient" api:"required"`
+}
+
+func (r VerificationCheckParamsPsd2) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
