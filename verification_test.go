@@ -73,7 +73,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 	}
 }
 
-func TestVerificationCheck(t *testing.T) {
+func TestVerificationCheckWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
 		baseURL = envURL
@@ -90,6 +90,11 @@ func TestVerificationCheck(t *testing.T) {
 		Target: prelude.F(prelude.VerificationCheckParamsTarget{
 			Type:  prelude.F(prelude.VerificationCheckParamsTargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
+		}),
+		Psd2: prelude.F(prelude.VerificationCheckParamsPsd2{
+			Amount:    prelude.F("99999.99"),
+			Currency:  prelude.F("EUR"),
+			Recipient: prelude.F("Rainbow LLC"),
 		}),
 	})
 	if err != nil {
