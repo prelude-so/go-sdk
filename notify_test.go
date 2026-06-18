@@ -171,6 +171,7 @@ func TestNotifySendWithOptionalParams(t *testing.T) {
 		ExpiresAt:        prelude.F(time.Now()),
 		From:             prelude.F("from"),
 		Locale:           prelude.F("el-GR"),
+		MaxAutoRetries:   prelude.F(int64(2)),
 		PreferredChannel: prelude.F(prelude.NotifySendParamsPreferredChannelWhatsapp),
 		ScheduleAt:       prelude.F(time.Now()),
 		Variables: prelude.F(map[string]string{
@@ -211,6 +212,7 @@ func TestNotifySendBatchWithOptionalParams(t *testing.T) {
 		ExpiresAt:        prelude.F(time.Now()),
 		From:             prelude.F("from"),
 		Locale:           prelude.F("el-GR"),
+		MaxAutoRetries:   prelude.F(int64(2)),
 		PreferredChannel: prelude.F(prelude.NotifySendBatchParamsPreferredChannelWhatsapp),
 		ScheduleAt:       prelude.F(time.Now()),
 		Variables: prelude.F(map[string]string{
