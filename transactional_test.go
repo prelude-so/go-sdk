@@ -37,6 +37,7 @@ func TestTransactionalSendWithOptionalParams(t *testing.T) {
 		ExpiresAt:        prelude.F("expires_at"),
 		From:             prelude.F("from"),
 		Locale:           prelude.F("el-GR"),
+		MaxAutoRetries:   prelude.F(int64(2)),
 		PreferredChannel: prelude.F(prelude.TransactionalSendParamsPreferredChannelWhatsapp),
 		Variables: prelude.F(map[string]string{
 			"foo": "bar",

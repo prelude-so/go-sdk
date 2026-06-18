@@ -1010,6 +1010,12 @@ type NotifySendParams struct {
 	// code of the phone number. If the language specified doesn't exist, the default
 	// set on the template will be used.
 	Locale param.Field[string] `json:"locale"`
+	// Maximum number of automatic retry attempts across channels for this send, in
+	// addition to the first attempt. For example, `2` allows up to 3 total delivery
+	// attempts. Lower values reduce delivery cost on hard-to-reach numbers at the
+	// expense of deliverability. When omitted, your account's configured default
+	// applies.
+	MaxAutoRetries param.Field[int64] `json:"max_auto_retries"`
 	// The preferred channel to be used in priority for message delivery. If the
 	// channel is unavailable, the system will fallback to other available channels.
 	PreferredChannel param.Field[NotifySendParamsPreferredChannel] `json:"preferred_channel"`
@@ -1094,6 +1100,12 @@ type NotifySendBatchParams struct {
 	From param.Field[string] `json:"from"`
 	// A BCP-47 formatted locale string.
 	Locale param.Field[string] `json:"locale"`
+	// Maximum number of automatic retry attempts across channels for each send in the
+	// batch, in addition to the first attempt. For example, `2` allows up to 3 total
+	// delivery attempts per recipient. Lower values reduce delivery cost on
+	// hard-to-reach numbers at the expense of deliverability. When omitted, your
+	// account's configured default applies.
+	MaxAutoRetries param.Field[int64] `json:"max_auto_retries"`
 	// Preferred channel for delivery. If unavailable, automatic fallback applies.
 	PreferredChannel param.Field[NotifySendBatchParamsPreferredChannel] `json:"preferred_channel"`
 	// Schedule delivery in RFC3339 format. Marketing sends may be adjusted to comply
