@@ -492,7 +492,12 @@ type VerificationNewParamsOptions struct {
 	// skips silent verification, useful for scenarios requiring direct user
 	// interaction.
 	Method param.Field[VerificationNewParamsOptionsMethod] `json:"method"`
-	// The preferred channel to be used in priority for verification.
+	// The channel to prioritize when delivering the verification. Prelude prioritizes
+	// this channel on the first attempt and continues to prefer it on retries while an
+	// untried route on that channel remains; once those are exhausted, retries fall
+	// back to the next best available route. If the channel is unavailable (for
+	// example, when a verification is challenged), Prelude uses the best available
+	// route instead.
 	PreferredChannel param.Field[VerificationNewParamsOptionsPreferredChannel] `json:"preferred_channel"`
 	// The Sender ID to use for this message. The Sender ID needs to be enabled by
 	// Prelude.
@@ -567,7 +572,12 @@ func (r VerificationNewParamsOptionsMethod) IsKnown() bool {
 	return false
 }
 
-// The preferred channel to be used in priority for verification.
+// The channel to prioritize when delivering the verification. Prelude prioritizes
+// this channel on the first attempt and continues to prefer it on retries while an
+// untried route on that channel remains; once those are exhausted, retries fall
+// back to the next best available route. If the channel is unavailable (for
+// example, when a verification is challenged), Prelude uses the best available
+// route instead.
 type VerificationNewParamsOptionsPreferredChannel string
 
 const (
