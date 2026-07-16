@@ -372,11 +372,15 @@ func (r WatchSendEventsParams) MarshalJSON() (data []byte, err error) {
 }
 
 type WatchSendEventsParamsEvent struct {
-	// The level of trust you place in this event, in increasing order of trust:
-	// `minimum`, `low`, `neutral`, `high`, `maximum`. Prelude uses this value to
-	// weight your signals when scoring traffic — events flagged with `minimum`
-	// confidence indicate end-users you trust the least to be legitimate, and the
-	// pipeline will use these signals to filter them out.
+	// How much this event tells us to trust the end-user's legitimacy — not how
+	// certain you are that the event occurred. In increasing order of trust:
+	// `minimum`, `low`, `neutral`, `high`, `maximum`.
+	//
+	// Use `minimum` for an event tied to a user you trust the least to be legitimate
+	// (e.g. a `payment.chargeback`), and `maximum` for an event tied to a highly
+	// trustworthy user (e.g. a confirmed 3DS payment). Prelude weights these signals
+	// when scoring traffic: it filters out users tied to low-confidence events while
+	// preserving the experience for users tied to high-confidence ones.
 	Confidence param.Field[WatchSendEventsParamsEventsConfidence] `json:"confidence" api:"required"`
 	// A label to describe what the event refers to.
 	Label param.Field[string] `json:"label" api:"required"`
@@ -388,11 +392,15 @@ func (r WatchSendEventsParamsEvent) MarshalJSON() (data []byte, err error) {
 	return apijson.MarshalRoot(r)
 }
 
-// The level of trust you place in this event, in increasing order of trust:
-// `minimum`, `low`, `neutral`, `high`, `maximum`. Prelude uses this value to
-// weight your signals when scoring traffic — events flagged with `minimum`
-// confidence indicate end-users you trust the least to be legitimate, and the
-// pipeline will use these signals to filter them out.
+// How much this event tells us to trust the end-user's legitimacy — not how
+// certain you are that the event occurred. In increasing order of trust:
+// `minimum`, `low`, `neutral`, `high`, `maximum`.
+//
+// Use `minimum` for an event tied to a user you trust the least to be legitimate
+// (e.g. a `payment.chargeback`), and `maximum` for an event tied to a highly
+// trustworthy user (e.g. a confirmed 3DS payment). Prelude weights these signals
+// when scoring traffic: it filters out users tied to low-confidence events while
+// preserving the experience for users tied to high-confidence ones.
 type WatchSendEventsParamsEventsConfidence string
 
 const (
