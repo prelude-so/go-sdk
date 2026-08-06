@@ -40,6 +40,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 				Value:    prelude.F("value"),
 			}),
 			CallbackURL:      prelude.F("callback_url"),
+			Channels:         prelude.F([]prelude.VerificationNewParamsOptionsChannel{prelude.VerificationNewParamsOptionsChannelWhatsapp, prelude.VerificationNewParamsOptionsChannelSMS}),
 			CodeSize:         prelude.F(int64(5)),
 			CustomCode:       prelude.F("123456"),
 			ForceChallenge:   prelude.F(true),

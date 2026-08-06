@@ -464,6 +464,14 @@ type VerificationNewParamsOptions struct {
 	// verification creation, attempt creation, and delivery status changes. For more
 	// details, refer to [Webhook](/verify/v2/documentation/webhook).
 	CallbackURL param.Field[string] `json:"callback_url"`
+	// The channels this verification may use, in the order they are tried. Channels
+	// you omit are never used, including on retries. Every channel you list must be
+	// enabled on your account and active in the destination country, otherwise the
+	// request fails with `channel_not_enabled_in_region`. Prelude still picks the best
+	// provider within each channel. Cannot be combined with `preferred_channel`. Voice
+	// is requested through `method` instead. Disabled by default — contact support to
+	// enable it.
+	Channels param.Field[[]VerificationNewParamsOptionsChannel] `json:"channels"`
 	// The size of the code generated. It should be between 4 and 8. Defaults to the
 	// code size specified from the Dashboard.
 	CodeSize param.Field[int64] `json:"code_size"`
@@ -497,7 +505,7 @@ type VerificationNewParamsOptions struct {
 	// untried route on that channel remains; once those are exhausted, retries fall
 	// back to the next best available route. If the channel is unavailable (for
 	// example, when a verification is challenged), Prelude uses the best available
-	// route instead.
+	// route instead. Cannot be combined with `channels`.
 	PreferredChannel param.Field[VerificationNewParamsOptionsPreferredChannel] `json:"preferred_channel"`
 	// The Sender ID to use for this message. The Sender ID needs to be enabled by
 	// Prelude.
@@ -549,6 +557,25 @@ func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
 	return false
 }
 
+type VerificationNewParamsOptionsChannel string
+
+const (
+	VerificationNewParamsOptionsChannelSMS      VerificationNewParamsOptionsChannel = "sms"
+	VerificationNewParamsOptionsChannelRcs      VerificationNewParamsOptionsChannel = "rcs"
+	VerificationNewParamsOptionsChannelWhatsapp VerificationNewParamsOptionsChannel = "whatsapp"
+	VerificationNewParamsOptionsChannelViber    VerificationNewParamsOptionsChannel = "viber"
+	VerificationNewParamsOptionsChannelZalo     VerificationNewParamsOptionsChannel = "zalo"
+	VerificationNewParamsOptionsChannelTelegram VerificationNewParamsOptionsChannel = "telegram"
+)
+
+func (r VerificationNewParamsOptionsChannel) IsKnown() bool {
+	switch r {
+	case VerificationNewParamsOptionsChannelSMS, VerificationNewParamsOptionsChannelRcs, VerificationNewParamsOptionsChannelWhatsapp, VerificationNewParamsOptionsChannelViber, VerificationNewParamsOptionsChannelZalo, VerificationNewParamsOptionsChannelTelegram:
+		return true
+	}
+	return false
+}
+
 // The method used for verifying this phone number. The 'voice' option provides an
 // accessible alternative for visually impaired users by delivering the
 // verification code through a phone call rather than a text message. It also
@@ -577,7 +604,7 @@ func (r VerificationNewParamsOptionsMethod) IsKnown() bool {
 // untried route on that channel remains; once those are exhausted, retries fall
 // back to the next best available route. If the channel is unavailable (for
 // example, when a verification is challenged), Prelude uses the best available
-// route instead.
+// route instead. Cannot be combined with `channels`.
 type VerificationNewParamsOptionsPreferredChannel string
 
 const (
