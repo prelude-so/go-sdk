@@ -45,6 +45,7 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 			CustomCode:       prelude.F("123456"),
 			ForceChallenge:   prelude.F(true),
 			Locale:           prelude.F("el-GR"),
+			MaxAutoFallbacks: prelude.F(int64(0)),
 			Method:           prelude.F(prelude.VerificationNewParamsOptionsMethodAuto),
 			PreferredChannel: prelude.F(prelude.VerificationNewParamsOptionsPreferredChannelSMS),
 			SenderID:         prelude.F("sender_id"),
