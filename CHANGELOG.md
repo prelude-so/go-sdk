@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.13.0 (2026-08-07)
+
+Full Changelog: [v0.12.1...v0.13.0](https://github.com/prelude-so/go-sdk/compare/v0.12.1...v0.13.0)
+
+### Features
+
+* **api:** api update ([0fb90d3](https://github.com/prelude-so/go-sdk/commit/0fb90d3d569b66ac752986ae63985c9f4e78cd8f))
+* **api:** api update ([55d28a2](https://github.com/prelude-so/go-sdk/commit/55d28a2c745215a704870714f927707282a7be6d))
+* **api:** api update ([3056897](https://github.com/prelude-so/go-sdk/commit/30568973fb58cb812fc180052dab0a2d98c562e8))
+* **api:** api update ([c69fa91](https://github.com/prelude-so/go-sdk/commit/c69fa91fd232d3c4b4f5877decdd9b1309a385d4))
+* **api:** api update ([9df561b](https://github.com/prelude-so/go-sdk/commit/9df561bdd8987374fcb0a06e4e43248f25fc2901))
+* **api:** api update ([a16966e](https://github.com/prelude-so/go-sdk/commit/a16966e18620d705a27724512a886f9e57c618bc))
+* **api:** api update ([1dd32d9](https://github.com/prelude-so/go-sdk/commit/1dd32d9ed08a9fde1b89ae092ccfed0d77fee039))
+* **api:** api update ([3205cd8](https://github.com/prelude-so/go-sdk/commit/3205cd8ee44e7327e2e6d751c28f564845306a3b))
+* **api:** api update ([b10173f](https://github.com/prelude-so/go-sdk/commit/b10173f411659971e5e932d9c20579258bc48643))
+* **stlc:** configurable CI runner and private-production-repo support in workflow templates ([93c239a](https://github.com/prelude-so/go-sdk/commit/93c239ab9d52d9f8e0fac86795dfb60ce7538015))
+
 ## 0.12.1 (2026-05-07)
 
 Full Changelog: [v0.12.0...v0.12.1](https://github.com/prelude-so/go-sdk/compare/v0.12.0...v0.12.1)
