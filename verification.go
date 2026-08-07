@@ -465,12 +465,15 @@ type VerificationNewParamsOptions struct {
 	// details, refer to [Webhook](/verify/v2/documentation/webhook).
 	CallbackURL param.Field[string] `json:"callback_url"`
 	// The channels this verification may use, in the order they are tried. Channels
-	// you omit are never used, including on retries. Every channel you list must be
-	// enabled on your account and active in the destination country, otherwise the
-	// request fails with `channel_not_enabled_in_region`. Prelude still picks the best
-	// provider within each channel. Cannot be combined with `preferred_channel`. Voice
-	// is requested through `method` instead. Disabled by default — contact support to
-	// enable it.
+	// you omit are never used, including on retries. This option can only be set when
+	// the verification is created. The list is recorded on the verification and
+	// applies for its whole lifecycle, so `channels` sent while retrying an existing
+	// verification is ignored — unlike `preferred_channel`, which is honored on every
+	// retry. Every channel you list must be enabled on your account and active in the
+	// destination country, otherwise the request fails with
+	// `channel_not_enabled_in_region`. Prelude still picks the best provider within
+	// each channel. Cannot be combined with `preferred_channel`. Voice is requested
+	// through `method` instead. Disabled by default — contact support to enable it.
 	Channels param.Field[[]VerificationNewParamsOptionsChannel] `json:"channels"`
 	// The size of the code generated. It should be between 4 and 8. Defaults to the
 	// code size specified from the Dashboard.
@@ -492,6 +495,22 @@ type VerificationNewParamsOptions struct {
 	// code of the phone number. If the language specified doesn't exist, it defaults
 	// to US English.
 	Locale param.Field[string] `json:"locale"`
+	// Maximum number of delivery attempts Prelude may add on its own after the one you
+	// requested. `0` means a single attempt: if it cannot be delivered, Prelude
+	// neither tries another provider nor another channel, and does not retry
+	// automatically. `1` allows one additional attempt, and so on — a value larger
+	// than the number of routes available for the destination simply behaves like the
+	// default. When omitted, Prelude retries as your account is configured, across as
+	// many channels as the route offers.
+	//
+	// This option can only be set when the verification is created. The value is
+	// recorded on the verification and applies for its whole lifecycle, so a
+	// `max_auto_fallbacks` sent while retrying an existing verification is ignored —
+	// the limit cannot be raised or lowered after the fact. A retry you ask for is not
+	// an automatic attempt, so it gets a fresh allowance of the same limit. This
+	// option is disabled by default — contact Prelude support to enable it on your
+	// account.
+	MaxAutoFallbacks param.Field[int64] `json:"max_auto_fallbacks"`
 	// The method used for verifying this phone number. The 'voice' option provides an
 	// accessible alternative for visually impaired users by delivering the
 	// verification code through a phone call rather than a text message. It also
