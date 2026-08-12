@@ -70,7 +70,7 @@ func TestWatchSendEvents(t *testing.T) {
 	_, err := client.Watch.SendEvents(context.TODO(), prelude.WatchSendEventsParams{
 		Events: prelude.F([]prelude.WatchSendEventsParamsEvent{{
 			Confidence: prelude.F(prelude.WatchSendEventsParamsEventsConfidenceMaximum),
-			Label:      prelude.F("onboarding.start"),
+			Label:      prelude.F("account.banned"),
 			Target: prelude.F(prelude.WatchSendEventsParamsEventsTarget{
 				Type:  prelude.F(prelude.WatchSendEventsParamsEventsTargetTypePhoneNumber),
 				Value: prelude.F("+30123456789"),

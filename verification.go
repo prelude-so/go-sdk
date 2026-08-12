@@ -318,7 +318,9 @@ func (r verificationNewResponseSilentJSON) RawJSON() string {
 }
 
 type VerificationCheckResponse struct {
-	// The status of the check.
+	// The status of the check. For `prelude:psd2` codes, `transaction_missing` is
+	// returned when the `psd2` block is omitted, and `transaction_mismatch` when the
+	// submitted variables differ from those provided at issuance.
 	Status VerificationCheckResponseStatus `json:"status" api:"required"`
 	// The verification identifier.
 	ID string `json:"id"`
@@ -347,18 +349,22 @@ func (r verificationCheckResponseJSON) RawJSON() string {
 	return r.raw
 }
 
-// The status of the check.
+// The status of the check. For `prelude:psd2` codes, `transaction_missing` is
+// returned when the `psd2` block is omitted, and `transaction_mismatch` when the
+// submitted variables differ from those provided at issuance.
 type VerificationCheckResponseStatus string
 
 const (
-	VerificationCheckResponseStatusSuccess           VerificationCheckResponseStatus = "success"
-	VerificationCheckResponseStatusFailure           VerificationCheckResponseStatus = "failure"
-	VerificationCheckResponseStatusExpiredOrNotFound VerificationCheckResponseStatus = "expired_or_not_found"
+	VerificationCheckResponseStatusSuccess             VerificationCheckResponseStatus = "success"
+	VerificationCheckResponseStatusFailure             VerificationCheckResponseStatus = "failure"
+	VerificationCheckResponseStatusExpiredOrNotFound   VerificationCheckResponseStatus = "expired_or_not_found"
+	VerificationCheckResponseStatusTransactionMissing  VerificationCheckResponseStatus = "transaction_missing"
+	VerificationCheckResponseStatusTransactionMismatch VerificationCheckResponseStatus = "transaction_mismatch"
 )
 
 func (r VerificationCheckResponseStatus) IsKnown() bool {
 	switch r {
-	case VerificationCheckResponseStatusSuccess, VerificationCheckResponseStatusFailure, VerificationCheckResponseStatusExpiredOrNotFound:
+	case VerificationCheckResponseStatusSuccess, VerificationCheckResponseStatusFailure, VerificationCheckResponseStatusExpiredOrNotFound, VerificationCheckResponseStatusTransactionMissing, VerificationCheckResponseStatusTransactionMismatch:
 		return true
 	}
 	return false
@@ -458,6 +464,17 @@ type VerificationNewParamsOptions struct {
 	// verification creation, attempt creation, and delivery status changes. For more
 	// details, refer to [Webhook](/verify/v2/documentation/webhook).
 	CallbackURL param.Field[string] `json:"callback_url"`
+	// The channels this verification may use, in the order they are tried. Channels
+	// you omit are never used, including on retries. This option can only be set when
+	// the verification is created. The list is recorded on the verification and
+	// applies for its whole lifecycle, so `channels` sent while retrying an existing
+	// verification is ignored — unlike `preferred_channel`, which is honored on every
+	// retry. Every channel you list must be enabled on your account and active in the
+	// destination country, otherwise the request fails with
+	// `channel_not_enabled_in_region`. Prelude still picks the best provider within
+	// each channel. Cannot be combined with `preferred_channel`. Voice is requested
+	// through `method` instead. Disabled by default — contact support to enable it.
+	Channels param.Field[[]VerificationNewParamsOptionsChannel] `json:"channels"`
 	// The size of the code generated. It should be between 4 and 8. Defaults to the
 	// code size specified from the Dashboard.
 	CodeSize param.Field[int64] `json:"code_size"`
@@ -465,11 +482,35 @@ type VerificationNewParamsOptions struct {
 	// contact us to enable it for your account. For more details, refer to
 	// [Custom Code](/verify/v2/documentation/custom-codes).
 	CustomCode param.Field[string] `json:"custom_code"`
+	// When `true`, the verification is routed through challenge-safe channels
+	// (non-SMS/Voice) regardless of country eligibility or any antispam outcome. The
+	// resulting verification has `status: "challenged"`. Use this when you have your
+	// own signal that the request is suspicious and want stricter routing — the
+	// verification is **not** classified as fraud and does not contribute to
+	// anti-fraud counters or risk factors. This feature is disabled by default —
+	// contact Prelude support to enable it on your account.
+	ForceChallenge param.Field[bool] `json:"force_challenge"`
 	// A BCP-47 formatted locale string with the language the text message will be sent
 	// to. If there's no locale set, the language will be determined by the country
 	// code of the phone number. If the language specified doesn't exist, it defaults
 	// to US English.
 	Locale param.Field[string] `json:"locale"`
+	// Maximum number of delivery attempts Prelude may add on its own after the one you
+	// requested. `0` means a single attempt: if it cannot be delivered, Prelude
+	// neither tries another provider nor another channel, and does not retry
+	// automatically. `1` allows one additional attempt, and so on — a value larger
+	// than the number of routes available for the destination simply behaves like the
+	// default. When omitted, Prelude retries as your account is configured, across as
+	// many channels as the route offers.
+	//
+	// This option can only be set when the verification is created. The value is
+	// recorded on the verification and applies for its whole lifecycle, so a
+	// `max_auto_fallbacks` sent while retrying an existing verification is ignored —
+	// the limit cannot be raised or lowered after the fact. A retry you ask for is not
+	// an automatic attempt, so it gets a fresh allowance of the same limit. This
+	// option is disabled by default — contact Prelude support to enable it on your
+	// account.
+	MaxAutoFallbacks param.Field[int64] `json:"max_auto_fallbacks"`
 	// The method used for verifying this phone number. The 'voice' option provides an
 	// accessible alternative for visually impaired users by delivering the
 	// verification code through a phone call rather than a text message. It also
@@ -478,7 +519,12 @@ type VerificationNewParamsOptions struct {
 	// skips silent verification, useful for scenarios requiring direct user
 	// interaction.
 	Method param.Field[VerificationNewParamsOptionsMethod] `json:"method"`
-	// The preferred channel to be used in priority for verification.
+	// The channel to prioritize when delivering the verification. Prelude prioritizes
+	// this channel on the first attempt and continues to prefer it on retries while an
+	// untried route on that channel remains; once those are exhausted, retries fall
+	// back to the next best available route. If the channel is unavailable (for
+	// example, when a verification is challenged), Prelude uses the best available
+	// route instead. Cannot be combined with `channels`.
 	PreferredChannel param.Field[VerificationNewParamsOptionsPreferredChannel] `json:"preferred_channel"`
 	// The Sender ID to use for this message. The Sender ID needs to be enabled by
 	// Prelude.
@@ -530,6 +576,25 @@ func (r VerificationNewParamsOptionsAppRealmPlatform) IsKnown() bool {
 	return false
 }
 
+type VerificationNewParamsOptionsChannel string
+
+const (
+	VerificationNewParamsOptionsChannelSMS      VerificationNewParamsOptionsChannel = "sms"
+	VerificationNewParamsOptionsChannelRcs      VerificationNewParamsOptionsChannel = "rcs"
+	VerificationNewParamsOptionsChannelWhatsapp VerificationNewParamsOptionsChannel = "whatsapp"
+	VerificationNewParamsOptionsChannelViber    VerificationNewParamsOptionsChannel = "viber"
+	VerificationNewParamsOptionsChannelZalo     VerificationNewParamsOptionsChannel = "zalo"
+	VerificationNewParamsOptionsChannelTelegram VerificationNewParamsOptionsChannel = "telegram"
+)
+
+func (r VerificationNewParamsOptionsChannel) IsKnown() bool {
+	switch r {
+	case VerificationNewParamsOptionsChannelSMS, VerificationNewParamsOptionsChannelRcs, VerificationNewParamsOptionsChannelWhatsapp, VerificationNewParamsOptionsChannelViber, VerificationNewParamsOptionsChannelZalo, VerificationNewParamsOptionsChannelTelegram:
+		return true
+	}
+	return false
+}
+
 // The method used for verifying this phone number. The 'voice' option provides an
 // accessible alternative for visually impaired users by delivering the
 // verification code through a phone call rather than a text message. It also
@@ -553,7 +618,12 @@ func (r VerificationNewParamsOptionsMethod) IsKnown() bool {
 	return false
 }
 
-// The preferred channel to be used in priority for verification.
+// The channel to prioritize when delivering the verification. Prelude prioritizes
+// this channel on the first attempt and continues to prefer it on retries while an
+// untried route on that channel remains; once those are exhausted, retries fall
+// back to the next best available route. If the channel is unavailable (for
+// example, when a verification is challenged), Prelude uses the best available
+// route instead. Cannot be combined with `channels`.
 type VerificationNewParamsOptionsPreferredChannel string
 
 const (
@@ -636,6 +706,11 @@ type VerificationCheckParams struct {
 	// The verification target. Either a phone number or an email address. To use the
 	// email verification feature contact us to discuss your use case.
 	Target param.Field[VerificationCheckParamsTarget] `json:"target" api:"required"`
+	// Required when checking a code issued under the `prelude:psd2` template. The
+	// submitted variables must match those provided at issuance; any mismatch
+	// invalidates the code (PSD2 SCA RTS Article 5 dynamic linking). Ignored on
+	// non-PSD2 verifications.
+	Psd2 param.Field[VerificationCheckParamsPsd2] `json:"psd2"`
 }
 
 func (r VerificationCheckParams) MarshalJSON() (data []byte, err error) {
@@ -669,4 +744,21 @@ func (r VerificationCheckParamsTargetType) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+// Required when checking a code issued under the `prelude:psd2` template. The
+// submitted variables must match those provided at issuance; any mismatch
+// invalidates the code (PSD2 SCA RTS Article 5 dynamic linking). Ignored on
+// non-PSD2 verifications.
+type VerificationCheckParamsPsd2 struct {
+	// Decimal amount of the transaction.
+	Amount param.Field[string] `json:"amount" api:"required"`
+	// ISO 4217 currency code.
+	Currency param.Field[string] `json:"currency" api:"required"`
+	// Payee name displayed to the payer.
+	Recipient param.Field[string] `json:"recipient" api:"required"`
+}
+
+func (r VerificationCheckParamsPsd2) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
