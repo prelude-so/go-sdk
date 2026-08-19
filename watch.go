@@ -85,6 +85,9 @@ type WatchPredictResponse struct {
 	// when prediction is "suspicious" and the anti-fraud system detected specific risk
 	// signals.
 	//
+	//   - `account_risk_profile` - The target matches a risk profile derived from the
+	//     outcomes reported on your own account, rather than from a signal shared across
+	//     accounts.
 	//   - `behavioral_pattern` - The phone number past behavior during verification
 	//     flows exhibits suspicious patterns.
 	//   - `device_attribute` - The device exhibits characteristics associated with
@@ -147,6 +150,7 @@ func (r WatchPredictResponsePrediction) IsKnown() bool {
 type WatchPredictResponseRiskFactor string
 
 const (
+	WatchPredictResponseRiskFactorAccountRiskProfile        WatchPredictResponseRiskFactor = "account_risk_profile"
 	WatchPredictResponseRiskFactorBehavioralPattern         WatchPredictResponseRiskFactor = "behavioral_pattern"
 	WatchPredictResponseRiskFactorDeviceAttribute           WatchPredictResponseRiskFactor = "device_attribute"
 	WatchPredictResponseRiskFactorFraudDatabase             WatchPredictResponseRiskFactor = "fraud_database"
@@ -161,7 +165,7 @@ const (
 
 func (r WatchPredictResponseRiskFactor) IsKnown() bool {
 	switch r {
-	case WatchPredictResponseRiskFactorBehavioralPattern, WatchPredictResponseRiskFactorDeviceAttribute, WatchPredictResponseRiskFactorFraudDatabase, WatchPredictResponseRiskFactorLocationDiscrepancy, WatchPredictResponseRiskFactorNetworkFingerprint, WatchPredictResponseRiskFactorPoorConversionHistory, WatchPredictResponseRiskFactorPrefixConcentration, WatchPredictResponseRiskFactorSuspectedRequestTampering, WatchPredictResponseRiskFactorSuspiciousIPAddress, WatchPredictResponseRiskFactorTemporaryPhoneNumber:
+	case WatchPredictResponseRiskFactorAccountRiskProfile, WatchPredictResponseRiskFactorBehavioralPattern, WatchPredictResponseRiskFactorDeviceAttribute, WatchPredictResponseRiskFactorFraudDatabase, WatchPredictResponseRiskFactorLocationDiscrepancy, WatchPredictResponseRiskFactorNetworkFingerprint, WatchPredictResponseRiskFactorPoorConversionHistory, WatchPredictResponseRiskFactorPrefixConcentration, WatchPredictResponseRiskFactorSuspectedRequestTampering, WatchPredictResponseRiskFactorSuspiciousIPAddress, WatchPredictResponseRiskFactorTemporaryPhoneNumber:
 		return true
 	}
 	return false
