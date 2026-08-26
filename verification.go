@@ -656,6 +656,12 @@ type VerificationNewParamsSignals struct {
 	DeviceModel param.Field[string] `json:"device_model"`
 	// The type of the user's device.
 	DevicePlatform param.Field[VerificationNewParamsSignalsDevicePlatform] `json:"device_platform"`
+	// Whether the end-user already exists in your system, for example an existing
+	// account signing in again rather than a first-time signup. Unlike
+	// `is_trusted_user`, this signal does not bypass fraud checks; it is taken into
+	// account as one additional anti-fraud signal. For more details, refer to
+	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
+	ExistingUser param.Field[bool] `json:"existing_user"`
 	// The public IP v4 or v6 address of the end-user's device. You should collect this
 	// from your backend. If your backend is behind a proxy, use the `X-Forwarded-For`,
 	// `Forwarded`, `True-Client-IP`, `CF-Connecting-IP` or an equivalent header to get
