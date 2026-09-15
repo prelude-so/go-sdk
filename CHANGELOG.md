@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.14.0 (2026-09-15)
+
+Full Changelog: [v0.13.0...v0.14.0](https://github.com/prelude-so/go-sdk/compare/v0.13.0...v0.14.0)
+
+### Features
+
+* **api:** api update ([ab9f93b](https://github.com/prelude-so/go-sdk/commit/ab9f93b612e4060d123d59b4c502172a31d06e6b))
+* **api:** api update ([631d401](https://github.com/prelude-so/go-sdk/commit/631d401080502b9501bd7ce9dbb285e0aed4d870))
+* **api:** api update ([9658981](https://github.com/prelude-so/go-sdk/commit/96589810b1bbd3e760959dcddf2b62792488fcca))
+
+
+### Chores
+
+* **internal:** allow the mock server port to be set with STAINLESS_MOCK_PORT ([bc1fb0b](https://github.com/prelude-so/go-sdk/commit/bc1fb0b9503dbdca8fe462f9e0e5e0df3716e13b))
+
 ## 0.13.0 (2026-08-07)
 
 Full Changelog: [v0.12.1...v0.13.0](https://github.com/prelude-so/go-sdk/compare/v0.12.1...v0.13.0)
