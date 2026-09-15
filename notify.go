@@ -40,6 +40,8 @@ func NewNotifyService(opts ...option.RequestOption) (r *NotifyService) {
 }
 
 // Retrieve a specific subscription management configuration by its ID.
+//
+// In order to get access to this endpoint, contact our support team.
 func (r *NotifyService) GetSubscriptionConfig(ctx context.Context, configID string, opts ...option.RequestOption) (res *NotifyGetSubscriptionConfigResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
@@ -53,6 +55,8 @@ func (r *NotifyService) GetSubscriptionConfig(ctx context.Context, configID stri
 
 // Retrieve the current subscription status for a specific phone number within a
 // subscription configuration.
+//
+// In order to get access to this endpoint, contact our support team.
 func (r *NotifyService) GetSubscriptionPhoneNumber(ctx context.Context, configID string, phoneNumber string, opts ...option.RequestOption) (res *NotifyGetSubscriptionPhoneNumberResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
@@ -73,6 +77,8 @@ func (r *NotifyService) GetSubscriptionPhoneNumber(ctx context.Context, configID
 //
 // Each configuration represents a subscription management setup with phone numbers
 // for receiving opt-out/opt-in requests and a callback URL for webhook events.
+//
+// In order to get access to this endpoint, contact our support team.
 func (r *NotifyService) ListSubscriptionConfigs(ctx context.Context, query NotifyListSubscriptionConfigsParams, opts ...option.RequestOption) (res *NotifyListSubscriptionConfigsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	path := "v2/notify/management/subscriptions"
@@ -84,6 +90,8 @@ func (r *NotifyService) ListSubscriptionConfigs(ctx context.Context, query Notif
 // phone number within a subscription configuration.
 //
 // Events are ordered by timestamp in descending order (most recent first).
+//
+// In order to get access to this endpoint, contact our support team.
 func (r *NotifyService) ListSubscriptionPhoneNumberEvents(ctx context.Context, configID string, phoneNumber string, query NotifyListSubscriptionPhoneNumberEventsParams, opts ...option.RequestOption) (res *NotifyListSubscriptionPhoneNumberEventsResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
@@ -103,6 +111,8 @@ func (r *NotifyService) ListSubscriptionPhoneNumberEvents(ctx context.Context, c
 // specific subscription configuration.
 //
 // You can optionally filter by subscription state (SUB or UNSUB).
+//
+// In order to get access to this endpoint, contact our support team.
 func (r *NotifyService) ListSubscriptionPhoneNumbers(ctx context.Context, configID string, query NotifyListSubscriptionPhoneNumbersParams, opts ...option.RequestOption) (res *NotifyListSubscriptionPhoneNumbersResponse, err error) {
 	opts = slices.Concat(r.Options, opts)
 	if configID == "" {
