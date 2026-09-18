@@ -172,38 +172,51 @@ type VerificationPhoneHistoryGetResponse struct {
 	//   - `invalid_line` - The phone number is not a valid line type.
 	//   - `invalid_number` - The phone number is not a valid number.
 	//   - `rate_limited` - The verification was refused by a rate limit.
-	//   - `expired_signals` - The SDK signals were collected too long before the
-	//     request.
+	//   - `expired_signals` - The SDK signals were collected too long before the request
+	//     to still attest to it.
 	//   - `shadowed` - The anti-fraud system flagged the verification without blocking
 	//     it.
 	Status VerificationPhoneHistoryGetResponseStatus `json:"status" api:"required"`
 	// Version of your application, when known.
 	AppVersion string `json:"app_version"`
-	// Why the anti-fraud system blocked the verification. Empty unless it did.
+	// Why the anti-fraud system blocked the verification. Empty unless it did. These
+	// are the same labels the Verify and Watch APIs serve as `risk_factors`.
 	//
-	//   - `behavioral_pattern` - The phone number past behavior during verification
-	//     flows exhibits suspicious patterns.
-	//   - `device_attribute` - The end-user device reported attributes associated with
-	//     fraud or emulation.
-	//   - `fraud_database` - The phone number appears in a fraud database.
-	//   - `location_discrepancy` - The phone number region and the observed location
-	//     disagree.
+	//   - `automation_signature` - The request appears to come from an automated client
+	//     rather than a person.
+	//   - `carrier_not_permitted` - The destination carrier is one this account does not
+	//     accept traffic for.
+	//   - `client_fingerprint_mismatch` - The client does not appear to be the platform
+	//     it identifies itself as.
+	//   - `custom_policy` - A rule configured for your account matched this request.
+	//   - `device_emulator` - The request appears to come from an emulator rather than a
+	//     physical device.
+	//   - `device_not_permitted` - The device platform is one your account blocks.
+	//   - `device_reuse` - One device is driving verifications for an unusual number of
+	//     phone numbers.
+	//   - `expired_signals` - The SDK signals were collected too long before the request
+	//     to still attest to it.
+	//   - `fraud_database` - The phone number is flagged in one or more of the fraud
+	//     databases Prelude consults.
+	//   - `invalid_signature` - The SDK signature did not verify, so the request cannot
+	//     be attributed to the device it claims to come from.
+	//   - `ip_concentration` - The request shares its origin with an unusual volume of
+	//     other verifications.
+	//   - `ip_reputation` - The originating IP address is not trusted.
+	//   - `location_mismatch` - The network location and the phone number's country are
+	//     inconsistent.
 	//   - `missing_signals` - The verification expected Prelude SDK signals and none
 	//     arrived.
-	//   - `network_fingerprint` - The network fingerprint matches known fraudulent
-	//     traffic.
-	//   - `poor_conversion_history` - The phone number rarely completes the
-	//     verifications it starts.
-	//   - `prefix_concentration` - The phone number is part of a range known to be
-	//     associated with suspicious activity patterns.
-	//   - `repeated_number` - The phone number was used far more often than normal
-	//     traffic would explain.
-	//   - `suspected_request_tampering` - The SDK signals were altered or expired
-	//     between collection and use.
-	//   - `suspicious_ip_address` - The originating IP address is associated with
-	//     suspicious activity.
-	//   - `temporary_phone_number` - The phone number is known to be a temporary or
-	//     disposable number.
+	//   - `number_range_abuse` - The phone number belongs to a range currently
+	//     associated with abuse.
+	//   - `poor_conversion_history` - Traffic resembling this request rarely completes a
+	//     verification.
+	//   - `proxy_network` - The request did not arrive over the subscriber's own access
+	//     network.
+	//   - `repeated_attempts` - The phone number exceeded the allowed number of
+	//     verification attempts in a short period.
+	//   - `temporary_phone_number` - The phone number belongs to a disposable or
+	//     short-lived numbering service.
 	BlockReasons []VerificationPhoneHistoryGetResponseBlockReason `json:"block_reasons"`
 	// The end user's mobile network.
 	Carrier PhoneVerificationCarrier `json:"carrier"`
@@ -289,8 +302,8 @@ func (r verificationPhoneHistoryGetResponseJSON) RawJSON() string {
 //   - `invalid_line` - The phone number is not a valid line type.
 //   - `invalid_number` - The phone number is not a valid number.
 //   - `rate_limited` - The verification was refused by a rate limit.
-//   - `expired_signals` - The SDK signals were collected too long before the
-//     request.
+//   - `expired_signals` - The SDK signals were collected too long before the request
+//     to still attest to it.
 //   - `shadowed` - The anti-fraud system flagged the verification without blocking
 //     it.
 type VerificationPhoneHistoryGetResponseStatus string
@@ -321,23 +334,30 @@ func (r VerificationPhoneHistoryGetResponseStatus) IsKnown() bool {
 type VerificationPhoneHistoryGetResponseBlockReason string
 
 const (
-	VerificationPhoneHistoryGetResponseBlockReasonBehavioralPattern         VerificationPhoneHistoryGetResponseBlockReason = "behavioral_pattern"
-	VerificationPhoneHistoryGetResponseBlockReasonDeviceAttribute           VerificationPhoneHistoryGetResponseBlockReason = "device_attribute"
+	VerificationPhoneHistoryGetResponseBlockReasonAutomationSignature       VerificationPhoneHistoryGetResponseBlockReason = "automation_signature"
+	VerificationPhoneHistoryGetResponseBlockReasonCarrierNotPermitted       VerificationPhoneHistoryGetResponseBlockReason = "carrier_not_permitted"
+	VerificationPhoneHistoryGetResponseBlockReasonClientFingerprintMismatch VerificationPhoneHistoryGetResponseBlockReason = "client_fingerprint_mismatch"
+	VerificationPhoneHistoryGetResponseBlockReasonCustomPolicy              VerificationPhoneHistoryGetResponseBlockReason = "custom_policy"
+	VerificationPhoneHistoryGetResponseBlockReasonDeviceEmulator            VerificationPhoneHistoryGetResponseBlockReason = "device_emulator"
+	VerificationPhoneHistoryGetResponseBlockReasonDeviceNotPermitted        VerificationPhoneHistoryGetResponseBlockReason = "device_not_permitted"
+	VerificationPhoneHistoryGetResponseBlockReasonDeviceReuse               VerificationPhoneHistoryGetResponseBlockReason = "device_reuse"
+	VerificationPhoneHistoryGetResponseBlockReasonExpiredSignals            VerificationPhoneHistoryGetResponseBlockReason = "expired_signals"
 	VerificationPhoneHistoryGetResponseBlockReasonFraudDatabase             VerificationPhoneHistoryGetResponseBlockReason = "fraud_database"
-	VerificationPhoneHistoryGetResponseBlockReasonLocationDiscrepancy       VerificationPhoneHistoryGetResponseBlockReason = "location_discrepancy"
+	VerificationPhoneHistoryGetResponseBlockReasonInvalidSignature          VerificationPhoneHistoryGetResponseBlockReason = "invalid_signature"
+	VerificationPhoneHistoryGetResponseBlockReasonIPConcentration           VerificationPhoneHistoryGetResponseBlockReason = "ip_concentration"
+	VerificationPhoneHistoryGetResponseBlockReasonIPReputation              VerificationPhoneHistoryGetResponseBlockReason = "ip_reputation"
+	VerificationPhoneHistoryGetResponseBlockReasonLocationMismatch          VerificationPhoneHistoryGetResponseBlockReason = "location_mismatch"
 	VerificationPhoneHistoryGetResponseBlockReasonMissingSignals            VerificationPhoneHistoryGetResponseBlockReason = "missing_signals"
-	VerificationPhoneHistoryGetResponseBlockReasonNetworkFingerprint        VerificationPhoneHistoryGetResponseBlockReason = "network_fingerprint"
+	VerificationPhoneHistoryGetResponseBlockReasonNumberRangeAbuse          VerificationPhoneHistoryGetResponseBlockReason = "number_range_abuse"
 	VerificationPhoneHistoryGetResponseBlockReasonPoorConversionHistory     VerificationPhoneHistoryGetResponseBlockReason = "poor_conversion_history"
-	VerificationPhoneHistoryGetResponseBlockReasonPrefixConcentration       VerificationPhoneHistoryGetResponseBlockReason = "prefix_concentration"
-	VerificationPhoneHistoryGetResponseBlockReasonRepeatedNumber            VerificationPhoneHistoryGetResponseBlockReason = "repeated_number"
-	VerificationPhoneHistoryGetResponseBlockReasonSuspectedRequestTampering VerificationPhoneHistoryGetResponseBlockReason = "suspected_request_tampering"
-	VerificationPhoneHistoryGetResponseBlockReasonSuspiciousIPAddress       VerificationPhoneHistoryGetResponseBlockReason = "suspicious_ip_address"
+	VerificationPhoneHistoryGetResponseBlockReasonProxyNetwork              VerificationPhoneHistoryGetResponseBlockReason = "proxy_network"
+	VerificationPhoneHistoryGetResponseBlockReasonRepeatedAttempts          VerificationPhoneHistoryGetResponseBlockReason = "repeated_attempts"
 	VerificationPhoneHistoryGetResponseBlockReasonTemporaryPhoneNumber      VerificationPhoneHistoryGetResponseBlockReason = "temporary_phone_number"
 )
 
 func (r VerificationPhoneHistoryGetResponseBlockReason) IsKnown() bool {
 	switch r {
-	case VerificationPhoneHistoryGetResponseBlockReasonBehavioralPattern, VerificationPhoneHistoryGetResponseBlockReasonDeviceAttribute, VerificationPhoneHistoryGetResponseBlockReasonFraudDatabase, VerificationPhoneHistoryGetResponseBlockReasonLocationDiscrepancy, VerificationPhoneHistoryGetResponseBlockReasonMissingSignals, VerificationPhoneHistoryGetResponseBlockReasonNetworkFingerprint, VerificationPhoneHistoryGetResponseBlockReasonPoorConversionHistory, VerificationPhoneHistoryGetResponseBlockReasonPrefixConcentration, VerificationPhoneHistoryGetResponseBlockReasonRepeatedNumber, VerificationPhoneHistoryGetResponseBlockReasonSuspectedRequestTampering, VerificationPhoneHistoryGetResponseBlockReasonSuspiciousIPAddress, VerificationPhoneHistoryGetResponseBlockReasonTemporaryPhoneNumber:
+	case VerificationPhoneHistoryGetResponseBlockReasonAutomationSignature, VerificationPhoneHistoryGetResponseBlockReasonCarrierNotPermitted, VerificationPhoneHistoryGetResponseBlockReasonClientFingerprintMismatch, VerificationPhoneHistoryGetResponseBlockReasonCustomPolicy, VerificationPhoneHistoryGetResponseBlockReasonDeviceEmulator, VerificationPhoneHistoryGetResponseBlockReasonDeviceNotPermitted, VerificationPhoneHistoryGetResponseBlockReasonDeviceReuse, VerificationPhoneHistoryGetResponseBlockReasonExpiredSignals, VerificationPhoneHistoryGetResponseBlockReasonFraudDatabase, VerificationPhoneHistoryGetResponseBlockReasonInvalidSignature, VerificationPhoneHistoryGetResponseBlockReasonIPConcentration, VerificationPhoneHistoryGetResponseBlockReasonIPReputation, VerificationPhoneHistoryGetResponseBlockReasonLocationMismatch, VerificationPhoneHistoryGetResponseBlockReasonMissingSignals, VerificationPhoneHistoryGetResponseBlockReasonNumberRangeAbuse, VerificationPhoneHistoryGetResponseBlockReasonPoorConversionHistory, VerificationPhoneHistoryGetResponseBlockReasonProxyNetwork, VerificationPhoneHistoryGetResponseBlockReasonRepeatedAttempts, VerificationPhoneHistoryGetResponseBlockReasonTemporaryPhoneNumber:
 		return true
 	}
 	return false
@@ -944,8 +964,8 @@ type VerificationPhoneHistoryListResponseVerification struct {
 	//   - `invalid_line` - The phone number is not a valid line type.
 	//   - `invalid_number` - The phone number is not a valid number.
 	//   - `rate_limited` - The verification was refused by a rate limit.
-	//   - `expired_signals` - The SDK signals were collected too long before the
-	//     request.
+	//   - `expired_signals` - The SDK signals were collected too long before the request
+	//     to still attest to it.
 	//   - `shadowed` - The anti-fraud system flagged the verification without blocking
 	//     it.
 	Status VerificationPhoneHistoryListResponseVerificationsStatus `json:"status" api:"required"`
@@ -1054,8 +1074,8 @@ func (r VerificationPhoneHistoryListResponseVerificationsChannelsChannel) IsKnow
 //   - `invalid_line` - The phone number is not a valid line type.
 //   - `invalid_number` - The phone number is not a valid number.
 //   - `rate_limited` - The verification was refused by a rate limit.
-//   - `expired_signals` - The SDK signals were collected too long before the
-//     request.
+//   - `expired_signals` - The SDK signals were collected too long before the request
+//     to still attest to it.
 //   - `shadowed` - The anti-fraud system flagged the verification without blocking
 //     it.
 type VerificationPhoneHistoryListResponseVerificationsStatus string
