@@ -11,6 +11,7 @@ import (
 	"github.com/prelude-so/go-sdk"
 	"github.com/prelude-so/go-sdk/internal/testutil"
 	"github.com/prelude-so/go-sdk/option"
+	"github.com/prelude-so/go-sdk/shared"
 )
 
 func TestVerificationNewWithOptionalParams(t *testing.T) {
@@ -26,8 +27,8 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	_, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 		DispatchID: prelude.F("123e4567-e89b-12d3-a456-426614174000"),
@@ -54,11 +55,11 @@ func TestVerificationNewWithOptionalParams(t *testing.T) {
 				"foo": "bar",
 			}),
 		}),
-		Signals: prelude.F(prelude.VerificationNewParamsSignals{
+		Signals: prelude.F(shared.SignalsParam{
 			AppVersion:     prelude.F("1.2.34"),
 			DeviceID:       prelude.F("8F0B8FDD-C2CB-4387-B20A-56E9B2E5A0D2"),
 			DeviceModel:    prelude.F("iPhone17,2"),
-			DevicePlatform: prelude.F(prelude.VerificationNewParamsSignalsDevicePlatformIos),
+			DevicePlatform: prelude.F(shared.SignalsDevicePlatformIos),
 			ExistingUser:   prelude.F(false),
 			IP:             prelude.F("203.0.113.123"),
 			IsTrustedUser:  prelude.F(false),
@@ -90,8 +91,8 @@ func TestVerificationCheckWithOptionalParams(t *testing.T) {
 	)
 	_, err := client.Verification.Check(context.TODO(), prelude.VerificationCheckParams{
 		Code: prelude.F("12345"),
-		Target: prelude.F(prelude.VerificationCheckParamsTarget{
-			Type:  prelude.F(prelude.VerificationCheckParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 		Psd2: prelude.F(prelude.VerificationCheckParamsPsd2{

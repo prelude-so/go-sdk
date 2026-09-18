@@ -147,6 +147,34 @@ func TestNotifyListSubscriptionPhoneNumbersWithOptionalParams(t *testing.T) {
 	}
 }
 
+func TestNotifyReplyWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := prelude.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIToken("My API Token"),
+	)
+	_, err := client.Notify.Reply(context.TODO(), prelude.NotifyReplyParams{
+		ReplyTo:       prelude.F("im_01k8aq2zggeyssvt53zgvpx63a"),
+		Text:          prelude.F("Thanks for reaching out! We'll look into your request."),
+		To:            prelude.F("+33612345678"),
+		CallbackURL:   prelude.F("https://your-app.com/webhooks/notify"),
+		CorrelationID: prelude.F("support-ticket-42"),
+	})
+	if err != nil {
+		var apierr *prelude.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
+
 func TestNotifySendWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
 	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
