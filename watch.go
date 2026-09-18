@@ -85,6 +85,9 @@ type WatchPredictResponse struct {
 	// when prediction is "suspicious" and the anti-fraud system detected specific risk
 	// signals.
 	//
+	//   - `account_risk_profile` - The target matches a risk profile derived from the
+	//     outcomes reported on your own account, rather than from a signal shared across
+	//     accounts.
 	//   - `behavioral_pattern` - The phone number past behavior during verification
 	//     flows exhibits suspicious patterns.
 	//   - `device_attribute` - The device exhibits characteristics associated with
@@ -147,6 +150,7 @@ func (r WatchPredictResponsePrediction) IsKnown() bool {
 type WatchPredictResponseRiskFactor string
 
 const (
+	WatchPredictResponseRiskFactorAccountRiskProfile        WatchPredictResponseRiskFactor = "account_risk_profile"
 	WatchPredictResponseRiskFactorBehavioralPattern         WatchPredictResponseRiskFactor = "behavioral_pattern"
 	WatchPredictResponseRiskFactorDeviceAttribute           WatchPredictResponseRiskFactor = "device_attribute"
 	WatchPredictResponseRiskFactorFraudDatabase             WatchPredictResponseRiskFactor = "fraud_database"
@@ -161,7 +165,7 @@ const (
 
 func (r WatchPredictResponseRiskFactor) IsKnown() bool {
 	switch r {
-	case WatchPredictResponseRiskFactorBehavioralPattern, WatchPredictResponseRiskFactorDeviceAttribute, WatchPredictResponseRiskFactorFraudDatabase, WatchPredictResponseRiskFactorLocationDiscrepancy, WatchPredictResponseRiskFactorNetworkFingerprint, WatchPredictResponseRiskFactorPoorConversionHistory, WatchPredictResponseRiskFactorPrefixConcentration, WatchPredictResponseRiskFactorSuspectedRequestTampering, WatchPredictResponseRiskFactorSuspiciousIPAddress, WatchPredictResponseRiskFactorTemporaryPhoneNumber:
+	case WatchPredictResponseRiskFactorAccountRiskProfile, WatchPredictResponseRiskFactorBehavioralPattern, WatchPredictResponseRiskFactorDeviceAttribute, WatchPredictResponseRiskFactorFraudDatabase, WatchPredictResponseRiskFactorLocationDiscrepancy, WatchPredictResponseRiskFactorNetworkFingerprint, WatchPredictResponseRiskFactorPoorConversionHistory, WatchPredictResponseRiskFactorPrefixConcentration, WatchPredictResponseRiskFactorSuspectedRequestTampering, WatchPredictResponseRiskFactorSuspiciousIPAddress, WatchPredictResponseRiskFactorTemporaryPhoneNumber:
 		return true
 	}
 	return false
@@ -317,6 +321,12 @@ type WatchPredictParamsSignals struct {
 	DeviceModel param.Field[string] `json:"device_model"`
 	// The type of the user's device.
 	DevicePlatform param.Field[WatchPredictParamsSignalsDevicePlatform] `json:"device_platform"`
+	// Whether the end-user already exists in your system, for example an existing
+	// account signing in again rather than a first-time signup. Unlike
+	// `is_trusted_user`, this signal does not bypass fraud checks; it is taken into
+	// account as one additional anti-fraud signal. For more details, refer to
+	// [Signals](/verify/v2/documentation/prevent-fraud#signals).
+	ExistingUser param.Field[bool] `json:"existing_user"`
 	// The public IP v4 or v6 address of the end-user's device. You should collect this
 	// from your backend. If your backend is behind a proxy, use the `X-Forwarded-For`,
 	// `Forwarded`, `True-Client-IP`, `CF-Connecting-IP` or an equivalent header to get
