@@ -124,6 +124,16 @@ func (r *NotifyService) ListSubscriptionPhoneNumbers(ctx context.Context, config
 	return res, err
 }
 
+// Send a free-form text reply to an inbound WhatsApp message within the 24-hour
+// conversation window. See
+// [WhatsApp 2-Way Messaging](/notify/v2/documentation/whatsapp) for details.
+func (r *NotifyService) Reply(ctx context.Context, body NotifyReplyParams, opts ...option.RequestOption) (res *NotifyReplyResponse, err error) {
+	opts = slices.Concat(r.Options, opts)
+	path := "v2/notify/reply"
+	err = requestconfig.ExecuteNewRequest(ctx, http.MethodPost, path, body, &res, opts...)
+	return res, err
+}
+
 // Send transactional and marketing messages to your users via SMS, RCS and
 // WhatsApp with automatic compliance enforcement.
 func (r *NotifyService) Send(ctx context.Context, body NotifySendParams, opts ...option.RequestOption) (res *NotifySendResponse, err error) {
@@ -671,6 +681,46 @@ func (r NotifyListSubscriptionPhoneNumbersResponsePhoneNumbersState) IsKnown() b
 	return false
 }
 
+type NotifyReplyResponse struct {
+	// The reply message identifier.
+	ID string `json:"id" api:"required"`
+	// The reply creation date in RFC3339 format.
+	CreatedAt time.Time `json:"created_at" api:"required" format:"date-time"`
+	// The inbound message ID this reply was sent in response to.
+	ReplyTo string `json:"reply_to" api:"required"`
+	// The reply message body that was sent.
+	Text string `json:"text" api:"required"`
+	// The recipient's phone number in E.164 format.
+	To string `json:"to" api:"required"`
+	// The callback URL where webhooks will be sent.
+	CallbackURL string `json:"callback_url"`
+	// The user-defined correlation identifier echoed back from the request.
+	CorrelationID string                  `json:"correlation_id"`
+	JSON          notifyReplyResponseJSON `json:"-"`
+}
+
+// notifyReplyResponseJSON contains the JSON metadata for the struct
+// [NotifyReplyResponse]
+type notifyReplyResponseJSON struct {
+	ID            apijson.Field
+	CreatedAt     apijson.Field
+	ReplyTo       apijson.Field
+	Text          apijson.Field
+	To            apijson.Field
+	CallbackURL   apijson.Field
+	CorrelationID apijson.Field
+	raw           string
+	ExtraFields   map[string]apijson.Field
+}
+
+func (r *NotifyReplyResponse) UnmarshalJSON(data []byte) (err error) {
+	return apijson.UnmarshalRoot(data, r)
+}
+
+func (r notifyReplyResponseJSON) RawJSON() string {
+	return r.raw
+}
+
 type NotifySendResponse struct {
 	// The message identifier.
 	ID string `json:"id" api:"required"`
@@ -986,6 +1036,26 @@ func (r NotifyListSubscriptionPhoneNumbersParamsState) IsKnown() bool {
 		return true
 	}
 	return false
+}
+
+type NotifyReplyParams struct {
+	// The inbound message ID (prefixed with `im_`) to reply to. This ID is provided in
+	// the `inbound.message.received` webhook event.
+	ReplyTo param.Field[string] `json:"reply_to" api:"required"`
+	// The reply message body sent as a free-form WhatsApp text.
+	Text param.Field[string] `json:"text" api:"required"`
+	// The recipient's phone number in E.164 format. Must match the phone number that
+	// sent the original inbound message.
+	To param.Field[string] `json:"to" api:"required"`
+	// The URL where webhooks will be sent for delivery events of this reply.
+	CallbackURL param.Field[string] `json:"callback_url"`
+	// A user-defined identifier to correlate this reply with your internal systems. It
+	// is returned in the response and any webhook events that refer to this message.
+	CorrelationID param.Field[string] `json:"correlation_id"`
+}
+
+func (r NotifyReplyParams) MarshalJSON() (data []byte, err error) {
+	return apijson.MarshalRoot(r)
 }
 
 type NotifySendParams struct {

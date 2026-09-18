@@ -13,6 +13,7 @@ import (
 	"github.com/prelude-so/go-sdk"
 	"github.com/prelude-so/go-sdk/internal"
 	"github.com/prelude-so/go-sdk/option"
+	"github.com/prelude-so/go-sdk/shared"
 )
 
 type closureTransport struct {
@@ -39,8 +40,8 @@ func TestUserAgentHeader(t *testing.T) {
 		}),
 	)
 	_, _ = client.Verification.New(context.Background(), prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	})
@@ -68,8 +69,8 @@ func TestRetryAfter(t *testing.T) {
 		}),
 	)
 	_, err := client.Verification.New(context.Background(), prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	})
@@ -108,8 +109,8 @@ func TestDeleteRetryCountHeader(t *testing.T) {
 		option.WithHeaderDel("X-Stainless-Retry-Count"),
 	)
 	_, err := client.Verification.New(context.Background(), prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	})
@@ -143,8 +144,8 @@ func TestOverwriteRetryCountHeader(t *testing.T) {
 		option.WithHeader("X-Stainless-Retry-Count", "42"),
 	)
 	_, err := client.Verification.New(context.Background(), prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	})
@@ -177,8 +178,8 @@ func TestRetryAfterMs(t *testing.T) {
 		}),
 	)
 	_, err := client.Verification.New(context.Background(), prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	})
@@ -205,8 +206,8 @@ func TestContextCancel(t *testing.T) {
 	cancelCtx, cancel := context.WithCancel(context.Background())
 	cancel()
 	_, err := client.Verification.New(cancelCtx, prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	})
@@ -230,8 +231,8 @@ func TestContextCancelDelay(t *testing.T) {
 	cancelCtx, cancel := context.WithTimeout(context.Background(), 2*time.Millisecond)
 	defer cancel()
 	_, err := client.Verification.New(cancelCtx, prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	})
@@ -261,8 +262,8 @@ func TestContextDeadline(t *testing.T) {
 			}),
 		)
 		_, err := client.Verification.New(deadlineCtx, prelude.VerificationNewParams{
-			Target: prelude.F(prelude.VerificationNewParamsTarget{
-				Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+			Target: prelude.F(shared.TargetParam{
+				Type:  prelude.F(shared.TargetTypePhoneNumber),
 				Value: prelude.F("+30123456789"),
 			}),
 		})

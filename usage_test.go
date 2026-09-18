@@ -10,6 +10,7 @@ import (
 	"github.com/prelude-so/go-sdk"
 	"github.com/prelude-so/go-sdk/internal/testutil"
 	"github.com/prelude-so/go-sdk/option"
+	"github.com/prelude-so/go-sdk/shared"
 )
 
 func TestUsage(t *testing.T) {
@@ -25,8 +26,8 @@ func TestUsage(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	verification, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	})

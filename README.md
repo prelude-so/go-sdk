@@ -46,6 +46,7 @@ import (
 
 	"github.com/prelude-so/go-sdk"
 	"github.com/prelude-so/go-sdk/option"
+	"github.com/prelude-so/go-sdk/shared"
 )
 
 func main() {
@@ -53,8 +54,8 @@ func main() {
 		option.WithAPIToken("My API Token"), // defaults to os.LookupEnv("API_TOKEN")
 	)
 	verification, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	})
@@ -180,8 +181,8 @@ To handle errors, we recommend that you use the `errors.As` pattern:
 
 ```go
 _, err := client.Verification.New(context.TODO(), prelude.VerificationNewParams{
-	Target: prelude.F(prelude.VerificationNewParamsTarget{
-		Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+	Target: prelude.F(shared.TargetParam{
+		Type:  prelude.F(shared.TargetTypePhoneNumber),
 		Value: prelude.F("+30123456789"),
 	}),
 })
@@ -212,8 +213,8 @@ defer cancel()
 client.Verification.New(
 	ctx,
 	prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	},
@@ -253,8 +254,8 @@ client := prelude.NewClient(
 client.Verification.New(
 	context.TODO(),
 	prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	},
@@ -273,8 +274,8 @@ var response *http.Response
 verification, err := client.Verification.New(
 	context.TODO(),
 	prelude.VerificationNewParams{
-		Target: prelude.F(prelude.VerificationNewParamsTarget{
-			Type:  prelude.F(prelude.VerificationNewParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 	},
