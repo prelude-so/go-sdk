@@ -31,6 +31,7 @@ type Client struct {
 	VerificationManagement *VerificationManagementService
 	// Evaluate email addresses and phone numbers for trustworthiness.
 	Watch *WatchService
+	Intel *IntelService
 }
 
 // DefaultClientOptions read from the environment (API_TOKEN, PRELUDE_BASE_URL).
@@ -69,6 +70,7 @@ func NewClient(opts ...option.RequestOption) (r *Client) {
 	r.Verification = NewVerificationService(opts...)
 	r.VerificationManagement = NewVerificationManagementService(opts...)
 	r.Watch = NewWatchService(opts...)
+	r.Intel = NewIntelService(opts...)
 
 	return
 }

@@ -11,7 +11,53 @@ import (
 	"github.com/prelude-so/go-sdk"
 	"github.com/prelude-so/go-sdk/internal/testutil"
 	"github.com/prelude-so/go-sdk/option"
+	"github.com/prelude-so/go-sdk/shared"
 )
+
+func TestWatchEvaluateWithOptionalParams(t *testing.T) {
+	baseURL := "http://localhost:4010"
+	if envURL, ok := os.LookupEnv("TEST_API_BASE_URL"); ok {
+		baseURL = envURL
+	}
+	if !testutil.CheckTestServer(t, baseURL) {
+		return
+	}
+	client := prelude.NewClient(
+		option.WithBaseURL(baseURL),
+		option.WithAPIToken("My API Token"),
+	)
+	_, err := client.Watch.Evaluate(context.TODO(), prelude.WatchEvaluateParams{
+		FlowID: prelude.F("flo_01jc0t6fwwfgfsq1md24mhyztj"),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
+			Value: prelude.F("+30123456789"),
+		}),
+		Attributes: prelude.F(map[string]string{
+			"plan_tier":        "free",
+			"account_age_days": "3",
+		}),
+		DispatchID: prelude.F("123e4567-e89b-12d3-a456-426614174000"),
+		Signals: prelude.F(shared.SignalsParam{
+			AppVersion:     prelude.F("1.2.34"),
+			DeviceID:       prelude.F("8F0B8FDD-C2CB-4387-B20A-56E9B2E5A0D2"),
+			DeviceModel:    prelude.F("iPhone17,2"),
+			DevicePlatform: prelude.F(shared.SignalsDevicePlatformIos),
+			ExistingUser:   prelude.F(false),
+			IP:             prelude.F("203.0.113.123"),
+			IsTrustedUser:  prelude.F(false),
+			Ja4Fingerprint: prelude.F("t13d1516h2_8daaf6152771_e5627efa2ab1"),
+			OsVersion:      prelude.F("18.0.1"),
+			UserAgent:      prelude.F("Mozilla/5.0 (iPhone; CPU iPhone OS 14_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0.3 Mobile/15E148 Safari/604.1"),
+		}),
+	})
+	if err != nil {
+		var apierr *prelude.Error
+		if errors.As(err, &apierr) {
+			t.Log(string(apierr.DumpRequest(true)))
+		}
+		t.Fatalf("err should be nil: %s", err.Error())
+	}
+}
 
 func TestWatchPredictWithOptionalParams(t *testing.T) {
 	baseURL := "http://localhost:4010"
@@ -26,19 +72,19 @@ func TestWatchPredictWithOptionalParams(t *testing.T) {
 		option.WithAPIToken("My API Token"),
 	)
 	_, err := client.Watch.Predict(context.TODO(), prelude.WatchPredictParams{
-		Target: prelude.F(prelude.WatchPredictParamsTarget{
-			Type:  prelude.F(prelude.WatchPredictParamsTargetTypePhoneNumber),
+		Target: prelude.F(shared.TargetParam{
+			Type:  prelude.F(shared.TargetTypePhoneNumber),
 			Value: prelude.F("+30123456789"),
 		}),
 		DispatchID: prelude.F("123e4567-e89b-12d3-a456-426614174000"),
 		Metadata: prelude.F(prelude.WatchPredictParamsMetadata{
 			CorrelationID: prelude.F("correlation_id"),
 		}),
-		Signals: prelude.F(prelude.WatchPredictParamsSignals{
+		Signals: prelude.F(shared.SignalsParam{
 			AppVersion:     prelude.F("1.2.34"),
 			DeviceID:       prelude.F("8F0B8FDD-C2CB-4387-B20A-56E9B2E5A0D2"),
 			DeviceModel:    prelude.F("iPhone17,2"),
-			DevicePlatform: prelude.F(prelude.WatchPredictParamsSignalsDevicePlatformIos),
+			DevicePlatform: prelude.F(shared.SignalsDevicePlatformIos),
 			ExistingUser:   prelude.F(false),
 			IP:             prelude.F("203.0.113.123"),
 			IsTrustedUser:  prelude.F(false),
@@ -72,8 +118,8 @@ func TestWatchSendEvents(t *testing.T) {
 		Events: prelude.F([]prelude.WatchSendEventsParamsEvent{{
 			Confidence: prelude.F(prelude.WatchSendEventsParamsEventsConfidenceMaximum),
 			Label:      prelude.F("account.banned"),
-			Target: prelude.F(prelude.WatchSendEventsParamsEventsTarget{
-				Type:  prelude.F(prelude.WatchSendEventsParamsEventsTargetTypePhoneNumber),
+			Target: prelude.F(shared.TargetParam{
+				Type:  prelude.F(shared.TargetTypePhoneNumber),
 				Value: prelude.F("+30123456789"),
 			}),
 		}}),
@@ -101,8 +147,8 @@ func TestWatchSendFeedbacks(t *testing.T) {
 	)
 	_, err := client.Watch.SendFeedbacks(context.TODO(), prelude.WatchSendFeedbacksParams{
 		Feedbacks: prelude.F([]prelude.WatchSendFeedbacksParamsFeedback{{
-			Target: prelude.F(prelude.WatchSendFeedbacksParamsFeedbacksTarget{
-				Type:  prelude.F(prelude.WatchSendFeedbacksParamsFeedbacksTargetTypePhoneNumber),
+			Target: prelude.F(shared.TargetParam{
+				Type:  prelude.F(shared.TargetTypePhoneNumber),
 				Value: prelude.F("+30123456789"),
 			}),
 			Type: prelude.F(prelude.WatchSendFeedbacksParamsFeedbacksTypeVerificationStarted),

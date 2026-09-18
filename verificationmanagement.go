@@ -25,6 +25,8 @@ import (
 // the [NewVerificationManagementService] method instead.
 type VerificationManagementService struct {
 	Options []option.RequestOption
+	// Verify phone numbers.
+	Sandbox *VerificationManagementSandboxService
 }
 
 // NewVerificationManagementService generates a new service that applies the given
@@ -33,6 +35,7 @@ type VerificationManagementService struct {
 func NewVerificationManagementService(opts ...option.RequestOption) (r *VerificationManagementService) {
 	r = &VerificationManagementService{}
 	r.Options = opts
+	r.Sandbox = NewVerificationManagementSandboxService(opts...)
 	return
 }
 
