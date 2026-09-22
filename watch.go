@@ -35,9 +35,9 @@ func NewWatchService(opts ...option.RequestOption) (r *WatchService) {
 	return
 }
 
-// **Beta.** The request and response shapes may still change, and flows and
-// recipes are configured by Prelude on your behalf for now. Talk to us before you
-// build against it.
+// **Beta.** The request and response shapes may still change. Talk to us before
+// you build against it. Flows, recipes and rules are authored through the Watch
+// Management API, or configured by Prelude on your behalf.
 //
 // Score a target against the rules configured for one moment in your product —
 // signup, checkout, password reset. The flow selects which recipes run; each
@@ -164,7 +164,9 @@ type WatchEvaluateResponseRecipe struct {
 	RecipeID string `json:"recipe_id" api:"required"`
 	// One result per rule in the recipe, in membership order. Every rule runs — a
 	// score is only meaningful when complete, so there is no short-circuit on the
-	// first trigger.
+	// first trigger. The exception is a recipe whose verdict a preempting rule has
+	// already determined, where a rule that could no longer change it may report
+	// `SKIPPED` instead.
 	Rules []WatchEvaluateResponseRecipesRule `json:"rules" api:"required"`
 	// The sum of the weights of the rules that triggered, clamped to the range -100
 	// to 100. Two scores at a bound are not comparable.
@@ -211,11 +213,22 @@ type WatchEvaluateResponseRecipesRule struct {
 	//   - `NOT_EVALUATED` - The rule could not run, because something it reads never
 	//     arrived. This is not a quieter `NOT_TRIGGERED`: it contributed nothing either
 	//     way, and it is why `partial_evidence` is set on the recipe.
+	//   - `SKIPPED` - The rule was not run, because another rule had already determined
+	//     the recipe's verdict — see `determined_by`. Nothing was missing and nothing
+	//     failed, so `partial_evidence` is not set: `determined_by` is what accounts for
+	//     the recipe's score resting on fewer rules.
 	Outcome WatchEvaluateResponseRecipesRulesOutcome `json:"outcome" api:"required"`
 	// The rule that produced this result. Present whatever the rule's visibility, so a
 	// rule you cannot see the condition of is still one you can reweight, switch off,
 	// or ask us about.
 	RuleID string `json:"rule_id" api:"required"`
+	// Who authored the rule, which is what says how much of the rest of this result
+	// you get.
+	//
+	//   - `MANAGED` - Prelude-owned, shared with customers: `name` and `version_id` are
+	//     omitted, and `blocked_by` reports only `missing_data`.
+	//   - `CUSTOM` - Yours: every field is returned.
+	Type WatchEvaluateResponseRecipesRulesType `json:"type" api:"required"`
 	// What this rule contributes to the recipe's score when it triggers.
 	Weight int64 `json:"weight" api:"required"`
 	// Why the rule could not run, set only when `outcome` is `NOT_EVALUATED`.
@@ -231,8 +244,12 @@ type WatchEvaluateResponseRecipesRule struct {
 	Name string `json:"name"`
 	// The rule could not run for a reason on our side rather than anything about your
 	// request. `outcome` is `NOT_EVALUATED` and the failure is ours to fix.
-	Unavailable bool                                 `json:"unavailable"`
-	JSON        watchEvaluateResponseRecipesRuleJSON `json:"-"`
+	Unavailable bool `json:"unavailable"`
+	// The version of the rule that scored — the one this recipe is pinned to, or the
+	// version current at evaluation time when it is not pinned. Present for a rule you
+	// authored, and omitted for a Prelude-managed one.
+	VersionID string                               `json:"version_id"`
+	JSON      watchEvaluateResponseRecipesRuleJSON `json:"-"`
 }
 
 // watchEvaluateResponseRecipesRuleJSON contains the JSON metadata for the struct
@@ -240,10 +257,12 @@ type WatchEvaluateResponseRecipesRule struct {
 type watchEvaluateResponseRecipesRuleJSON struct {
 	Outcome     apijson.Field
 	RuleID      apijson.Field
+	Type        apijson.Field
 	Weight      apijson.Field
 	BlockedBy   apijson.Field
 	Name        apijson.Field
 	Unavailable apijson.Field
+	VersionID   apijson.Field
 	raw         string
 	ExtraFields map[string]apijson.Field
 }
@@ -263,17 +282,43 @@ func (r watchEvaluateResponseRecipesRuleJSON) RawJSON() string {
 //   - `NOT_EVALUATED` - The rule could not run, because something it reads never
 //     arrived. This is not a quieter `NOT_TRIGGERED`: it contributed nothing either
 //     way, and it is why `partial_evidence` is set on the recipe.
+//   - `SKIPPED` - The rule was not run, because another rule had already determined
+//     the recipe's verdict — see `determined_by`. Nothing was missing and nothing
+//     failed, so `partial_evidence` is not set: `determined_by` is what accounts for
+//     the recipe's score resting on fewer rules.
 type WatchEvaluateResponseRecipesRulesOutcome string
 
 const (
 	WatchEvaluateResponseRecipesRulesOutcomeTriggered    WatchEvaluateResponseRecipesRulesOutcome = "TRIGGERED"
 	WatchEvaluateResponseRecipesRulesOutcomeNotTriggered WatchEvaluateResponseRecipesRulesOutcome = "NOT_TRIGGERED"
 	WatchEvaluateResponseRecipesRulesOutcomeNotEvaluated WatchEvaluateResponseRecipesRulesOutcome = "NOT_EVALUATED"
+	WatchEvaluateResponseRecipesRulesOutcomeSkipped      WatchEvaluateResponseRecipesRulesOutcome = "SKIPPED"
 )
 
 func (r WatchEvaluateResponseRecipesRulesOutcome) IsKnown() bool {
 	switch r {
-	case WatchEvaluateResponseRecipesRulesOutcomeTriggered, WatchEvaluateResponseRecipesRulesOutcomeNotTriggered, WatchEvaluateResponseRecipesRulesOutcomeNotEvaluated:
+	case WatchEvaluateResponseRecipesRulesOutcomeTriggered, WatchEvaluateResponseRecipesRulesOutcomeNotTriggered, WatchEvaluateResponseRecipesRulesOutcomeNotEvaluated, WatchEvaluateResponseRecipesRulesOutcomeSkipped:
+		return true
+	}
+	return false
+}
+
+// Who authored the rule, which is what says how much of the rest of this result
+// you get.
+//
+//   - `MANAGED` - Prelude-owned, shared with customers: `name` and `version_id` are
+//     omitted, and `blocked_by` reports only `missing_data`.
+//   - `CUSTOM` - Yours: every field is returned.
+type WatchEvaluateResponseRecipesRulesType string
+
+const (
+	WatchEvaluateResponseRecipesRulesTypeManaged WatchEvaluateResponseRecipesRulesType = "MANAGED"
+	WatchEvaluateResponseRecipesRulesTypeCustom  WatchEvaluateResponseRecipesRulesType = "CUSTOM"
+)
+
+func (r WatchEvaluateResponseRecipesRulesType) IsKnown() bool {
+	switch r {
+	case WatchEvaluateResponseRecipesRulesTypeManaged, WatchEvaluateResponseRecipesRulesTypeCustom:
 		return true
 	}
 	return false
@@ -328,29 +373,43 @@ type WatchPredictResponse struct {
 	// when prediction is "suspicious" and the anti-fraud system detected specific risk
 	// signals.
 	//
-	//   - `account_risk_profile` - The target matches a risk profile derived from the
-	//     outcomes reported on your own account, rather than from a signal shared across
-	//     accounts.
-	//   - `behavioral_pattern` - The phone number past behavior during verification
-	//     flows exhibits suspicious patterns.
-	//   - `device_attribute` - The device exhibits characteristics associated with
-	//     suspicious activity patterns.
-	//   - `fraud_database` - The phone number has been flagged as suspicious in one or
-	//     more of our fraud databases.
-	//   - `location_discrepancy` - The phone number prefix and IP address discrepancy
-	//     indicates potential fraud.
-	//   - `network_fingerprint` - The network connection exhibits characteristics
-	//     associated with suspicious activity patterns.
-	//   - `poor_conversion_history` - The phone number has a history of poorly
-	//     converting to a verified phone number.
-	//   - `prefix_concentration` - The phone number is part of a range known to be
-	//     associated with suspicious activity patterns.
-	//   - `suspected_request_tampering` - The SDK signature is invalid and the request
-	//     is considered to be tampered with.
-	//   - `suspicious_ip_address` - The IP address is deemed to be associated with
-	//     suspicious activity patterns.
-	//   - `temporary_phone_number` - The phone number is known to be a temporary or
-	//     disposable number.
+	//   - `account_risk_profile` - The request matches a risk profile derived from the
+	//     outcomes reported on your own account.
+	//   - `automation_signature` - The request appears to come from an automated client
+	//     rather than a person.
+	//   - `carrier_not_permitted` - The destination carrier is one this account does not
+	//     accept traffic for.
+	//   - `client_fingerprint_mismatch` - The client does not appear to be the platform
+	//     it identifies itself as.
+	//   - `custom_policy` - A rule configured for your account matched this request.
+	//   - `device_emulator` - The request appears to come from an emulator rather than a
+	//     physical device.
+	//   - `device_not_permitted` - The device platform is one your account blocks.
+	//   - `device_reuse` - One device is driving verifications for an unusual number of
+	//     phone numbers.
+	//   - `expired_signals` - The SDK signals were collected too long before the request
+	//     to still attest to it.
+	//   - `fraud_database` - The phone number is flagged in one or more of the fraud
+	//     databases Prelude consults.
+	//   - `invalid_signature` - The SDK signature did not verify, so the request cannot
+	//     be attributed to the device it claims to come from.
+	//   - `ip_concentration` - The request shares its origin with an unusual volume of
+	//     other verifications.
+	//   - `ip_reputation` - The originating IP address is not trusted.
+	//   - `location_mismatch` - The network location and the phone number's country are
+	//     inconsistent.
+	//   - `missing_signals` - The verification expected Prelude SDK signals and none
+	//     arrived.
+	//   - `number_range_abuse` - The phone number belongs to a range currently
+	//     associated with abuse.
+	//   - `poor_conversion_history` - Traffic resembling this request rarely completes a
+	//     verification.
+	//   - `proxy_network` - The request did not arrive over the subscriber's own access
+	//     network.
+	//   - `repeated_attempts` - The phone number exceeded the allowed number of
+	//     verification attempts in a short period.
+	//   - `temporary_phone_number` - The phone number belongs to a disposable or
+	//     short-lived numbering service.
 	RiskFactors []WatchPredictResponseRiskFactor `json:"risk_factors"`
 	JSON        watchPredictResponseJSON         `json:"-"`
 }
@@ -394,21 +453,30 @@ type WatchPredictResponseRiskFactor string
 
 const (
 	WatchPredictResponseRiskFactorAccountRiskProfile        WatchPredictResponseRiskFactor = "account_risk_profile"
-	WatchPredictResponseRiskFactorBehavioralPattern         WatchPredictResponseRiskFactor = "behavioral_pattern"
-	WatchPredictResponseRiskFactorDeviceAttribute           WatchPredictResponseRiskFactor = "device_attribute"
+	WatchPredictResponseRiskFactorAutomationSignature       WatchPredictResponseRiskFactor = "automation_signature"
+	WatchPredictResponseRiskFactorCarrierNotPermitted       WatchPredictResponseRiskFactor = "carrier_not_permitted"
+	WatchPredictResponseRiskFactorClientFingerprintMismatch WatchPredictResponseRiskFactor = "client_fingerprint_mismatch"
+	WatchPredictResponseRiskFactorCustomPolicy              WatchPredictResponseRiskFactor = "custom_policy"
+	WatchPredictResponseRiskFactorDeviceEmulator            WatchPredictResponseRiskFactor = "device_emulator"
+	WatchPredictResponseRiskFactorDeviceNotPermitted        WatchPredictResponseRiskFactor = "device_not_permitted"
+	WatchPredictResponseRiskFactorDeviceReuse               WatchPredictResponseRiskFactor = "device_reuse"
+	WatchPredictResponseRiskFactorExpiredSignals            WatchPredictResponseRiskFactor = "expired_signals"
 	WatchPredictResponseRiskFactorFraudDatabase             WatchPredictResponseRiskFactor = "fraud_database"
-	WatchPredictResponseRiskFactorLocationDiscrepancy       WatchPredictResponseRiskFactor = "location_discrepancy"
-	WatchPredictResponseRiskFactorNetworkFingerprint        WatchPredictResponseRiskFactor = "network_fingerprint"
+	WatchPredictResponseRiskFactorInvalidSignature          WatchPredictResponseRiskFactor = "invalid_signature"
+	WatchPredictResponseRiskFactorIPConcentration           WatchPredictResponseRiskFactor = "ip_concentration"
+	WatchPredictResponseRiskFactorIPReputation              WatchPredictResponseRiskFactor = "ip_reputation"
+	WatchPredictResponseRiskFactorLocationMismatch          WatchPredictResponseRiskFactor = "location_mismatch"
+	WatchPredictResponseRiskFactorMissingSignals            WatchPredictResponseRiskFactor = "missing_signals"
+	WatchPredictResponseRiskFactorNumberRangeAbuse          WatchPredictResponseRiskFactor = "number_range_abuse"
 	WatchPredictResponseRiskFactorPoorConversionHistory     WatchPredictResponseRiskFactor = "poor_conversion_history"
-	WatchPredictResponseRiskFactorPrefixConcentration       WatchPredictResponseRiskFactor = "prefix_concentration"
-	WatchPredictResponseRiskFactorSuspectedRequestTampering WatchPredictResponseRiskFactor = "suspected_request_tampering"
-	WatchPredictResponseRiskFactorSuspiciousIPAddress       WatchPredictResponseRiskFactor = "suspicious_ip_address"
+	WatchPredictResponseRiskFactorProxyNetwork              WatchPredictResponseRiskFactor = "proxy_network"
+	WatchPredictResponseRiskFactorRepeatedAttempts          WatchPredictResponseRiskFactor = "repeated_attempts"
 	WatchPredictResponseRiskFactorTemporaryPhoneNumber      WatchPredictResponseRiskFactor = "temporary_phone_number"
 )
 
 func (r WatchPredictResponseRiskFactor) IsKnown() bool {
 	switch r {
-	case WatchPredictResponseRiskFactorAccountRiskProfile, WatchPredictResponseRiskFactorBehavioralPattern, WatchPredictResponseRiskFactorDeviceAttribute, WatchPredictResponseRiskFactorFraudDatabase, WatchPredictResponseRiskFactorLocationDiscrepancy, WatchPredictResponseRiskFactorNetworkFingerprint, WatchPredictResponseRiskFactorPoorConversionHistory, WatchPredictResponseRiskFactorPrefixConcentration, WatchPredictResponseRiskFactorSuspectedRequestTampering, WatchPredictResponseRiskFactorSuspiciousIPAddress, WatchPredictResponseRiskFactorTemporaryPhoneNumber:
+	case WatchPredictResponseRiskFactorAccountRiskProfile, WatchPredictResponseRiskFactorAutomationSignature, WatchPredictResponseRiskFactorCarrierNotPermitted, WatchPredictResponseRiskFactorClientFingerprintMismatch, WatchPredictResponseRiskFactorCustomPolicy, WatchPredictResponseRiskFactorDeviceEmulator, WatchPredictResponseRiskFactorDeviceNotPermitted, WatchPredictResponseRiskFactorDeviceReuse, WatchPredictResponseRiskFactorExpiredSignals, WatchPredictResponseRiskFactorFraudDatabase, WatchPredictResponseRiskFactorInvalidSignature, WatchPredictResponseRiskFactorIPConcentration, WatchPredictResponseRiskFactorIPReputation, WatchPredictResponseRiskFactorLocationMismatch, WatchPredictResponseRiskFactorMissingSignals, WatchPredictResponseRiskFactorNumberRangeAbuse, WatchPredictResponseRiskFactorPoorConversionHistory, WatchPredictResponseRiskFactorProxyNetwork, WatchPredictResponseRiskFactorRepeatedAttempts, WatchPredictResponseRiskFactorTemporaryPhoneNumber:
 		return true
 	}
 	return false
